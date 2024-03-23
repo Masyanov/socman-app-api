@@ -11,13 +11,13 @@
         <!-- Second Name -->
         <div class="mt-4">
             <x-input-label for="second_name" :value="__('Second Name')" />
-            <x-text-input id="second_name" class="block mt-1 w-full" type="text" name="second_name" :value="old('second_name')" required autofocus autocomplete="second_name" />
+            <x-text-input id="second_name" class="block mt-1 w-full" type="text" name="second_name" :value="old('second_name')" required autocomplete="second_name" />
             <x-input-error :messages="$errors->get('second_name')" class="mt-2" />
         </div>
         <!-- Last Name -->
         <div class="mt-4">
             <x-input-label for="last_name" :value="__('Last Name')" />
-            <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
+            <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autocomplete="last_name" />
             <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
         </div>
         <!-- Role -->
@@ -27,6 +27,13 @@
                 <option value="player">{{ __('Player') }}</option>
                 <option value="coach">{{ __('Coach') }}</option>
             </select>
+        </div>
+
+        <!-- Team Code -->
+        <div class="mt-4">
+            <x-input-label for="team_code" :value="__('Team code')" />
+            <x-text-input id="team_code" class="block mt-1 w-full" type="text" name="team_code" :value="old('team_code')" autocomplete="team_code" />
+            <x-input-error :messages="$errors->get('team_code')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
