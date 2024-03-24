@@ -8,12 +8,6 @@
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
-        <!-- Second Name -->
-        <div class="mt-4">
-            <x-input-label for="second_name" :value="__('Second Name')" />
-            <x-text-input id="second_name" class="block mt-1 w-full" type="text" name="second_name" :value="old('second_name')" required autocomplete="second_name" />
-            <x-input-error :messages="$errors->get('second_name')" class="mt-2" />
-        </div>
         <!-- Last Name -->
         <div class="mt-4">
             <x-input-label for="last_name" :value="__('Last Name')" />
@@ -23,16 +17,41 @@
         <!-- Role -->
         <div class="mt-4">
             <x-input-label for="role" :value="__('Role')" />
-            <select class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" name="role" id="role" required>
-                <option value="player">{{ __('Player') }}</option>
-                <option value="coach">{{ __('Coach') }}</option>
-            </select>
+
+            <ul class="grid w-full mt-1 gap-6 md:grid-cols-2">
+                <li>
+                    <input type="radio" id="player" name="role" value="player" class="hidden peer role" required checked/>
+                    <label for="player" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <div class="block">
+                            <div class="w-full text-lg font-semibold">{{ __('Player') }}</div>
+                            <div class="w-full">{{ __('Registration as player') }}</div>
+                        </div>
+                        <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                        </svg>
+                    </label>
+                </li>
+                <li>
+                    <input type="radio" id="coach" name="role" value="coach" class="hidden peer role">
+                    <label for="coach" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        <div class="block">
+                            <div class="w-full text-lg font-semibold">{{ __('Coach') }}</div>
+                            <div class="w-full">{{ __('Registration as coach') }}</div>
+                        </div>
+                        <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                        </svg>
+                    </label>
+                </li>
+                <x-input-error :messages="$errors->get('role')" class="mt-2" />
+            </ul>
+
         </div>
 
         <!-- Team Code -->
-        <div class="mt-4">
+        <div class="mt-4" id="code_field">
             <x-input-label for="team_code" :value="__('Team code')" />
-            <x-text-input id="team_code" class="block mt-1 w-full" type="text" name="team_code" :value="old('team_code')" autocomplete="team_code" />
+            <x-text-input id="team_code" class="block mt-1 w-full team_code" type="text" name="team_code" :value="old('team_code')" autocomplete="team_code" placeholder="AAA-999" />
             <x-input-error :messages="$errors->get('team_code')" class="mt-2" />
         </div>
 
@@ -77,3 +96,4 @@
         </div>
     </form>
 </x-guest-layout>
+
