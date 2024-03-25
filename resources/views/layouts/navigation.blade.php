@@ -16,7 +16,7 @@
                         {{ __('Дашборд') }}
                     </x-nav-link>
                     @if(Auth::user()->role == 'coach' || Auth::user()->role == 'admin')
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.index')">
                             {{ __('Мои команды') }}
                         </x-nav-link>
                     @endif

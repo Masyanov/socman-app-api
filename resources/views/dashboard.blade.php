@@ -10,7 +10,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ __("Вы вошли как: ") }}{{ Auth::user()->name }} {{ Auth::user()->last_name }}</div>
+                    <div class="font-medium text-base text-gray-800 dark:text-gray-200">У вас {{ CountTeam() }} команд.</div>
                 </div>
             </div>
         </div>

@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->string('team_code');
+            $table->string('team_code')->unique();
             $table->string('name');
             $table->string('desc')->nullable();
-            $table->boolean('active');
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

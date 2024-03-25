@@ -16,6 +16,9 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
-        "imask": "^7.5.0"
+        "bootstrap": "^5.3.3",
+        "flowbite": "^2.3.0",
+        "imask": "^7.5.0",
+        "preline": "^2.0.3"
     }
 }
