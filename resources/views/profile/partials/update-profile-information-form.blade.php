@@ -1,11 +1,11 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Информация обо мне') }}
+            {{ __('messages.Информация обо мне') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Здесь можно изменить свои данные.") }}
+            {{ __("messages.Здесь можно изменить свои данные.") }}
         </p>
     </header>
 
@@ -18,17 +18,17 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Имя')" />
+            <x-input-label for="name" :value="__('messages.Имя')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
         <div>
-            <x-input-label for="second_name" :value="__('Отчество')" />
+            <x-input-label for="second_name" :value="__('messages.Отчество')" />
             <x-text-input id="second_name" name="second_name" type="text" class="mt-1 block w-full" :value="old('second_name', $user->second_name)" required autocomplete="second_name" />
             <x-input-error class="mt-2" :messages="$errors->get('second_name')" />
         </div>
         <div>
-            <x-input-label for="last_name" :value="__('Фамилия')" />
+            <x-input-label for="last_name" :value="__('messages.Фамилия')" />
             <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full" :value="old('last_name', $user->last_name)" required autocomplete="last_name" />
             <x-input-error class="mt-2" :messages="$errors->get('last_name')" />
         </div>
@@ -41,16 +41,16 @@
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
-                        {{ __('Your email address is unverified.') }}
+                        {{ __('messages.Ваш адрес электронной почты не подтвержден.') }}
 
                         <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                            {{ __('Click here to re-send the verification email.') }}
+                            {{ __('messages.Нажмите здесь, чтобы повторно отправить письмо с подтверждением.') }}
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
                         <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
-                            {{ __('A new verification link has been sent to your email address.') }}
+                            {{ __('messages.На ваш адрес электронной почты была отправлена новая ссылка для подтверждения.') }}
                         </p>
                     @endif
                 </div>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Сохранить') }}</x-primary-button>
+            <x-primary-button>{{ __('messages.Сохранить') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -67,7 +67,7 @@
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Сохранено') }}</p>
+                >{{ __('messages.Сохранено') }}</p>
             @endif
         </div>
     </form>

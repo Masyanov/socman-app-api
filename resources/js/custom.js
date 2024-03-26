@@ -84,3 +84,37 @@ $( "#button_save_team" ).on( "click", function() {
         }
     });
 } );
+
+$( "#button_edit_team" ).on( "click", function() {
+    let user_id = $("#user_id").val();
+    let name = $("#name").val();
+    let team_code = $("#team_code").val();
+    let desc = $("#desc").val();
+    let active = $("#active").val();
+
+    let _url = `/teams`;
+    let _token = $('input[name~="_token"]').val();
+
+    $.ajax({
+        url: _url,
+        type: "POST",
+        enctype: 'multipart/form-data',
+        data: {
+            user_id: user_id,
+            name: name,
+            team_code: team_code,
+            desc: desc,
+            active: active,
+            _token: _token
+        },
+        success: function (response) {
+            if (response.code == 200) {
+                location.reload();
+            }
+        },
+        error: function (response) {
+            $('#response').empty();
+            $('#response').append('<div class="alert alert-danger" role="alert">' + response.responseJSON.message + '</div>');
+        }
+    });
+} );
