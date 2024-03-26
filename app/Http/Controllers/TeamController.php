@@ -69,7 +69,11 @@ class TeamController extends Controller
      */
     public function show(Team $team)
     {
-        //
+        $userId = Auth::user()->id;
+
+        $team = Team::where('id', $team->id)->where('user_id', $userId)->first();
+
+        return view('teams.team', compact('team'));
     }
 
     /**
