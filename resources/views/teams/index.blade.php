@@ -19,7 +19,7 @@
                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         <!-- Modal header -->
                         <div
-                                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                                 {{ __('messages.Добавить новую команду') }}
                             </h3>
@@ -82,15 +82,32 @@
                         @if(whatInArray($teamActive))
                             @foreach ($teamActive as $key => $team)
                                 <div id="team-{{ $team->id }}"
-                                     class="m-2 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700  ">
-                                    <a href="teams/{{ $team->id }}">
-                                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $team->name }}</h5>
-                                    </a>
-                                    <p class="mb-1 text-xs text-gray-700 dark:text-gray-400">{{ __('messages.Код команды') }}:
-                                        <strong>{{ $team->team_code }}</strong></p>
-                                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ $team->desc }}</p>
+                                     class="flex flex-col justify-between m-2 max-w-sm p-6 bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                    <div>
+                                        <a href="teams/{{ $team->id }}">
+                                            <h5 class=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $team->name }}</h5>
+                                            <div class="mb-2">
+                                                @if ($team->active == 0)
+                                                    <span
+                                                        class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">{{ __('messages.Не активно') }}</span>
+                                                @else
+                                                    <span
+                                                        class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">{{ __('messages.Активно') }}</span>
+                                                @endif
+                                            </div>
+
+                                        </a>
+
+                                        <p class="mb-1 text-xs text-gray-700 dark:text-gray-400">{{ __('messages.Код команды') }}
+                                            :
+                                            <strong>{{ $team->team_code }}</strong></p>
+                                        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ $team->desc }}</p>
+                                    </div>
+
                                     <a href="teams/{{ $team->id }}"
-                                       class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                       class="w-fit inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300  dark:hover:bg-blue-700 dark:focus:ring-blue-800
+                                       @if ($team->active == 0) dark:bg-gray-600 @else dark:bg-blue-600 @endif
+                                       ">
                                         {{ __('messages.Открыть') }}
                                         <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true"
                                              xmlns="http://www.w3.org/2000/svg"

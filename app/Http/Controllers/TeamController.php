@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TeamController extends Controller
 {
@@ -18,7 +19,6 @@ class TeamController extends Controller
         $userId = Auth::user()->id;
 
         $teamActive = Team::query()
-            ->where('active', true)
             ->where('user_id', $userId)
             ->latest('created_at')
             ->paginate(10);
@@ -87,9 +87,16 @@ class TeamController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTeamRequest $request, Team $team)
+    public function update(Request $request, Team $team)
     {
-        //
+        $team->update([
+            'name' => $request->name,
+            'team_code' => $request->team_code,
+            'desc' => $request->desc,
+            'active' => $request->active,
+        ]);
+
+        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $request->active], 200);
     }
 
     /**
@@ -97,6 +104,9 @@ class TeamController extends Controller
      */
     public function destroy(Team $team)
     {
-        //
+        $team->delete();
+
+        return response()->json(['success' => 'Запись успешно удалена']);
+
     }
 }

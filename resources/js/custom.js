@@ -86,25 +86,34 @@ $( "#button_save_team" ).on( "click", function() {
 } );
 
 $( "#button_edit_team" ).on( "click", function() {
+
+    let id = $("#id").val();
+
     let user_id = $("#user_id").val();
     let name = $("#name").val();
     let team_code = $("#team_code").val();
     let desc = $("#desc").val();
-    let active = $("#active").val();
+    let active = $("#active").prop('checked');
+    let activeNum
+    if(active === true) {
+        activeNum = '1';
+    } else {
+        activeNum = '0';
+    }
 
-    let _url = `/teams`;
+    let _url = `/teams/${id}`;
     let _token = $('input[name~="_token"]').val();
 
     $.ajax({
         url: _url,
-        type: "POST",
+        type: "PATCH",
         enctype: 'multipart/form-data',
         data: {
             user_id: user_id,
             name: name,
             team_code: team_code,
             desc: desc,
-            active: active,
+            active: activeNum,
             _token: _token
         },
         success: function (response) {
@@ -113,8 +122,30 @@ $( "#button_edit_team" ).on( "click", function() {
             }
         },
         error: function (response) {
+            console.log(response);
             $('#response').empty();
             $('#response').append('<div class="alert alert-danger" role="alert">' + response.responseJSON.message + '</div>');
         }
     });
 } );
+
+$( "#button_del_team" ).on( "click", function() {
+
+    let id = $("#id").val();
+    let _url = `/teams/${id}`;
+    let _token = $('input[name~="_token"]').val();
+
+    if(confirm('Удалить команду?')) {
+        $.ajax({
+            url: _url,
+            type: 'DELETE',
+            data: {
+                _token: _token
+            },
+            success: function(response) {
+               window.location.href = '/teams';ву
+            }
+        });
+    }
+
+});

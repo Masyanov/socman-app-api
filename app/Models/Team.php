@@ -19,5 +19,6 @@ class Team extends Model
         'team_code',
         'name',
         'desc',
+        'active',
     ];
 }

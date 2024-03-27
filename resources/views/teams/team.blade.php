@@ -1,17 +1,32 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between flex-wrap">
+            <div class="flex">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ $team->name }}</h2>
+            @if ($team->active == 0)
+                <span class="ml-3 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">{{ __('messages.Не активно') }}</span>
+            @else
+                <span class="ml-3  bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">{{ __('messages.Активно') }}</span>
+            @endif
+            </div>
             <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight pt-3 pb-3 sm:pl-0">{{ __('messages.Описание')}}
                 : {{ $team->desc }}</p>
             <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight pb-6 sm:pb-3 sm:p-3">{{ __('messages.Код команды') }}
                 : {{ $team->team_code }}</p>
             <!-- Modal toggle -->
-            <button data-modal-target="add_team" data-modal-toggle="add_team"
-                    class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                    type="button">
-                {{ __('messages.Редактировать команду') }}
-            </button>
+            <div class="flex">
+                <button data-modal-target="add_team" data-modal-toggle="add_team"
+                        class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                        type="button">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 6.5L17.5 9M11 20H20M4 20V17.5L16.75 4.75C17.4404 4.05964 18.5596 4.05964 19.25 4.75V4.75C19.9404 5.44036 19.9404 6.55964 19.25 7.25L6.5 20H4Z" stroke="#d1d1d1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                    <span class="sr-only">{{ __('messages.Редактировать команду') }}</span>
+                </button>
+                <button id="button_del_team" type="button" class="ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16" stroke="#d1d1d1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                    <span class="sr-only">{{ __('messages.Удалить') }}</span>
+                </button>
+            </div>
+
 
             <!-- Main modal -->
             <div id="add_team" tabindex="-1" aria-hidden="true"
@@ -38,23 +53,24 @@
                         </div>
                         <!-- Modal body -->
                         <div class="p-4 md:p-5">
-                            <form class="space-y-4" method="PUT">
+                            <form class="space-y-4" method="PATCH">
 
                                 @csrf
+
                                 <input type="hidden" id="id" name="id" value="{{ $team->id }}"/>
                                 <input type="hidden" id="user_id" name="user_id" value="{{ Auth::user()->id }}"/>
                                 <!-- Name -->
                                 <div>
                                     <x-input-label for="name" :value="__('messages.Название')"/>
                                     <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
-                                                  :value="old('name')" required autofocus autocomplete="name"/>
+                                                  :value="$team->name" required autofocus autocomplete="name"/>
                                     <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                                 </div>
                                 <!-- Team Code -->
                                 <div class="mt-4" id="code_field">
                                     <x-input-label for="team_code" :value="__('messages.Код команды')"/>
                                     <x-text-input id="team_code" class="block mt-1 w-full team_code" type="text"
-                                                  name="team_code" :value="old('team_code')" required
+                                                  name="team_code" :value="$team->team_code" required
                                                   autocomplete="team_code" placeholder="999-999"/>
                                     <x-input-error :messages="$errors->get('team_code')" class="mt-2"/>
                                 </div>
@@ -62,11 +78,11 @@
                                 <div>
                                     <x-input-label for="desc" :value="__('messages.Описание')"/>
                                     <x-text-input id="desc" class="block mt-1 w-full" type="text" name="desc"
-                                                  :value="old('desc')" autocomplete="desc"/>
+                                                  :value="$team->desc" autocomplete="desc"/>
                                     <x-input-error :messages="$errors->get('desc')" class="mt-2"/>
                                 </div>
                                 <div class="flex">
-                                    <x-checkbox name="active" id="active" checked>
+                                    <x-checkbox name="active" id="active" :checked="$team->active">
                                         {{ __('messages.Активный') }}
                                     </x-checkbox>
                                     <label class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
