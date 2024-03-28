@@ -17,6 +17,12 @@ class User extends Authenticatable
         return $this->hasMany('App\Team');
     }
 
+    public function meta()
+    {
+        return $this->hasOne(UserMeta::class);
+    }
+
+
     /**
      * The attributes that are mass assignable.
      *

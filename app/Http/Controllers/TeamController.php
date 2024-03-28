@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
@@ -43,7 +44,6 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-
         $userId = Auth::user()->id;
 
         $validated = $request->validate([
@@ -73,7 +73,12 @@ class TeamController extends Controller
 
         $team = Team::where('id', $team->id)->where('user_id', $userId)->first();
 
-        return view('teams.team', compact('team'));
+        $usersOfTeam = User::query()
+            ->where('team_code', $team->team_code)
+            ->latest('created_at')
+            ->paginate(10);
+
+        return view('teams.team', compact('team', 'usersOfTeam'));
     }
 
     /**
