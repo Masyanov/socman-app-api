@@ -85,7 +85,8 @@
                                      class="flex flex-col justify-between m-2 max-w-sm p-6 bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                                     <div>
                                         <a href="teams/{{ $team->id }}">
-                                            <h5 class=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $team->name }}</h5>
+                                            <h5 class=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $team->name }} </h5>
+                                            <span class=" text-xs" >Игроков: {{ countPlayers($team->team_code) }}</span>
                                             <div class="mb-2">
                                                 @if ($team->active == 0)
                                                     <span
