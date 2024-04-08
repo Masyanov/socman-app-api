@@ -19,6 +19,9 @@
                         <x-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.index')">
                             {{ __('messages.Мои команды') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                            {{ __('messages.Мои игроки') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -150,8 +153,11 @@
                 {{ __('messages.Дашборд') }}
             </x-responsive-nav-link>
             @if(Auth::user()->role == 'coach' || Auth::user()->role == 'admin')
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                <x-responsive-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.index')">
                     {{ __('messages.Мои команды') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                    {{ __('messages.Мои игроки') }}
                 </x-responsive-nav-link>
             @endif
 

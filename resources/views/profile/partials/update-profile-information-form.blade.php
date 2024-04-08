@@ -24,7 +24,7 @@
         </div>
         <div>
             <x-input-label for="second_name" :value="__('messages.Отчество')" />
-            <x-text-input id="second_name" name="second_name" type="text" class="mt-1 block w-full" :value="old('second_name', $user->second_name)" required autocomplete="second_name" />
+            <x-text-input id="second_name" name="second_name" type="text" class="mt-1 block w-full" :value="old('second_name', $user->second_name)" autocomplete="second_name" />
             <x-input-error class="mt-2" :messages="$errors->get('second_name')" />
         </div>
         <div>

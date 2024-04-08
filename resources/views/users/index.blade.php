@@ -1,60 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex w-full">
-            <div class="flex flex-col sm:flex-row items-center justify-between w-full">
-                <div class="flex mb-2">
-                    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ $team->name }}</h2>
-                    @if ($team->active == 0)
-                        <span
-                            class="ml-3 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 pt-1">{{ __('messages.Не активно') }}</span>
-                    @else
-                        <span
-                            class="ml-3 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 pt-1">{{ __('messages.Активно') }}</span>
-                    @endif
-                </div>
-                <div class="flex gap-3 mb-2">
-                    @if($team->desc)
-                        <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight pt-3 pb-3 sm:pl-0">{{ __('messages.Описание')}}
-                            : {{ $team->desc }}</p>
-                    @endif
-
-                    <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight sm:pb-3 sm:p-3">{{ __('messages.Код команды') }}
-                        : {{ $team->team_code }}</p>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 leading-tight sm:pb-3 sm:p-3">{{ __('messages.Игроков') }}: {{ countPlayers($team->team_code) }}</span>
-                </div>
-                <!-- Modal toggle -->
-                <div class="flex">
-                    <button data-modal-target="add_team" data-modal-toggle="add_team"
-                            class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                            type="button">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M15 6.5L17.5 9M11 20H20M4 20V17.5L16.75 4.75C17.4404 4.05964 18.5596 4.05964 19.25 4.75V4.75C19.9404 5.44036 19.9404 6.55964 19.25 7.25L6.5 20H4Z"
-                                    stroke="#d1d1d1" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
-                            </g>
-                        </svg>
-                        <span class="sr-only">{{ __('messages.Редактировать команду') }}</span>
-                    </button>
-                    <button id="button_del_team" type="button"
-                            class="ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16"
-                                    stroke="#d1d1d1" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
-                            </g>
-                        </svg>
-                        <span class="sr-only">{{ __('messages.Удалить') }}</span>
-                    </button>
-                </div>
-            </div>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('messages.Мои игроки') }}
+            </h2>
+            <!-- Modal toggle -->
+            <button data-modal-target="add_team" data-modal-toggle="add_team"
+                    class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                    type="button">
+                {{ __('messages.Добавить игрока') }}
+            </button>
 
             <!-- Main modal -->
             <div id="add_team" tabindex="-1" aria-hidden="true"
@@ -66,7 +21,7 @@
                         <div
                             class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                {{ __('messages.Редактировать команду') }}
+                                {{ __('messages.Добавить нового игрока') }}
                             </h3>
                             <button type="button"
                                     class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -81,39 +36,80 @@
                         </div>
                         <!-- Modal body -->
                         <div class="p-4 md:p-5">
-                            <form class="space-y-4" method="PATCH">
 
+                            <form method="POST" action="{{ route('users.store') }}">
                                 @csrf
 
-                                <input type="hidden" id="id" name="id" value="{{ $team->id }}"/>
-                                <input type="hidden" id="user_id" name="user_id" value="{{ Auth::user()->id }}"/>
                                 <!-- Name -->
                                 <div>
-                                    <x-input-label for="name" :value="__('messages.Название')"/>
+                                    <x-input-label for="name" :value="__('messages.Имя')"/>
                                     <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
-                                                  :value="$team->name" required autofocus autocomplete="name"/>
+                                                  :value="old('name')" required
+                                                  autofocus autocomplete="name"/>
                                     <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                                 </div>
+                                <!-- Last Name -->
+                                <div class="mt-4">
+                                    <x-input-label for="last_name" :value="__('messages.Фамилия')"/>
+                                    <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name"
+                                                  :value="old('last_name')" required autocomplete="last_name"/>
+                                    <x-input-error :messages="$errors->get('last_name')" class="mt-2"/>
+                                </div>
+                                <!-- Role -->
 
-                                <div>
-                                    <x-input-label for="desc" :value="__('messages.Описание')"/>
-                                    <x-text-input id="desc" class="block mt-1 w-full" type="text" name="desc"
-                                                  :value="$team->desc" autocomplete="desc"/>
-                                    <x-input-error :messages="$errors->get('desc')" class="mt-2"/>
+                                <input type="hidden" name="role" value="player" class="hidden peer role">
+
+
+                                <!-- Team Code -->
+                                <div class="mt-4" id="code_field">
+                                    <x-input-label for="team_code" :value="__('messages.Код команды')"/>
+                                    <x-text-input id="team_code" class="block mt-1 w-full team_code" type="text"
+                                                  name="team_code"
+                                                  :value="old('team_code')" autocomplete="team_code"
+                                                  placeholder="999-999"/>
+                                    <x-input-error :messages="$errors->get('team_code')" class="mt-2"/>
                                 </div>
-                                <div class="flex">
-                                    <x-checkbox name="active" id="active" :checked="$team->active">
-                                        {{ __('messages.Активный') }}
-                                    </x-checkbox>
-                                    <label class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
-                                           for="active">{{ __('messages.Активный') }}</label>
+
+                                <!-- Email Address -->
+                                <div class="mt-4">
+                                    <x-input-label for="email" :value="__('Email')"/>
+                                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
+                                                  :value="old('email')" required
+                                                  autocomplete="username"/>
+                                    <x-input-error :messages="$errors->get('email')" class="mt-2"/>
                                 </div>
-                                <button type="button" id="button_edit_team"
-                                        class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                    {{ __('messages.Сохранить') }}
-                                </button>
-                                <div id="response"></div>
+
+                                <!-- Password -->
+                                <div class="mt-4">
+                                    <x-input-label for="password" :value="__('messages.Пароль')"/>
+
+                                    <x-text-input id="password" class="block mt-1 w-full"
+                                                  type="password"
+                                                  name="password"
+                                                  required autocomplete="new-password"/>
+
+                                    <x-input-error :messages="$errors->get('password')" class="mt-2"/>
+                                </div>
+
+                                <!-- Confirm Password -->
+                                <div class="mt-4">
+                                    <x-input-label for="password_confirmation"
+                                                   :value="__('messages.Подтверждение пароля')"/>
+
+                                    <x-text-input id="password_confirmation" class="block mt-1 w-full"
+                                                  type="password"
+                                                  name="password_confirmation" required autocomplete="new-password"/>
+
+                                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2"/>
+                                </div>
+
+                                <div class="flex items-center justify-end mt-4">
+                                    <x-primary-button class="ms-4">
+                                        {{ __('messages.Регистрация') }}
+                                    </x-primary-button>
+                                </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -125,42 +121,15 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <div>
+                    @if(whatInArray($teamActive))
+                        @foreach($teamActive as $team)
+                            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
+                                {{ $team->name }}
+                            </h2>
+                            <hr class="pb-3">
+                            @if(whatInArray(CountPlaerOfTeam($team->team_code)))
 
-                        <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
-                            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab"
-                                data-tabs-toggle="#default-tab-content" role="tablist">
-                                <li class="me-2" role="presentation">
-                                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="profile-tab"
-                                            data-tabs-target="#profile" type="button" role="tab" aria-controls="profile"
-                                            aria-selected="false">
-                                        {{ __('messages.Игроки') }}
-                                    </button>
-                                </li>
-                                <li class="me-2" role="presentation">
-                                    <button
-                                        class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                                        id="dashboard-tab" data-tabs-target="#dashboard" type="button" role="tab"
-                                        aria-controls="dashboard" aria-selected="false">
-                                        {{ __('messages.Планирование') }}
-                                    </button>
-                                </li>
-                                <li class="me-2" role="presentation">
-                                    <button
-                                        class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
-                                        id="settings-tab" data-tabs-target="#settings" type="button" role="tab"
-                                        aria-controls="settings" aria-selected="false">
-                                        {{ __('messages.Результаты') }}
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                        <div id="default-tab-content">
-                            <div class="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="profile" role="tabpanel"
-                                 aria-labelledby="profile-tab">
-
-                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-
+                                <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-4">
                                     <table
                                         class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                         <thead
@@ -183,16 +152,14 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($usersOfTeam as $user)
+                                        @foreach(CountPlaerOfTeam($team->team_code) as $user)
                                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                                 <td scope="row"
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
-                                                        <a data-fancybox data-src="/avatars/{{ $user->meta->avatar }}">
-                                                            <img class="w-10 h-10 rounded-full object-cover"
-                                                                 src="/avatars/{{ $user->meta->avatar }}"
-                                                                 alt="{{ $user->last_name }} {{ $user->name }}">
-                                                        </a>
+                                                        <img class="w-10 h-10 rounded-full object-cover"
+                                                             src="/avatars/{{ $user->meta->avatar }}"
+                                                             alt="{{ $user->last_name }} {{ $user->name }}">
                                                     @else
                                                         <img class="w-10 h-10 rounded-full object-cover" src="/images/default-avatar.jpg"
                                                              alt="{{ $user->last_name }} {{ $user->name }}">
@@ -248,8 +215,9 @@
                                                             </a>
                                                         @endif
                                                     </div>
+
                                                 </td>
-                                                <td class="px-6 py-4">
+                                                <td class="px-6 py-4 ">
                                                     <div class="flex gap-3 items-center justify-center h-full">
                                                         <a href="/users/{{ $user->id }}" type="button"
                                                            class="p-2 rounded-md bg-blue-500 hover:bg-blue-700 flex h-full">
@@ -286,6 +254,29 @@
                                                             </svg>
                                                         </a>
                                                     </div>
+
+                                                    <script>
+                                                        function deleteUser($id) {
+
+                                                            let _url = '/users/' + $id;
+                                                            console.log(_url)
+                                                            let _token = $('input[name~="_token"]').val();
+
+                                                            if (confirm('Удалить игрока?')) {
+                                                                $.ajax({
+                                                                    url: _url,
+                                                                    type: 'DELETE',
+                                                                    data: {
+                                                                        _token: _token
+                                                                    },
+                                                                    success: function (response) {
+                                                                        window.location.href = '/users';
+                                                                    }
+                                                                });
+                                                            }
+
+                                                        };
+                                                    </script>
                                                 </td>
 
                                             </tr>
@@ -294,29 +285,14 @@
                                         </tbody>
                                     </table>
                                 </div>
-
-                            </div>
-                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="dashboard"
-                                 role="tabpanel" aria-labelledby="dashboard-tab">
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ $team->team_code }} This is some
-                                    placeholder content the
-                                    <strong class="font-medium text-gray-800 dark:text-white">Dashboard tab's associated
-                                        content</strong>. Clicking another tab will toggle the visibility of this one
-                                    for the next. The tab JavaScript swaps classes to control the content visibility and
-                                    styling.</p>
-                            </div>
-                            <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="settings" role="tabpanel"
-                                 aria-labelledby="settings-tab">
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ $team->team_code }} This is some
-                                    placeholder content the
-                                    <strong class="font-medium text-gray-800 dark:text-white">Settings tab's associated
-                                        content</strong>. Clicking another tab will toggle the visibility of this one
-                                    for the next. The tab JavaScript swaps classes to control the content visibility and
-                                    styling.</p>
-                            </div>
-                        </div>
-
-                    </div>
+                            @else
+                                <div
+                                    class="font-normal text-gray-500">{{ __('messages.В этой команде нет игроков') }}</div>
+                            @endif
+                        @endforeach
+                    @else
+                        <div class="font-normal text-gray-500">{{ __('messages.У вас нет ни одной команды') }}</div>
+                    @endif
                 </div>
             </div>
         </div>

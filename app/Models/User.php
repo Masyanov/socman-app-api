@@ -36,6 +36,7 @@ class User extends Authenticatable
         'team_code',
         'email',
         'password',
+        'active',
     ];
 
     /**

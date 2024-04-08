@@ -86,7 +86,7 @@
                                     <div>
                                         <a href="teams/{{ $team->id }}">
                                             <h5 class=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $team->name }} </h5>
-                                            <span class=" text-xs" >Игроков: {{ countPlayers($team->team_code) }}</span>
+                                            <span class=" text-xs" >{{ __('messages.Игроков') }}: {{ countPlayers($team->team_code) }}</span>
                                             <div class="mb-2">
                                                 @if ($team->active == 0)
                                                     <span

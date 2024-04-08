@@ -96,12 +96,11 @@ class TeamController extends Controller
     {
         $team->update([
             'name' => $request->name,
-            'team_code' => $request->team_code,
             'desc' => $request->desc,
             'active' => $request->active,
         ]);
 
-        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $request->active], 200);
+        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $team], 200);
     }
 
     /**

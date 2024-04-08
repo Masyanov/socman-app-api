@@ -31,6 +31,7 @@ class UserMeta extends Authenticatable
         'tel_father',
         'comment',
         'avatar',
+        'active',
     ];
 
 }
