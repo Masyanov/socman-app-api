@@ -42,24 +42,23 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', 'max:255'],
+            'team_code' => ['required', 'string', 'min:7'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'second_name' => $request->second_name,
-            'last_name' => $request->last_name,
-            'role' => $request->role,
-            'team_code' => $request->team_code,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $validated['name'],
+            'last_name' => $validated['last_name'],
+            'role' => $validated['role'],
+            'team_code' => $validated['team_code'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
-
 
         UserMeta::create([
             'user_id' => $user->id,
@@ -67,13 +66,8 @@ class UserController extends Controller
 
         event(new Registered($user));
 
-        $userId = Auth::user()->id;
-
-        $teamActive = Team::query()
-            ->where('user_id', $userId)
-            ->paginate(100);
-
-        return view('users.index', compact('teamActive'));
+        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $user], 200);
+//        return view('users.index', compact('teamActive'));
     }
 
     /**

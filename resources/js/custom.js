@@ -226,5 +226,47 @@ reqInput.each( function(i, item){
 })
 
 
+$( "#button_save_user" ).on( "click", function() {
+    let name = $("#name").val();
+    let last_name = $("#last_name").val();
+    let team_code = $("#team_code").val();
+    let role = $("#role").val();
+    let email = $("#email").val();
+    let password = $("#password").val();
+    let password_confirmation = $("#password_confirmation").val();
+
+    let _url = `/users`;
+    let _token = $('input[name~="_token"]').val();
+
+    $.ajax({
+        url: _url,
+        type: "POST",
+        enctype: 'multipart/form-data',
+        data: {
+            name: name,
+            last_name: last_name,
+            team_code: team_code,
+            role: role,
+            email: email,
+            password: password,
+            password_confirmation: password_confirmation,
+            _token: _token
+        },
+        success: function (response) {
+            $('#btn_user_success').trigger('click');
+            if (response.code == 200) {
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        },
+        error: function (response) {
+            console.log(role)
+            $('#response').empty();
+            $('#response').append('<div class="alert alert-danger" role="alert">' + response.responseJSON.message + '</div>');
+        }
+    });
+} );
+
 
 

@@ -13,62 +13,145 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data"
+          class="relative">
+        <!-- Modal header -->
         @csrf
         @method('patch')
 
-        <div>
-            <x-input-label for="name" :value="__('messages.Имя')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-        </div>
-        <div>
-            <x-input-label for="second_name" :value="__('messages.Отчество')" />
-            <x-text-input id="second_name" name="second_name" type="text" class="mt-1 block w-full" :value="old('second_name', $user->second_name)" autocomplete="second_name" />
-            <x-input-error class="mt-2" :messages="$errors->get('second_name')" />
-        </div>
-        <div>
-            <x-input-label for="last_name" :value="__('messages.Фамилия')" />
-            <x-text-input id="last_name" name="last_name" type="text" class="mt-1 block w-full" :value="old('last_name', $user->last_name)" required autocomplete="last_name" />
-            <x-input-error class="mt-2" :messages="$errors->get('last_name')" />
-        </div>
+        <!-- Modal body -->
+        <div class="pt-6 space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-3 gap-6">
+                    <input type="hidden" id="player_id"
+                           name="player_id"
+                           value="{{ $user->id }}"/>
+                    <div class=" flex flex-col col-span-3 sm:col-span-1">
+                        <label for="avatar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Фото') }}</label>
+                        @if($user->meta->avatar)
+                            <img class="w-full h-60 rounded-lg object-cover mb-3 border dark:border-gray-500"
+                                 src="/avatars/{{ $user->meta->avatar }}"
+                                 alt="{{ $user->last_name }} {{ $user->name }}">
+                        @else
+                            <img class="w-full h-60 rounded-lg object-cover mb-3 border dark:border-gray-500"
+                                 src="/images/default-avatar.jpg"
+                                 alt="{{ $user->last_name }} {{ $user->name }}">
+                        @endif
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                        <input id="avatar" type="file" class="form-control" name="avatar"
+                               value="{{ $user->meta->avatar }}">
+                        <x-input-error :messages="$errors->get('avatar')" class="mt-2"/>
+                    </div>
+                    <div class=" flex flex-col gap-4 col-span-3 sm:col-span-2">
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="name"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Имя') }}</label>
+                            <input type="text" name="name"
+                                   id="name"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   required value="{{ $user->name }}">
+                        </div>
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
-                        {{ __('messages.Ваш адрес электронной почты не подтвержден.') }}
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="second_name"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Отчество') }}</label>
+                            <input type="text" name="second_name"
+                                   id="second_name"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   value="{{ $user->second_name }}">
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="last_name"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Фамилия') }}</label>
+                            <input type="text"
+                                   name="last_name"
+                                   id="last_name"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   required value="{{ $user->last_name }}">
+                        </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="email"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                            <input type="email" name="email"
+                                   id="email"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   required value="{{ $user->email }}">
+                            <x-input-error :messages="$errors->get('email')" class="mt-2"/>
+                        </div>
+                    </div>
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                            {{ __('messages.Нажмите здесь, чтобы повторно отправить письмо с подтверждением.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
-                            {{ __('messages.На ваш адрес электронной почты была отправлена новая ссылка для подтверждения.') }}
-                        </p>
-                    @endif
                 </div>
-            @endif
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="tel"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон') }}</label>
+                        <input type="tel" name="tel"
+                               id="tel"
+                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               value="{{ $user->meta->tel ?? 'None'  }}">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="position"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Позиция') }}</label>
+                        <input type="text" name="position"
+                               id="position"
+                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               value="{{ $user->meta->position ?? 'None'  }}">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="number"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Номер') }}</label>
+                        <input type="number" name="number"
+                               id="number"
+                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               value="{{ $user->meta->number ?? 'None'  }}">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="tel_mother"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон матери') }}</label>
+                        <input type="tel" name="tel_mother"
+                               id="tel_mother"
+                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               value="{{ $user->meta->tel_mother ?? 'None'  }}">
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <label for="tel_father"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон отца') }}</label>
+                        <input type="tel" name="tel_father"
+                               id="tel_father"
+                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               value="{{ $user->meta->tel_father ?? 'None'  }}">
+                    </div>
+                    <div class="col-span-2 sm:col-span-2">
+                        <label for="comment"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Комментарий') }}</label>
+                        <textarea type="text" name="comment"
+                                  id="comment"
+                                  class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                  value="{{ $user->meta->comment ?? 'None'  }}">{{ $user->meta->comment ?? 'None'  }}</textarea>
+                    </div>
+                    <div class="flex">
+                        <x-checkbox name="active"
+                                    id="active"
+                                    :checked="$user->active">
+                            {{ __('messages.Активный') }}
+                        </x-checkbox>
+                        <label
+                            class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
+                            for="active">{{ __('messages.Активный') }}</label>
+                    </div>
+                </div>
+            </div>
+
         </div>
-
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('messages.Сохранить') }}</x-primary-button>
-
-            @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('messages.Сохранено') }}</p>
-            @endif
+        <!-- Modal footer -->
+        <div
+            class="flex items-center p-6 space-x-3 rtl:space-x-reverse">
+            <button type="submit"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                {{ __('messages.Сохранить') }}
+            </button>
         </div>
     </form>
 </section>

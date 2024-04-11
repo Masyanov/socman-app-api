@@ -99,4 +99,7 @@ return [
     'Дополнительная информация' => 'Some information',
     'Удалить' => 'Delete',
     'В этой команде нет игроков' => 'This team don\'t has players.',
+
+    'Успешно' => 'Success',
+    'Игрок создан' => 'Player created',
 ];
