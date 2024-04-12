@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserMetaController extends Controller
@@ -49,9 +51,9 @@ class UserMetaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $team, string $id)
     {
-        //
+        dd($team);
     }
 
     /**

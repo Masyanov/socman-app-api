@@ -42,6 +42,7 @@ function whatInArray($value)
 function countPlayers($team_code)
 {
     $usersOfTeamCount = User::query()
+        ->where('active', true)
         ->where('team_code', $team_code)
         ->latest('created_at')
         ->count();
@@ -85,6 +86,20 @@ function yourTeam()
     }
 
 
+}
+
+function CountPlaerOfTeam($team_code)
+{
+    $usersOfTeam = User::query()
+        ->where('team_code', $team_code)
+        ->latest('created_at')
+        ->paginate(1000);
+
+    if (isset($usersOfTeam)) {
+        return $usersOfTeam;
+    } else {
+        return 'НЕТ';
+    }
 }
 
 function pluralTeam($number)

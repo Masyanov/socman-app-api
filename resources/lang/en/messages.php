@@ -6,6 +6,7 @@ return [
     'Отчество' => 'Second name',
     'Роль' => 'Role',
     'Игрок' => 'Player',
+    'Фото' => 'Photo',
     'Регистрация как игрок' => 'Register as a player',
     'Тренер' => 'Trainer',
     'Регистрация как тренер' => 'Register as a trainer',
@@ -25,9 +26,9 @@ return [
 
     'Это безопасная область приложения. Пожалуйста, подтвердите свой пароль, прежде чем продолжить.' => 'This is a secure area of the application. Please confirm your password before continuing.',
     'Подтвердить' => 'Confirm',
-    'Активный' => 'Active',
     'Дашборд' => 'Dashboard',
     'Мои команды' => 'My teams',
+    'Мои игроки' => 'My players',
     'Профиль' => 'Profile',
     'Выйти' => 'Exit',
     'Добавить команду' => 'Add team',
@@ -77,7 +78,6 @@ return [
     // страница команды вкладки
     'Игроки' => 'Players',
     'Планирование' => 'Plan',
-    'Сохранить' => 'Save',
 
 
     // страница команды вкладка игроки
@@ -87,4 +87,20 @@ return [
     'игрок' => 'player',
     'игрока' => 'players',
     'игроков' => 'players',
+    'Игроков' => 'Players',
+
+    'Редактировать игрока' => 'Edit player',
+    'Добавить игрока' => 'Add player',
+    'Добавить нового игрока' => 'Add new player',
+    'Телефон матери' => 'Phone of mother',
+    'Телефон отца' => 'Phone of father',
+    'Комментарий' => 'Comment',
+
+    'Дополнительная информация' => 'Some information',
+    'Удалить' => 'Delete',
+    'В этой команде нет игроков' => 'This team don\'t has players.',
+
+    'Успешно' => 'Success',
+    'Игрок создан' => 'Player created',
+    'Команда создана' => 'Team created',
 ];
