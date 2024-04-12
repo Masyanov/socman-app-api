@@ -78,8 +78,11 @@ $( "#button_save_team" ).on( "click", function() {
             _token: _token
         },
         success: function (response) {
+            $('#btn_team_success').trigger('click');
             if (response.code == 200) {
-                location.reload();
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             }
         },
         error: function (response) {

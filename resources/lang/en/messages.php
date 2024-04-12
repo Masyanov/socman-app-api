@@ -102,4 +102,5 @@ return [
 
     'Успешно' => 'Success',
     'Игрок создан' => 'Player created',
+    'Команда создана' => 'Team created',
 ];
