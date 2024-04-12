@@ -100,7 +100,7 @@ class TeamController extends Controller
             'active' => $request->active,
         ]);
 
-        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $team], 200);
+        return response()->json(['code'=>200, 'success'=>'Запись успешно создана','data' => $team], 200);
     }
 
     /**

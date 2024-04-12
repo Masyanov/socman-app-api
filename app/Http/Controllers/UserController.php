@@ -140,7 +140,12 @@ class UserController extends Controller
 
         $player = User::where('id', $request->player_id)->first();
 
-        return view('users.user', compact('player'))->with('status', 'profile-updated');
+        $notification = array(
+            'message' => 'Message wording goes here',
+            'alert-type' => 'success / danger / warning / info etc.'
+        );
+
+        return back()->with('success', __('Сохранено'));
     }
 
     /**
