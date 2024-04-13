@@ -2,14 +2,32 @@
     <x-slot name="header">
         <div class="flex w-full">
             <div class="flex flex-col sm:flex-row items-center justify-between w-full">
-                <div class="flex mb-2">
+                <div class="flex mb-2 relative">
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ $team->name }}</h2>
                     @if ($team->active == 0)
                         <span
-                            class="ml-3 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 pt-1">{{ __('messages.Не активно') }}</span>
+                            class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-gray-400 to-gray-600 border-2 border-white shadow-lg shadow-black/20">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="2.5" stroke="currentColor"
+                                                aria-hidden="true" class="w-4 h-4 text-white">
+                                              <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M4.5 12.75l6 6 9-13.5">
+                                              </path>
+                                            </svg>
+                                          </span>
                     @else
                         <span
-                            class="ml-3 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 pt-1">{{ __('messages.Активно') }}</span>
+                            class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-green-400 to-green-600 border-2 border-white shadow-lg shadow-black/20">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="2.5" stroke="currentColor"
+                                                    aria-hidden="true" class="w-4 h-4 text-white">
+                                                  <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M4.5 12.75l6 6 9-13.5">
+                                                  </path>
+                                                </svg>
+                                              </span>
                     @endif
                 </div>
                 <div class="flex gap-3 mb-2">
@@ -207,14 +225,37 @@
                                                 <td scope="row"
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
-                                                        <a data-fancybox data-src="/avatars/{{ $user->meta->avatar }}">
+                                                        <a class="relative" data-fancybox data-src="/avatars/{{ $user->meta->avatar }}">
                                                             <img class="w-10 h-10 rounded-full object-cover"
                                                                  src="/avatars/{{ $user->meta->avatar }}"
                                                                  alt="{{ $user->last_name }} {{ $user->name }}">
+                                                            @if ($user->active == 0)
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-red-500 text-white">
+                                                                </span>
+                                                            @else
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
+                                                                </span>
+                                                            @endif
+
                                                         </a>
                                                     @else
-                                                        <img class="w-10 h-10 rounded-full object-cover" src="/images/default-avatar.jpg"
-                                                             alt="{{ $user->last_name }} {{ $user->name }}">
+                                                        <a class="relative" data-fancybox data-src="/avatars/{{ $user->meta->avatar }}">
+                                                            <img class="w-10 h-10 rounded-full object-cover" src="/images/default-avatar.jpg"
+                                                                 alt="{{ $user->last_name }} {{ $user->name }}">
+                                                            @if ($user->active == 0)
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-red-500 text-white">
+                                                                </span>
+                                                            @else
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
+                                                                </span>
+                                                            @endif
+
+                                                        </a>
+
                                                     @endif
                                                     <div class="ps-3">
                                                         <a href="/users/{{ $user->id }}" type="button"
@@ -222,14 +263,8 @@
                                                             <div
                                                                 class="text-base font-semibold">{{ $user->last_name }} {{ $user->name }}</div>
                                                         </a>
-                                                        <div class="font-normal text-gray-500">{{ $user->email }}
-                                                            @if ($user->active == 0)
-                                                                <span
-                                                                    class="ml-3 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 pt-1">{{ __('messages.Не активно') }}</span>
-                                                            @else
-                                                                <span
-                                                                    class="ml-3  bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 pt-1">{{ __('messages.Активно') }}</span>
-                                                            @endif
+                                                        <div class="font-normal text-gray-500">
+                                                            {{ $user->email }}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -305,6 +340,28 @@
                                                             </svg>
                                                         </a>
                                                     </div>
+                                                    <script>
+                                                        function deleteUser($id) {
+
+                                                            let _url = '/users/' + $id;
+                                                            console.log(_url)
+                                                            let _token = $('input[name~="_token"]').val();
+
+                                                            if (confirm('Удалить игрока?')) {
+                                                                $.ajax({
+                                                                    url: _url,
+                                                                    type: 'DELETE',
+                                                                    data: {
+                                                                        _token: _token
+                                                                    },
+                                                                    success: function (response) {
+                                                                        window.location.href = '/teams/{{ $team->id }}';
+                                                                    }
+                                                                });
+                                                            }
+
+                                                        };
+                                                    </script>
                                                 </td>
 
                                             </tr>

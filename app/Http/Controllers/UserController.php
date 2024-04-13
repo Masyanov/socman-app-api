@@ -46,7 +46,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', 'max:255'],
-            'team_code' => ['required', 'string', 'min:7'],
+            'team_code' => ['required', 'string', 'min:7', 'exists:teams,team_code'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -67,7 +67,6 @@ class UserController extends Controller
         event(new Registered($user));
 
         return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $user], 200);
-//        return view('users.index', compact('teamActive'));
     }
 
     /**
@@ -137,13 +136,6 @@ class UserController extends Controller
             'comment' => $request->comment,
             'avatar' => $avatarName,
         ]);
-
-        $player = User::where('id', $request->player_id)->first();
-
-        $notification = array(
-            'message' => 'Message wording goes here',
-            'alert-type' => 'success / danger / warning / info etc.'
-        );
 
         return back()->with('success', __('Сохранено'));
     }

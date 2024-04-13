@@ -37,9 +37,8 @@
                                  src="/images/default-avatar.jpg"
                                  alt="{{ $user->last_name }} {{ $user->name }}">
                         @endif
+                        <input class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" name="avatar" id="avatar" type="file" value="{{ $user->meta->avatar }}">
 
-                        <input id="avatar" type="file" class="form-control" name="avatar"
-                               value="{{ $user->meta->avatar }}">
                         <x-input-error :messages="$errors->get('avatar')" class="mt-2"/>
                     </div>
                     <div class=" flex flex-col gap-4 col-span-3 sm:col-span-2">
@@ -50,6 +49,7 @@
                                    id="name"
                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    required value="{{ $user->name }}">
+                            <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                         </div>
 
                         <div class="col-span-1 sm:col-span-1">
@@ -59,6 +59,7 @@
                                    id="second_name"
                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    value="{{ $user->second_name }}">
+                            <x-input-error :messages="$errors->get('second_name')" class="mt-2"/>
                         </div>
                         <div class="col-span-1 sm:col-span-1">
                             <label for="last_name"
@@ -68,6 +69,7 @@
                                    id="last_name"
                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    required value="{{ $user->last_name }}">
+                            <x-input-error :messages="$errors->get('last_name')" class="mt-2"/>
                         </div>
                         <div class="col-span-1 sm:col-span-1">
                             <label for="email"
@@ -131,27 +133,28 @@
                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                   value="{{ $user->meta->comment ?? 'None'  }}">{{ $user->meta->comment ?? 'None'  }}</textarea>
                     </div>
-                    <div class="flex">
-                        <x-checkbox name="active"
-                                    id="active"
-                                    :checked="$user->active">
-                            {{ __('messages.Активный') }}
-                        </x-checkbox>
-                        <label
-                            class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
-                            for="active">{{ __('messages.Активный') }}</label>
-                    </div>
+
                 </div>
             </div>
 
         </div>
         <!-- Modal footer -->
         <div
-            class="flex items-center p-6 space-x-3 rtl:space-x-reverse">
+            class="mt-3 flex items-center space-x-3 rtl:space-x-reverse">
             <button type="submit"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 {{ __('messages.Сохранить') }}
             </button>
+            <div class="flex">
+                <x-checkbox name="active"
+                            id="active"
+                            :checked="$user->active">
+                    {{ __('messages.Активный') }}
+                </x-checkbox>
+                <label
+                    class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
+                    for="active">{{ __('messages.Активный') }}</label>
+            </div>
         </div>
     </form>
 </section>

@@ -71,20 +71,29 @@
                     </div>
                 </div>
             </div>
-            <button id="btn_team_success" data-modal-target="add_team_success" data-modal-toggle="add_team_success" class="hidden" type="button"></button>
+            <button id="btn_team_success" data-modal-target="add_team_success" data-modal-toggle="add_team_success"
+                    class="hidden" type="button"></button>
             <div id="add_team_success" tabindex="-1" aria-hidden="true"
                  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div id="alert-border-3" class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800" role="alert">
-                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                <div id="alert-border-3"
+                     class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
+                     role="alert">
+                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                         fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                     </svg>
                     <div class="ms-3 text-sm font-medium">
                         {{ __('messages.Команда создана') }}
                     </div>
-                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"  data-dismiss-target="#alert-border-3" aria-label="Close">
+                    <button type="button"
+                            class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                            data-dismiss-target="#alert-border-3" aria-label="Close">
                         <span class="sr-only">Dismiss</span>
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                             viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                         </svg>
                     </button>
                 </div>
@@ -100,20 +109,13 @@
                         @if(whatInArray($teamActive))
                             @foreach ($teamActive as $key => $team)
                                 <div id="team-{{ $team->id }}"
-                                     class="flex flex-col justify-between m-2 max-w-sm p-6 bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                     class="flex relative flex-col justify-between m-2 max-w-sm p-6 bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                                     <div>
                                         <a href="teams/{{ $team->id }}">
                                             <h5 class=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $team->name }} </h5>
-                                            <span class=" text-xs" >{{ __('messages.Игроков') }}: {{ countPlayers($team->team_code) }}</span>
-                                            <div class="mb-2">
-                                                @if ($team->active == 0)
-                                                    <span
-                                                        class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">{{ __('messages.Не активно') }}</span>
-                                                @else
-                                                    <span
-                                                        class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">{{ __('messages.Активно') }}</span>
-                                                @endif
-                                            </div>
+                                            <span
+                                                class=" text-xs">{{ __('messages.Игроков') }}: {{ countPlayers($team->team_code) }}</span>
+
 
                                         </a>
 
@@ -136,7 +138,37 @@
                                                   d="M1 5h12m0 0L9 1m4 4L9 9"/>
                                         </svg>
                                     </a>
+                                    <div class="mb-2">
+                                        @if ($team->active == 0)
+                                            <span
+                                                class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[4%] right-[2%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-gray-400 to-gray-600 border-2 border-white shadow-lg shadow-black/20">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="2.5" stroke="currentColor"
+                                                aria-hidden="true" class="w-4 h-4 text-white">
+                                              <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M4.5 12.75l6 6 9-13.5">
+                                              </path>
+                                            </svg>
+                                          </span>
+                                        @else
+                                            <span
+                                                class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[4%] right-[2%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-green-400 to-green-600 border-2 border-white shadow-lg shadow-black/20">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="2.5" stroke="currentColor"
+                                                    aria-hidden="true" class="w-4 h-4 text-white">
+                                                  <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M4.5 12.75l6 6 9-13.5">
+                                                  </path>
+                                                </svg>
+                                              </span>
+                                        @endif
+                                    </div>
+
+
                                 </div>
+
                             @endforeach
                         @else
                             <div>{{ __('messages.У вас нет ни одной команды') }}</div>

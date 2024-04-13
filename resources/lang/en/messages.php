@@ -103,4 +103,9 @@ return [
     'Успешно' => 'Success',
     'Игрок создан' => 'Player created',
     'Команда создана' => 'Team created',
-];
+
+    'Управляй футбольной командой с SocMan' => 'Manage a soccer team with SocMan',
+    'Все что нужно для управления футбольной командой в одном приложении' => 'Everything you need to manage a football team in one application',
+    'О нас' => 'About us',
+
+    ];

@@ -155,7 +155,6 @@ $( "#button_del_team" ).on( "click", function() {
             }
         });
     }
-
 });
 
 $( "#update_user_meta" ).on( "click", function() {

@@ -35,9 +35,16 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', 'max:255'],
+            'team_code' => ['required', 'string', 'min:7', 'exists:teams,team_code'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        if($request->role === 'player') {
+            $active = '0';
+        } else {
+            $active = '1';
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -47,6 +54,7 @@ class RegisteredUserController extends Controller
             'team_code' => $request->team_code,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'active' => $active,
         ]);
 
 

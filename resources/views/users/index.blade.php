@@ -175,16 +175,39 @@
                                         </thead>
                                         <tbody>
                                         @foreach(CountPlaerOfTeam($team->team_code) as $user)
-                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            <tr class="bg-white border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:bg-gray-800 ">
                                                 <td scope="row"
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
-                                                        <img class="w-10 h-10 rounded-full object-cover"
-                                                             src="/avatars/{{ $user->meta->avatar }}"
-                                                             alt="{{ $user->last_name }} {{ $user->name }}">
+                                                        <div class="relative">
+                                                            <img class="w-10 h-10 rounded-full object-cover"
+                                                                 src="/avatars/{{ $user->meta->avatar }}"
+                                                                 alt="{{ $user->last_name }} {{ $user->name }}">
+                                                            @if ($user->active == 0)
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-red-500 text-white">
+                                                                </span>
+                                                            @else
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
+                                                                </span>
+                                                            @endif
+                                                        </div>
+
                                                     @else
+                                                        <div class="relative">
                                                         <img class="w-10 h-10 rounded-full object-cover" src="/images/default-avatar.jpg"
                                                              alt="{{ $user->last_name }} {{ $user->name }}">
+                                                        @if ($user->active == 0)
+                                                            <span
+                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-red-500 text-white">
+                                                                </span>
+                                                        @else
+                                                            <span
+                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
+                                                                </span>
+                                                        @endif
+                                                        </div>
                                                     @endif
                                                     <div class="ps-3">
                                                         <a href="/users/{{ $user->id }}" type="button"
@@ -192,14 +215,8 @@
                                                             <div
                                                                 class="text-base font-semibold">{{ $user->last_name }} {{ $user->name }}</div>
                                                         </a>
-                                                        <div class="font-normal text-gray-500">{{ $user->email }}
-                                                            @if ($user->active == 0)
-                                                                <span
-                                                                    class="ml-3 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 pt-1">{{ __('messages.Не активно') }}</span>
-                                                            @else
-                                                                <span
-                                                                    class="ml-3  bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 pt-1">{{ __('messages.Активно') }}</span>
-                                                            @endif
+                                                        <div class="font-normal text-gray-500">
+                                                            {{ $user->email }}
                                                         </div>
                                                     </div>
                                                 </td>
