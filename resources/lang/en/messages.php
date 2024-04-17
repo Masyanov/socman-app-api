@@ -108,4 +108,21 @@ return [
     'Все что нужно для управления футбольной командой в одном приложении' => 'Everything you need to manage a football team in one application',
     'О нас' => 'About us',
 
+    'Команда' => 'Team',
+
+    'Тренировки' => 'Trainings',
+    'Классификация' => 'Classification',
+    'Добавить тренировку' => 'Add training',
+    'Добавить новую тренировку' => 'Add new training',
+    'Дата' => 'Date',
+    'Время начала' => 'Time start',
+    'Время завершения' => 'Time finish',
+
+    'Восстановление' => 'Recovery',
+    'Нагрузка' => 'Load',
+    'Ссылка на документ' => 'Link',
+    'Тренировка создана' => 'Training created',
+    'Сегодня' => 'Today',
+    'На сегодня тренировок не запланировано' => 'No training scheduled for today',
+    'Запланировать' => 'Schedule',
     ];

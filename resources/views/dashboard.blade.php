@@ -25,6 +25,14 @@
                         <div class="font-medium text-base text-gray-800 dark:text-gray-200">
                             {{ __('messages.Ваша команда') }}: {{ yourTeam() }}
                         </div>
+                        <div class="font-medium text-base text-gray-800 dark:text-gray-200">
+                            @if (Auth::user()->active == 0)
+                                Ваш аккаунт не активен. Обратитесь к вашему тренеру, чтобы он вас активировал.
+                            @else
+                                Ваш аккаунт активен.
+                            @endif
+                        </div>
+
                     @endif
                 </div>
             </div>

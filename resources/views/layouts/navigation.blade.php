@@ -22,6 +22,9 @@
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                             {{ __('messages.Мои игроки') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('trainings.index')" :active="request()->routeIs('trainings.index')">
+                            {{ __('messages.Тренировки') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -158,6 +161,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                     {{ __('messages.Мои игроки') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('trainings.index')" :active="request()->routeIs('trainings.index')">
+                    {{ __('messages.Тренировки') }}
                 </x-responsive-nav-link>
             @endif
 

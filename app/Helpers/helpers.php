@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\ClassTraining;
 use App\Models\Team;
+use App\Models\Training;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,17 +27,16 @@ if (!function_exists('CountTeam')) {
 }
 
 
-
 function whatInArray($value)
 {
     $countArray = 0;
-    foreach($value as $v) {
+    foreach ($value as $v) {
         $countArray++;
     }
-    if($countArray < 1) {
-        return false ;
+    if ($countArray < 1) {
+        return false;
     } else {
-        return true ;
+        return true;
     }
 }
 
@@ -53,6 +54,7 @@ function countPlayers($team_code)
         return 'Неизвестно';
     }
 }
+
 function CountPlayerOfCoach()
 {
     $userId = Auth::user()->id;
@@ -84,8 +86,17 @@ function yourTeam()
     } else {
         return 'Неизвестна. Видимо у вас не верный код команды. Напишите своему тренеру чтобы исправить ошибку';
     }
+}
 
+function playerTeam($team_code)
+{
+    $yourTeam = Team::where('team_code', $team_code)->first();
 
+    if (isset($yourTeam)) {
+        return $yourTeam->name;
+    } else {
+        return 'Неизвестна. Видимо у вас не верный код команды. Напишите своему тренеру чтобы исправить ошибку';
+    }
 }
 
 function CountPlaerOfTeam($team_code)
@@ -114,6 +125,7 @@ function pluralTeam($number)
         }
     }
 }
+
 function pluralPlayers($number)
 {
     if ($number % 10 == 1 && $number % 100 != 11) {
@@ -125,4 +137,50 @@ function pluralPlayers($number)
             return __('messages.игроков');
         }
     }
+}
+
+function dayOfDate($date)
+{
+    $days = [ 'ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ' ];
+    $day = $days[ date("w", strtotime($date) )];
+    return $day;
+}
+
+function nameClass($id)
+{
+    $nameClass = ClassTraining::where('id', $id)->first()->name;
+    return $nameClass;
+}
+function dateFormatYMD($value) {
+    return \Carbon\Carbon::parse($value)->format('Y-m-d');
+}
+
+function dateFormatDM($value) {
+    return \Carbon\Carbon::parse($value)->format('d.m');
+}
+
+function timeFormatHI($value) {
+    return \Carbon\Carbon::createFromFormat('H:i:s',$value)->format('h:i');
+}
+
+function timeTo($start, $finish)
+{
+    $s = strtotime($start);
+    $f = strtotime($finish);
+    $i = ($f - $s);
+    return ceil($i / 60);
+}
+
+function trainingToday()
+{
+    $userId = Auth::user()->id;
+    $today = date('Y-m-d');
+    $find = Training::where('user_id', $userId)->where('date', $today)->first();
+
+    if (isset($find)) {
+        $value = true;
+    } else {
+        $value = false;
+    }
+    return $value;
 }

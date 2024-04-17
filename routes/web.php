@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserMetaController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
     Route::patch('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
     Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+
+    Route::get('/trainings', [TrainingController::class, 'index'])->name('trainings.index');
+    Route::post('/trainings', [TrainingController::class, 'store'])->name('trainings.store');
+    Route::get('/trainings/{training}', [TrainingController::class, 'show'])->name('trainings.show');
+    Route::patch('/trainings/{training}', [TrainingController::class, 'update'])->name('trainings.update');
+    Route::delete('/trainings/{training}', [TrainingController::class, 'destroy'])->name('trainings.destroy');
 
 
 });

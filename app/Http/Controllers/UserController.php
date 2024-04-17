@@ -76,7 +76,13 @@ class UserController extends Controller
     {
         $player = User::where('id', $id)->first();
 
-        return view('users.user', compact('player'));
+        $userId = Auth::user()->id;
+
+        $teamActive = Team::query()
+            ->where('user_id', $userId)
+            ->paginate(100);
+
+        return view('users.user', compact('player', 'teamActive'));
     }
 
     /**
@@ -123,6 +129,7 @@ class UserController extends Controller
             'name' => $request->name,
             'second_name' => $request->second_name,
             'last_name' => $request->last_name,
+            'team_code' => $request->team_code,
             'email' => $request->email,
             'active' => $active,
         ]);

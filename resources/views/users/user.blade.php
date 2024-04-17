@@ -113,6 +113,15 @@
                                         </div>
                                         <div class=" flex flex-col gap-4 col-span-3 sm:col-span-2">
                                             <div class="col-span-1 sm:col-span-1">
+                                                <label for="last_name"
+                                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Фамилия') }}</label>
+                                                <input type="text"
+                                                       name="last_name"
+                                                       id="last_name"
+                                                       class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                       required value="{{ $player->last_name }}">
+                                            </div>
+                                            <div class="col-span-1 sm:col-span-1">
                                                 <label for="name"
                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Имя') }}</label>
                                                 <input type="text" name="name"
@@ -129,37 +138,32 @@
                                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                        value="{{ $player->second_name }}">
                                             </div>
-                                            <div class="col-span-1 sm:col-span-1">
-                                                <label for="last_name"
-                                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Фамилия') }}</label>
-                                                <input type="text"
-                                                       name="last_name"
-                                                       id="last_name"
-                                                       class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                       required value="{{ $player->last_name }}">
-                                            </div>
-                                            <div class="col-span-1 sm:col-span-1">
-                                                <label for="email"
-                                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                                <input type="email" name="email"
-                                                       id="email"
-                                                       class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                       required value="{{ $player->email }}">
-                                                <x-input-error :messages="$errors->get('email')" class="mt-2"/>
-                                            </div>
+
+
+
+                                            @if(CountTeam() >= 2)
+                                                <div class="col-span-1 sm:col-span-1">
+                                                    <label for="team" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Команда') }}</label>
+                                                    <select id="team" name="team_code" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                        <option selected value="{{ $player->team_code }}">
+                                                            <div class="px-2">{{ playerTeam($player->team_code) }}</div>
+                                                        </option>
+                                                        @foreach($teamActive as $team)
+                                                            @if($team->team_code != $player->team_code)
+                                                                <option value="{{ $team->team_code }}">
+                                                                    <span class="pt-2">{{ $team->name }}</span>
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            @endif
+
                                         </div>
 
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-4">
-                                        <div class="col-span-2 sm:col-span-1">
-                                            <label for="tel"
-                                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон') }}</label>
-                                            <input type="tel" name="tel"
-                                                   id="tel"
-                                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                   value="{{ $player->meta->tel ?? 'None'  }}">
-                                        </div>
                                         <div class="col-span-2 sm:col-span-1">
                                             <label for="position"
                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Позиция') }}</label>
@@ -177,6 +181,24 @@
                                                    value="{{ $player->meta->number ?? 'None'  }}">
                                         </div>
                                         <div class="col-span-2 sm:col-span-1">
+                                            <label for="tel"
+                                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон') }}</label>
+                                            <input type="tel" name="tel"
+                                                   id="tel"
+                                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                   value="{{ $player->meta->tel ?? 'None'  }}">
+                                        </div>
+                                        <div class="col-span-2 sm:col-span-1">
+                                            <label for="email"
+                                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                                            <input type="email" name="email"
+                                                   id="email"
+                                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                   required value="{{ $player->email }}">
+                                            <x-input-error :messages="$errors->get('email')" class="mt-2"/>
+                                        </div>
+
+                                        <div class="col-span-2 sm:col-span-1">
                                             <label for="tel_mother"
                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон матери') }}</label>
                                             <input type="tel" name="tel_mother"
@@ -192,6 +214,7 @@
                                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                    value="{{ $player->meta->tel_father ?? 'None'  }}">
                                         </div>
+
                                         <div class="col-span-2 sm:col-span-2">
                                             <label for="comment"
                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Комментарий') }}</label>
@@ -200,7 +223,6 @@
                                                       class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                       value="{{ $player->meta->comment ?? 'None'  }}">{{ $player->meta->comment ?? 'None'  }}</textarea>
                                         </div>
-
                                     </div>
                                 </div>
 

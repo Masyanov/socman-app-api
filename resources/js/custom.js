@@ -37,6 +37,11 @@
 
     let teamCode = document.querySelectorAll('input[name="team_code"]');
     let telMask = document.querySelectorAll('input[type="tel"]');
+    let date = document.querySelectorAll('input[name="date"]');
+
+    for (let i = 0, length = date.length; i < length; i++) {
+        mask(date[i], "____-__-__");
+    }
 
     for (let i = 0, length = teamCode.length; i < length; i++) {
         mask(teamCode[i], "___-___");
@@ -272,6 +277,64 @@ $( "#button_save_user" ).on( "click", function() {
         }
     });
 } );
+$( "#button_save_training" ).on( "click", function() {
+    let user_id = $("#user_id").val();
+    let team_code = $("#team_code").val();
+    let date = $("#date").val();
+    let start = $("#start").val();
+    let finish = $("#finish").val();
+    let classTraining = $("#class").val();
+    let desc = $("#desc").val();
+    let recovery = $("#recovery").val();
+    let load = $("#load").val();
+    let link_docs = $("#link_docs").val();
+    let active = $("#active").prop('checked');
+    let activeNum
+    if(active === true) {
+        activeNum = '1';
+    } else {
+        activeNum = '0';
+    }
 
+    let _url = `/trainings`;
+    let _token = $('input[name~="_token"]').val();
 
+    $.ajax({
+        url: _url,
+        type: "POST",
+        enctype: 'multipart/form-data',
+        data: {
+            user_id: user_id,
+            team_code: team_code,
+            date: date,
+            start: start,
+            finish: finish,
+            class: classTraining,
+            desc: desc,
+            recovery: recovery,
+            load: load,
+            link_docs: link_docs,
+            active: activeNum,
+            _token: _token
+        },
+        success: function (response) {
+            $('#btn_team_success').trigger('click');
+            if (response.code == 200) {
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        },
+        error: function (response) {
+            $('#response').empty();
+            $('#response').append('<div class="alert alert-danger" role="alert">' + response.responseJSON.message + '</div>');
+        }
+    });
+} );
 
+$('input[name~="recovery"]').on('input', function() {
+    $(this).val((i, v) => Math.max(this.min, Math.min(this.max, v)));
+});
+$('input[name~="load"]').on('input', function() {
+    $(this).val((i, v) => Math.max(this.min, Math.min(this.max, v)));
+});

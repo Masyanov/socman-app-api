@@ -180,12 +180,12 @@
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
                                                         <div class="relative">
-                                                            <img class="w-10 h-10 rounded-full object-cover"
+                                                            <img class="w-10 h-10 rounded-full object-cover @if ($user->active == 0) grayscale @endif"
                                                                  src="/avatars/{{ $user->meta->avatar }}"
                                                                  alt="{{ $user->last_name }} {{ $user->name }}">
                                                             @if ($user->active == 0)
                                                                 <span
-                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-red-500 text-white">
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
                                                                 </span>
                                                             @else
                                                                 <span
@@ -200,7 +200,7 @@
                                                              alt="{{ $user->last_name }} {{ $user->name }}">
                                                         @if ($user->active == 0)
                                                             <span
-                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-red-500 text-white">
+                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
                                                                 </span>
                                                         @else
                                                             <span
@@ -213,7 +213,7 @@
                                                         <a href="/users/{{ $user->id }}" type="button"
                                                            class="font-medium text-white dark:text-white">
                                                             <div
-                                                                class="text-base font-semibold">{{ $user->last_name }} {{ $user->name }}</div>
+                                                                class="text-base font-semibold @if ($user->active == 0) dark:text-gray-400 @endif">{{ $user->last_name }} {{ $user->name }}</div>
                                                         </a>
                                                         <div class="font-normal text-gray-500">
                                                             {{ $user->email }}
