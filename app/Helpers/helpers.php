@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\ClassTraining;
+use App\Models\PresenceTraining;
 use App\Models\Team;
 use App\Models\Training;
 use App\Models\User;
@@ -112,6 +113,19 @@ function CountPlaerOfTeam($team_code)
         return 'НЕТ';
     }
 }
+function PlayerOfTeam($team_code)
+{
+    $usersOfTeam = User::query()
+        ->where('team_code', $team_code)
+        ->latest('created_at')
+        ->paginate(1000);
+
+    if (isset($usersOfTeam)) {
+        return $usersOfTeam;
+    } else {
+        return 'НЕТ';
+    }
+}
 
 function pluralTeam($number)
 {
@@ -160,7 +174,7 @@ function dateFormatDM($value) {
 }
 
 function timeFormatHI($value) {
-    return \Carbon\Carbon::createFromFormat('H:i:s',$value)->format('h:i');
+    return \Carbon\Carbon::createFromFormat('H:i:s',$value)->format('H:i');
 }
 
 function timeTo($start, $finish)
@@ -183,4 +197,21 @@ function trainingToday()
         $value = false;
     }
     return $value;
+}
+
+function presenceOfTraining($id)
+{
+    $presence = PresenceTraining::query()
+        ->where('training_id', $id)
+        ->latest('created_at')
+        ->paginate(1000);
+
+    if (isset($presence)) {
+        $presence;
+    } else {
+        false;
+    }
+
+    return $presence;
+
 }

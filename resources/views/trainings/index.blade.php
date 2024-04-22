@@ -19,7 +19,7 @@
                     <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         <!-- Modal header -->
                         <div
-                                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                                 {{ __('messages.Добавить новую тренировку') }}
                             </h3>
@@ -36,7 +36,7 @@
                         </div>
                         <!-- Modal body -->
                         <div class="p-4 md:p-5">
-                            <div class="space-y-4" method="POST" action="{{ route('trainings.store') }}">
+                            <form class="space-y-4" method="POST" action="{{ route('trainings.store') }}">
 
                                 @csrf
                                 <input type="hidden" id="user_id" name="user_id" value="{{ Auth::user()->id }}"/>
@@ -62,7 +62,7 @@
                                                    value="{{ $team->team_code }}"/>
                                         @endforeach
                                     @endif
-                                    <div class="col-span-1 sm:col-span-1">
+                                    <div class="col-span-1  @if(CountTeam() >= 2) sm:col-span-1 @else sm:col-span-2 @endif">
                                         <label for="class"
                                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Классификация') }}</label>
                                         <select id="class" name="class"
@@ -82,12 +82,12 @@
                                     </label>
                                     <div class="relative">
                                         <div
-                                                class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                             <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                  xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                                  viewBox="0 0 20 20">
                                                 <path
-                                                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                                             </svg>
                                         </div>
                                         <input datepicker datepicker-autohide datepicker-format="yyyy-mm-dd" type="text"
@@ -107,7 +107,7 @@
                                                    class="rounded-none rounded-s-lg bg-gray-50 border text-gray-900 leading-none focus:ring-blue-500 focus:border-blue-500 block flex-1 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                    required>
                                             <span
-                                                    class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                                class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                      xmlns="http://www.w3.org/2000/svg"
                                                      fill="currentColor" viewBox="0 0 24 24">
@@ -130,7 +130,7 @@
                                                    class="rounded-none rounded-s-lg bg-gray-50 border text-gray-900 leading-none focus:ring-blue-500 focus:border-blue-500 block flex-1 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                    required>
                                             <span
-                                                    class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                                class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                      xmlns="http://www.w3.org/2000/svg"
                                                      fill="currentColor" viewBox="0 0 24 24">
@@ -196,16 +196,16 @@
                                             {{ __('messages.Активный') }}
                                         </x-checkbox>
                                         <label
-                                                class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
-                                                for="active">{{ __('messages.Активный') }}</label>
+                                            class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
+                                            for="active">{{ __('messages.Активный') }}</label>
                                     </div>
                                 </div>
                                 <button type="button" id="button_save_training"
                                         class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     {{ __('messages.Добавить тренировку') }}</button>
                                 <div id="response"></div>
-                                </form>
-                            </div>
+                            </form>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -220,7 +220,7 @@
                         <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                              fill="currentColor" viewBox="0 0 20 20">
                             <path
-                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                         </svg>
                         <div class="ms-3 text-sm font-medium">
                             {{ __('messages.Тренировка создана') }}
@@ -240,57 +240,90 @@
                     </div>
                 </div>
             </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="grid grid-cols-4 gap-3 p-6 text-gray-900 dark:text-gray-100">
+                <div class="relative grid grid-cols-1 sm:grid-cols-4 gap-5 p-6 text-gray-900 dark:text-gray-100">
 
                     @if(trainingToday() == false)
-                            <div class="col-span-1 sm:col-span-1">
-                                <div class="flex flex-col h-full relative bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 border-2 border-green-900">
-                                    <span class="mb-3">{{ __('messages.На сегодня тренировок не запланировано') }}</span>
-                                    <button type="button" data-modal-target="add_team" data-modal-toggle="add_team" class="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">
-                                        {{ __('messages.Запланировать') }}
-                                    </button>
-                                </div>
+                        <div class="col-span-1 sm:col-span-1">
+                            <div
+                                class="flex flex-col h-full relative bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 border-2 border-green-900">
+                                <span class="mb-3">{{ __('messages.На сегодня тренировок не запланировано') }}</span>
+                                <button type="button" data-modal-target="add_team" data-modal-toggle="add_team"
+                                        class="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">
+                                    {{ __('messages.Запланировать') }}
+                                </button>
                             </div>
+                        </div>
                     @endif
                     @foreach($trainingActive as $training)
-                        <a href="/trainings/{{ $training->id }}" class="col-span-1 sm:col-span-1">
+                        <div
+                            class="flex flex-col justify-between relative h-full col-span-1 sm:col-span-1 select-none bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 @if($training->date == date('Y-m-d')) border-2 border-green-900 @elseif($training->active != true) border-2 border-gray-500 @endif">
+                            @if($training->active == true)
 
-                            <div class="h-full relative bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 @if($training->date == date('Y-m-d')) border-2 border-green-900 @endif">
                                 @if($training->date == date('Y-m-d'))
-                                <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300 absolute -translate-y-1/2 translate-x-1/1 left-auto top-0 -right-1">
-                                    <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
-                                    {{ __('messages.Сегодня') }}
-                                </span>
+
+                                    @if($training->confirmed != true)
+                                        <span
+                                            class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300 absolute -translate-y-1/2 translate-x-1/1 left-auto top-0 -right-1">
+                                        <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+                                        {{ __('messages.Сегодня') }}
+                                    </span>
+                                    @else
+                                        <span
+                                            class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300 absolute -translate-y-1/2 translate-x-1/1 left-auto top-0 -right-1">
+                                            <span class="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
+                                            {{ __('messages.Проведена') }}
+                                    </span>
+                                    @endif
+                                @else
+                                    @if($training->confirmed == true)
+                                        <span
+                                            class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300 absolute -translate-y-1/2 translate-x-1/1 left-auto top-0 -right-1">
+                                            <span class="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
+                                            {{ __('messages.Проведена') }}
+                                    </span>
+                                    @endif
                                 @endif
-                                <div class="flex justify-between gap-3">
-                                    <div class=" text-gray-500 text-sm font-bold">
-                                        {{ dateFormatDM($training->date) }}
-                                    </div>
-                                    <div class=" text-gray-500 text-sm font-bold">
-                                        {{ timeTo($training->start,$training->finish) }} <span>мин.</span>
-                                    </div>
-                                    <div class=" text-gray-500 text-sm font-bold">
-                                        {{ timeFormatHI($training->start) }}
-                                    </div>
-                                </div>
-                                <div class="flex mb-3 items-center space-x-4">
-
-                                    <div class="p-2 px-2.5 bg-indigo-200 text-indigo-600 rounded-full  font-bold">
-                                        {{ dayOfDate($training->date) }}
-                                    </div>
-                                    <div>
-
-                                        <div class="text-gray-600 text-sm">{{ nameClass($training->class) }}</div>
-                                        <div class="text-gray-300 text-2xl font-semibold">
-                                            {{ playerTeam($training->team_code) }}
-                                            <div class="flex gap-3">
-                                                @if($training->recovery)
-                                                    <span class="text-green-500 text-sm font-medium flex items-center">
+                            @else
+                                <span
+                                    class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300 absolute -translate-y-1/2 translate-x-1/1 left-auto top-0 -right-1">
+                                            <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
+                                            {{ __('messages.Не активна') }}
+                                    </span>
+                            @endif
+                            <a href="/trainings/{{ $training->id }}" class="flex">
+                                <div class="flex flex-col justify-between w-full relative">
+                                    <div class="flex flex-col">
+                                        <div class="flex justify-between gap-3">
+                                            <div class=" text-gray-500 text-sm font-bold">
+                                                {{ timeFormatHI($training->start) }}
+                                            </div>
+                                            <div class=" text-gray-500 text-sm font-bold">
+                                                {{ timeTo($training->start,$training->finish) }} <span>мин.</span>
+                                            </div>
+                                            <div class=" text-gray-500 text-sm font-bold">
+                                                {{ timeFormatHI($training->finish) }}
+                                            </div>
+                                        </div>
+                                        <div class="flex mb-3 items-center space-x-4">
+                                            <div
+                                                class="p-2 px-2.5 bg-indigo-200 text-indigo-600 rounded-full  font-bold">
+                                                {{ dayOfDate($training->date) }}
+                                            </div>
+                                            <div>
+                                                <div
+                                                    class="text-gray-600 text-sm">{{ nameClass($training->class) }}</div>
+                                                <div class="text-gray-300 text-2xl font-semibold">
+                                                    {{ dateFormatDM($training->date) }}
+                                                    <div class="flex gap-3">
+                                                        @if($training->recovery)
+                                                            <span
+                                                                class="text-green-500 text-sm font-medium flex items-center">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
                                                          fill="none" viewBox="0 0 24 24"
                                                          stroke="currentColor" stroke-width="2">
@@ -299,9 +332,10 @@
                                                     </svg>
                                                     {{ $training->recovery }}
                                                 </span>
-                                                @endif
-                                                @if($training->load)
-                                                    <span class="text-red-500 text-sm font-medium flex items-center ">
+                                                        @endif
+                                                        @if($training->load)
+                                                            <span
+                                                                class="text-red-500 text-sm font-medium flex items-center ">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1"
                                                          fill="none" viewBox="0 0 24 24"
                                                          stroke="currentColor" stroke-width="2">
@@ -310,16 +344,58 @@
                                                     </svg>
                                                     {{ $training->load }}
                                                 </span>
-                                                @endif
+                                                        @endif
+                                                    </div>
+
+                                                </div>
+
                                             </div>
 
                                         </div>
                                     </div>
+
+
+                                </div>
+                            </a>
+                            <div class="flex justify-between items-center text-sm text-blue-600 dark:text-blue-500 ">
+                                <span class="text-sm text-gray-400">{{ playerTeam($training->team_code) }}</span>
+
+                                <button id="dropdownMenuIconButton{{ $training->id }}"
+                                        data-dropdown-toggle="dropdownDots{{ $training->id }}"
+                                        data-dropdown-placement="bottom-start"
+                                        class="inline-flex self-center items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 dark:focus:ring-gray-600"
+                                        type="button">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                        <path
+                                            d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                    </svg>
+                                </button>
+                                <div id="dropdownDots{{ $training->id }}"
+                                     class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-40 dark:bg-gray-700 dark:divide-gray-600">
+                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                        aria-labelledby="dropdownMenuIconButton">
+                                        <li>
+                                            <a href="/trainings/{{ $training->id }}"
+                                               class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ __('messages.Редактировать') }}</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:void(0)" data-id="{{ $training->id }}"
+                                               class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                               onclick="deleteTraining({{ $training->id }})">
+                                                {{ __('messages.Удалить') }}
+                                            </a>
+                                        </li>
+
+                                    </ul>
                                 </div>
                             </div>
-                        </a>
+
+                        </div>
+
                     @endforeach
                     <!-- component -->
+
                 </div>
             </div>
         </div>

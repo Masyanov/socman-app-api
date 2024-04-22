@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\ClassTraining;
 use App\Models\Team;
 use App\Models\Training;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TrainingController extends Controller
 {
@@ -81,7 +83,20 @@ class TrainingController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $userId = Auth::user()->id;
+
+        $teamActive = Team::query()
+            ->where('user_id', $userId)
+            ->latest('created_at')
+            ->paginate(10);
+
+        $trainingClass = ClassTraining::query()
+            ->paginate(100);
+
+        $training = Training::where('id', $id)->where('user_id', $userId)->first();
+
+
+        return view('trainings.training', compact('training', 'teamActive', 'trainingClass'));
     }
 
     /**
@@ -95,16 +110,42 @@ class TrainingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $training)
     {
-        //
+        $trainingId = $request->trainingId;
+
+        Training::find($trainingId)->update([
+            'team_code' => $request->team_code,
+            'date' => $request->date,
+            'start' => $request->start,
+            'finish' => $request->finish,
+            'class' => $request->class,
+            'desc' => $request->desc,
+            'recovery' => $request->recovery,
+            'load' => $request->load,
+            'link_docs' => $request->link_docs,
+            'active' => $request->active,
+            'confirmed' => $request->confirmed,
+        ]);
+
+        DB::table( 'presence_trainings' )->where( 'training_id', $trainingId )->delete();
+        if ( isset( $request->users ) ) {
+            foreach ( $request->users as $player ) {
+                DB::insert( 'insert into presence_trainings (training_id, user_id, team_code) values (?, ?, ?)',
+                    [ $trainingId, $player, $request->team_code ] );
+            }
+        }
+
+        return response()->json(['code'=>200, 'success'=>'Запись успешно создана','data' => $training], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $training)
     {
-        //
+        Training::find($training)->delete();
+
+        return response()->json(['success' => 'Запись успешно удалена']);
     }
 }

@@ -38,6 +38,7 @@
     let teamCode = document.querySelectorAll('input[name="team_code"]');
     let telMask = document.querySelectorAll('input[type="tel"]');
     let date = document.querySelectorAll('input[name="date"]');
+    let time = document.querySelectorAll('input.time');
 
     for (let i = 0, length = date.length; i < length; i++) {
         mask(date[i], "____-__-__");
@@ -45,6 +46,9 @@
 
     for (let i = 0, length = teamCode.length; i < length; i++) {
         mask(teamCode[i], "___-___");
+    }
+    for (let i = 0, length = time.length; i < length; i++) {
+        mask(time[i], "__:__");
     }
     for (let i = 0, length = telMask.length; i < length; i++) {
         mask(telMask[i], "+7(___) ___ __ __");
@@ -164,7 +168,6 @@ $( "#button_del_team" ).on( "click", function() {
 
 $( "#update_user_meta" ).on( "click", function() {
     let player_id = $("#player_id").val();
-    console.log(player_id);
     let name = $("#name").val();
     let second_name = $("#second_name").val();
     let last_name = $("#last_name").val();
@@ -338,3 +341,97 @@ $('input[name~="recovery"]').on('input', function() {
 $('input[name~="load"]').on('input', function() {
     $(this).val((i, v) => Math.max(this.min, Math.min(this.max, v)));
 });
+
+
+$( "#button_del_training" ).on( "click", function() {
+
+    let id = $("#id").val();
+    let _url = `/trainings/${id}`;
+    let _token = $('input[name~="_token"]').val();
+
+    if(confirm('Удалить тренировку?')) {
+        $.ajax({
+            url: _url,
+            type: 'DELETE',
+            data: {
+                _token: _token
+            },
+            success: function(response) {
+                window.location.href = '/trainings';
+            }
+        });
+    }
+});
+
+$( "#update_training" ).on( "click", function() {
+    let user_id = $("#user_id").val();
+    let trainingId = $("#training_id").val();
+    let team_code = $("#team_code").val();
+    let date = $("#date").val();
+    let start = $("#start").val();
+    let finish = $("#finish").val();
+    let classTraining = $("#class").val();
+    let desc = $("#desc").val();
+    let recovery = $("#recovery").val();
+    let load = $("#load").val();
+    let link_docs = $("#link_docs").val();
+    let active = $("#active").prop('checked');
+    let confirm = $("#confirmed").prop('checked');
+    let ids = new Array();
+    $('input[name="players[]"]:checked').each(function(){
+        ids.push($(this).val());
+    });
+    let users = ids;
+    console.log(users);
+    let activeNum
+    if(active === true) {
+        activeNum = '1';
+    } else {
+        activeNum = '0';
+    }
+    let confirmNum
+    if(confirm === true) {
+        confirmNum = '1';
+    } else {
+        confirmNum = '0';
+    }
+    console.log(classTraining);
+    let _url = `/trainings/${trainingId}`;
+    let _token = $('input[name~="_token"]').val();
+
+    $.ajax({
+        url: _url,
+        type: "PATCH",
+        enctype: 'multipart/form-data',
+        data: {
+            user_id: user_id,
+            trainingId: trainingId,
+            team_code: team_code,
+            date: date,
+            start: start,
+            finish: finish,
+            class: classTraining,
+            desc: desc,
+            recovery: recovery,
+            load: load,
+            link_docs: link_docs,
+            users: users,
+            active: activeNum,
+            confirmed: confirmNum,
+            _token: _token
+        },
+        success: function (response) {
+            $('#btn_training_success').trigger('click');
+            if (response.code == 200) {
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        },
+        error: function (response) {
+            $('#response').empty();
+            $('#response').append('<div class="alert alert-danger" role="alert">' + response.responseJSON.message + '</div>');
+        }
+    });
+} );
+
