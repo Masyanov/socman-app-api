@@ -358,7 +358,15 @@
                                 </div>
                             </a>
                             <div class="flex justify-between items-center text-sm text-blue-600 dark:text-blue-500 ">
-                                <span class="text-sm text-gray-400">{{ playerTeam($training->team_code) }}</span>
+                                <div class="flex flex-col text-sm text-gray-400">
+                                    <div>{{ playerTeam($training->team_code) }}</div>
+                                    @if(presenceCheck($training->id) != 0)
+                                        <div class="flex gap-2 text-gray-500">
+                                            <div>{{ __('messages.Явка') }}:</div>
+                                            <div class="font-bold">{{ presence($training->id) }}</div>
+                                        </div>
+                                    @endif
+                                </div>
 
                                 <button id="dropdownMenuIconButton{{ $training->id }}"
                                         data-dropdown-toggle="dropdownDots{{ $training->id }}"

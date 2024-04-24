@@ -91,7 +91,7 @@ $( "#button_save_team" ).on( "click", function() {
             if (response.code == 200) {
                 setTimeout(() => {
                     location.reload();
-                }, 2000);
+                }, 1000);
             }
         },
         error: function (response) {
@@ -135,7 +135,7 @@ $( "#button_edit_team" ).on( "click", function() {
             if (response.code == 200) {
                 setTimeout(() => {
                     location.reload();
-                }, 2000);
+                }, 1000);
             }
         },
         error: function (response) {
@@ -270,7 +270,7 @@ $( "#button_save_user" ).on( "click", function() {
             if (response.code == 200) {
                 setTimeout(() => {
                     location.reload();
-                }, 2000);
+                }, 1000);
             }
         },
         error: function (response) {
@@ -435,3 +435,29 @@ $( "#update_training" ).on( "click", function() {
     });
 } );
 
+// Ограничение подтверждения о проведении тренировки (если отмечено менее 3)
+$( "input[name=\"players[]\"]" ).on( "click", function() {
+    let arr = new Array();
+    $('input[name="players[]"]:checked').each(function(){
+        arr.push($(this).val());
+    });
+
+    if(arr.length >= 3) {
+        console.log(arr.length)
+        $('#confirmed').attr( 'checked', true );
+        $('#confirmed').attr( 'disabled', true );
+        $('#alert-2').addClass("transition-opacity duration-300 ease-out opacity-0 hidden");
+
+    } else {
+        $('#confirmed').attr( 'checked', false );
+        $('#confirmed').attr( 'disabled', true );
+        $('#alert-2').removeClass("transition-opacity duration-300 ease-out opacity-0 hidden");
+    }
+} );
+
+if($("#confirmed").prop('checked')) {
+    $('#alert-2').addClass("transition-opacity duration-300 ease-out opacity-0 hidden");
+}else{
+    $('#alert-2').removeClass("transition-opacity duration-300 ease-out opacity-0 hidden");
+}
+// ***********

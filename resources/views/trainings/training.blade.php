@@ -7,11 +7,11 @@
                         : {{ dateFormatDM($training->date) }}</h2>
                     @if ($training->active == 0)
                         <span
-                            class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-gray-400 to-gray-600 border-2 border-white shadow-lg shadow-black/20">
+                                class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-gray-400 to-gray-600 border-2 border-white shadow-lg shadow-black/20">
                                             <svg
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2.5" stroke="currentColor"
-                                                aria-hidden="true" class="w-4 h-4 text-white">
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="2.5" stroke="currentColor"
+                                                    aria-hidden="true" class="w-4 h-4 text-white">
                                               <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M4.5 12.75l6 6 9-13.5">
                                               </path>
@@ -19,11 +19,12 @@
                                           </span>
                     @else
                         <span
-                            class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-green-400 to-green-600 border-2 border-white shadow-lg shadow-black/20">
+                                class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-green-400 to-green-600 border-2 border-white shadow-lg shadow-black/20">
                                                 <svg
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="2.5" stroke="currentColor"
-                                                    aria-hidden="true" class="w-4 h-4 text-white">
+                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke-width="2.5" stroke="currentColor"
+                                                        aria-hidden="true" class="w-4 h-4 text-white">
                                                   <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M4.5 12.75l6 6 9-13.5">
                                                   </path>
@@ -36,6 +37,15 @@
                         : {{ playerTeam($training->team_code) }}
                     </p>
                 </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400 leading-tight sm:pb-3 sm:p-3">
+                    @if(presenceCheck($training->id) != 0)
+                        <div class="flex gap-2 text-gray-500">
+                            <div>{{ __('messages.Явка') }}:</div>
+                            <div class="font-bold">{{ presence($training->id) }}</div>
+                        </div>
+                    @endif
+                </div>
+
                 <!-- Modal toggle -->
                 <input type="hidden" id="id" name="id" value="{{ $training->id }}"/>
                 <div class="flex">
@@ -46,9 +56,9 @@
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                             <g id="SVGRepo_iconCarrier">
                                 <path
-                                    d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16"
-                                    stroke="#d1d1d1" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                        d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16"
+                                        stroke="#d1d1d1" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"></path>
                             </g>
                         </svg>
                         <span class="sr-only">{{ __('messages.Удалить') }}</span>
@@ -96,7 +106,7 @@
                                             @endforeach
                                         @endif
                                         <div
-                                            class="col-span-1  @if(CountTeam() >= 2) sm:col-span-1 @else sm:col-span-2 @endif">
+                                                class="col-span-1  @if(CountTeam() >= 2) sm:col-span-1 @else sm:col-span-2 @endif">
                                             <label for="class"
                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Классификация') }}</label>
                                             <select id="class" name="class"
@@ -121,12 +131,12 @@
                                         </label>
                                         <div class="relative">
                                             <div
-                                                class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                                    class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                      xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                                      viewBox="0 0 20 20">
                                                     <path
-                                                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                                                 </svg>
                                             </div>
                                             <input datepicker datepicker-autohide datepicker-format="yyyy-mm-dd"
@@ -148,7 +158,7 @@
                                                            class="time rounded-none rounded-s-lg bg-gray-50 border text-gray-900 leading-none focus:ring-blue-500 focus:border-blue-500 block flex-1 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                            required value="{{ $training->start }}">
                                                     <span
-                                                        class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                                            class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                      xmlns="http://www.w3.org/2000/svg"
                                                      fill="currentColor" viewBox="0 0 24 24">
@@ -169,7 +179,7 @@
                                                            class="time rounded-none rounded-s-lg bg-gray-50 border text-gray-900 leading-none focus:ring-blue-500 focus:border-blue-500 block flex-1 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                            required value="{{ $training->finish }}">
                                                     <span
-                                                        class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                                            class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                      xmlns="http://www.w3.org/2000/svg"
                                                      fill="currentColor" viewBox="0 0 24 24">
@@ -234,46 +244,27 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-3 grid grid-cols-3 gap-3">
-                                    <div class="col-span-1 sm:col-span-1">
-                                        <x-checkbox name="active"
-                                                    id="active"
-                                                    :checked="$training->active">
-                                            {{ __('messages.Активный') }}
-                                        </x-checkbox>
-                                        <label
-                                            class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
-                                            for="active">{{ __('messages.Активный') }}</label>
-                                    </div>
-                                    <div class="col-span-1 sm:col-span-1">
-                                        <x-checkbox name="confirmed"
-                                                    id="confirmed"
-                                                    :checked="$training->confirmed">
-                                            {{ __('messages.Проведена') }}
-                                        </x-checkbox>
-                                        <label
-                                            class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
-                                            for="confirmed">{{ __('messages.Проведена') }}</label>
-                                    </div>
-                                </div>
+
                             </div>
-                            <div class="col-1 col-span-2">
-                                @foreach (PlayerOfTeam($training->team_code) as $player)
-                                    <div class="inline-flex items-center">
-                                        <label class="relative flex items-center p-3 rounded-full cursor-pointer"
-                                               for="ripple-on-{{ $player->id }}"
-                                               data-ripple-dark="true">
-                                            <input id="ripple-on-{{ $player->id }}" type="checkbox" name="players[]"
-                                                   value="{{ $player->id }}"
-                                                   @foreach(presenceOfTraining($training->id) as $trainingPlayer)
-                                                       @if($trainingPlayer->training_id == $training->id && $player->id == $trainingPlayer->user_id)
-                                                           checked
-                                                   @endif
-                                                   @endforeach
-                                                   class="ids before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
-                                            >
-                                            <span
-                                                class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                            <div class="col-1 col-span-1 sm:col-span-2 px-5">
+                                <h2 class="pl-3 mb-3 font-semibold text-xl text-gray-700 dark:text-gray-300 leading-tight">{{ __('messages.Отметить присутствующих') }}</h2>
+                                <div class="flex flex-column flex-wrap">
+                                    @foreach (PlayerOfTeam($training->team_code) as $player)
+                                        <div class="flex items-center w-6/6 sm:w-3/6">
+                                            <label class="relative flex items-center p-1 rounded-full cursor-pointer"
+                                                   for="ripple-on-{{ $player->id }}"
+                                                   data-ripple-dark="true">
+                                                <input id="ripple-on-{{ $player->id }}" type="checkbox" name="players[]"
+                                                       value="{{ $player->id }}"
+                                                       @foreach(presenceOfTraining($training->id) as $trainingPlayer)
+                                                           @if($trainingPlayer->training_id == $training->id && $player->id == $trainingPlayer->user_id)
+                                                               checked
+                                                       @endif
+                                                       @endforeach
+                                                       class="ids before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
+                                                >
+                                                <span
+                                                        class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
                                                      viewBox="0 0 20 20" fill="currentColor"
                                                      stroke="currentColor" stroke-width="1">
@@ -282,58 +273,77 @@
                                                         clip-rule="evenodd"></path>
                                                 </svg>
                                             </span>
-                                        </label>
-                                        <label class="mt-px font-light text-gray-700 cursor-pointer select-none"
-                                               for="ripple-on-{{ $player->id }}">
-                                            <dev scope="row"
-                                                 class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                                @if($player->meta->avatar)
-                                                    <div class="relative">
-                                                        <img
-                                                            class="w-10 h-10 rounded-full object-cover @if ($player->active == 0) grayscale @endif"
-                                                            src="/avatars/{{ $player->meta->avatar }}"
-                                                            alt="{{ $player->last_name }} {{ $player->name }}">
-                                                        @if ($player->active == 0)
-                                                            <span
-                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
-                                                                </span>
-                                                        @else
-                                                            <span
-                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
-                                                                </span>
-                                                        @endif
-                                                    </div>
+                                            </label>
+                                            <label class="mt-px font-light text-gray-700 cursor-pointer select-none"
+                                                   for="ripple-on-{{ $player->id }}">
+                                                <dev scope="row"
+                                                     class="flex items-center px-4 py-1 text-gray-900 whitespace-nowrap dark:text-white">
 
-                                                @else
-                                                    <div class="relative">
-                                                        <img class="w-10 h-10 rounded-full object-cover"
-                                                             src="/images/default-avatar.jpg"
-                                                             alt="{{ $player->last_name }} {{ $player->name }}">
-                                                        @if ($player->active == 0)
-                                                            <span
-                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
-                                                                </span>
-                                                        @else
-                                                            <span
-                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
-                                                                </span>
-                                                        @endif
+                                                    <div class="ps-3">
+                                                        <a href="/users/{{ $player->id }}" type="button"
+                                                           class="font-medium text-white dark:text-white">
+                                                            <div class="flex gap-3 text-base font-semibold @if ($player->active == 0) dark:text-gray-400 @endif">
+                                                                @if($player->meta->number)
+                                                                    <div class="text-gray-500">{{ $player->meta->number }}</div>
+                                                                @endif
+                                                                <div>{{ $player->last_name }} {{ $player->name }}</div>
+                                                            </div>
+                                                        </a>
                                                     </div>
-                                                @endif
-                                                <div class="ps-3">
-                                                    <a href="/users/{{ $player->id }}" type="button"
-                                                       class="font-medium text-white dark:text-white">
-                                                        <div
-                                                            class="text-base font-semibold @if ($player->active == 0) dark:text-gray-400 @endif">{{ $player->last_name }} {{ $player->name }}</div>
-                                                    </a>
-                                                    <div class="font-normal text-gray-500">
-                                                        {{ $player->email }}
-                                                    </div>
-                                                </div>
-                                            </dev>
-                                        </label>
+                                                </dev>
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-3 w-6/6 sm:w-2/6 py-3">
+                            <div class="flex">
+                                <x-checkbox name="active"
+                                            id="active"
+                                            :checked="$training->active">
+                                    {{ __('messages.Активный') }}
+                                </x-checkbox>
+                                <label
+                                        class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
+                                        for="active">{{ __('messages.Активный') }}</label>
+                            </div>
+                            <div class="flex">
+                                <x-checkbox name="confirmed"
+                                            id="confirmed"
+                                            :checked="$training->confirmed">
+                                    {{ __('messages.Проведена') }}
+                                </x-checkbox>
+                                <label
+                                        class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
+                                        for="confirmed">
+                                    {{ __('messages.Проведена') }}
+                                </label>
+                            </div>
+                            <div class="flex">
+                                <div id="alert-2"
+                                     class="flex items-center p-4 text-red-800 rounded-lg bg-red-50 dark:bg-gray-700 dark:text-red-400 transition-opacity duration-300 ease-out opacity-0 hidden"
+                                     role="alert">
+                                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
+                                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                    </svg>
+                                    <span class="sr-only">Info</span>
+                                    <div class="ms-3 text-sm font-medium">
+                                        {{ __('messages.Чтобы подтвердить проведение тренировки отметьте 3 или более игроков!') }}
                                     </div>
-                                @endforeach
+                                    <button type="button"
+                                            class="ms-auto -mx-1.5 -my-1.5 bg-red-50 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+                                            data-dismiss-target="#alert-2" aria-label="Close">
+                                        <span class="sr-only">Close</span>
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                             fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="mt-3 col-span-1 sm:col-span-1">
@@ -354,7 +364,7 @@
                             <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                  fill="currentColor" viewBox="0 0 20 20">
                                 <path
-                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                             </svg>
                             <div class="ms-3 text-sm font-medium">
                                 {{ __('messages.Сохранено') }}

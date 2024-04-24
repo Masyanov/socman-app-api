@@ -20,6 +20,11 @@
                             <div class="font-medium text-5xl text-gray-800 dark:text-gray-200">{{ CountPlayerOfCoach() }}</div>
                             <div class="font-medium text-base text-gray-800 dark:text-gray-400">{{ pluralPlayers(CountPlayerOfCoach()) }}</div>
                         </div>
+                        <div class="flex flex-col items-center rounded-md w-40 p-4 shadow-inner select-none" style="background: rgb(17 24 39);">
+                            <div class="font-medium text-base text-gray-800 dark:text-gray-400">{{ __('messages.Проведено') }} </div>
+                            <div class="font-medium text-5xl text-gray-800 dark:text-gray-200">{{ allTrainingCount() }}</div>
+                            <div class="font-medium text-base text-gray-800 dark:text-gray-400">{{ pluralTrainings(allTrainingCount()) }}</div>
+                        </div>
 
                     @else
                         <div class="font-medium text-base text-gray-800 dark:text-gray-200">

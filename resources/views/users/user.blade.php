@@ -95,6 +95,9 @@
                                         <input type="hidden" id="player_id"
                                                name="player_id"
                                                value="{{ $player->id }}"/>
+                                        <input type="hidden" id="team_code"
+                                               name="team_code"
+                                               value="{{ $player->team_code }}"/>
                                         <div class=" flex flex-col col-span-3 sm:col-span-1">
                                             <label for="avatar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Фото') }}</label>
                                             @if($player->meta->avatar)

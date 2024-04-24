@@ -145,8 +145,9 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if(whatInArray($teamActive))
                         @foreach($teamActive as $team)
-                            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
+                            <h2 class="flex justify-between items-center font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
                                 {{ $team->name }}
+                                <div class="ml-3 text-gray-500 text-sm">{{ countPlayers($team->team_code) }} {{ pluralPlayers(countPlayers($team->team_code)) }}</div>
                             </h2>
                             <hr class="pb-3">
                             @if(whatInArray(CountPlaerOfTeam($team->team_code)))

@@ -113,10 +113,12 @@ function CountPlaerOfTeam($team_code)
         return 'НЕТ';
     }
 }
+
 function PlayerOfTeam($team_code)
 {
     $usersOfTeam = User::query()
         ->where('team_code', $team_code)
+        ->where('active', true)
         ->latest('created_at')
         ->paginate(1000);
 
@@ -152,11 +154,23 @@ function pluralPlayers($number)
         }
     }
 }
+function pluralTrainings($number)
+{
+    if ($number % 10 == 1 && $number % 100 != 11) {
+        return __('messages.тренировка');
+    } else {
+        if ($number % 10 >= 2 && $number % 10 <= 4 && ($number % 100 < 10 || $number % 100 >= 20)) {
+            return __('messages.тренировки');
+        } else {
+            return __('messages.тренировок');
+        }
+    }
+}
 
 function dayOfDate($date)
 {
-    $days = [ 'ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ' ];
-    $day = $days[ date("w", strtotime($date) )];
+    $days = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
+    $day = $days[date("w", strtotime($date))];
     return $day;
 }
 
@@ -165,16 +179,20 @@ function nameClass($id)
     $nameClass = ClassTraining::where('id', $id)->first()->name;
     return $nameClass;
 }
-function dateFormatYMD($value) {
+
+function dateFormatYMD($value)
+{
     return \Carbon\Carbon::parse($value)->format('Y-m-d');
 }
 
-function dateFormatDM($value) {
+function dateFormatDM($value)
+{
     return \Carbon\Carbon::parse($value)->format('d.m');
 }
 
-function timeFormatHI($value) {
-    return \Carbon\Carbon::createFromFormat('H:i:s',$value)->format('H:i');
+function timeFormatHI($value)
+{
+    return \Carbon\Carbon::createFromFormat('H:i:s', $value)->format('H:i');
 }
 
 function timeTo($start, $finish)
@@ -214,4 +232,71 @@ function presenceOfTraining($id)
 
     return $presence;
 
+}
+
+function presence($id)
+{
+    $presence = PresenceTraining::query()
+        ->where('training_id', $id)
+        ->latest('created_at')
+        ->count();
+
+    $find = Training::where('id', $id)->where('active', true)->first();
+
+    $countPlayers = countPlayers($find->team_code);
+
+    $percent = ($presence / $countPlayers) * 100;
+
+    return round($percent, 0).'% ('.$presence.'/'.$countPlayers.')';
+}
+
+function presenceCheck($id)
+{
+    $presence = PresenceTraining::query()
+        ->where('training_id', $id)
+        ->latest('created_at')
+        ->count();
+
+    return $presence;
+}
+
+
+function freeNumber($team_code)
+{
+    $numbers = [];
+    for ($i = 0; $i <= 98; $i++) {
+        $numbers[] = $i + 1;
+    }
+
+    $usersOfTeam = User::query()
+        ->where('team_code', $team_code)
+        ->latest('created_at')
+        ->paginate(1000);
+
+    $playerNumber = [];
+    foreach ($usersOfTeam as $player) {
+        array_push($playerNumber, $player->meta->number);
+    }
+
+    $freeNumber = [];
+    foreach ($numbers as $number) {
+        if (!in_array($number, $playerNumber)) {
+            array_push($freeNumber, $number);
+        }
+    }
+
+    return $freeNumber;
+
+}
+
+function allTrainingCount()
+{
+    $userId = Auth::user()->id;
+    $trainings = Training::query()
+        ->where('user_id', $userId)
+        ->where('confirmed', true)
+        ->latest('created_at')
+        ->count();
+
+    return $trainings;
 }

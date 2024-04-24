@@ -76,7 +76,7 @@ class TeamController extends Controller
         $usersOfTeam = User::query()
             ->where('team_code', $team->team_code)
             ->latest('created_at')
-            ->paginate(10);
+            ->paginate(100);
 
         return view('teams.team', compact('team', 'usersOfTeam'));
     }

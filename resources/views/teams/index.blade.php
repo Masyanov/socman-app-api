@@ -116,7 +116,6 @@
                                             <span
                                                 class=" text-xs">{{ __('messages.Игроков') }}: {{ countPlayers($team->team_code) }}</span>
 
-
                                         </a>
 
                                         <p class="mb-1 text-xs text-gray-700 dark:text-gray-400">{{ __('messages.Код команды') }}

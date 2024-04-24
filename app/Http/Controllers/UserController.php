@@ -24,6 +24,7 @@ class UserController extends Controller
 
         $teamActive = Team::query()
             ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
             ->paginate(100);
 
         return view('users.index', compact('teamActive'));
