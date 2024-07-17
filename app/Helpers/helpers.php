@@ -154,6 +154,7 @@ function pluralPlayers($number)
         }
     }
 }
+
 function pluralTrainings($number)
 {
     if ($number % 10 == 1 && $number % 100 != 11) {
@@ -217,6 +218,20 @@ function trainingToday()
     return $value;
 }
 
+function trainingTodayForPlayer()
+{
+    $teamCode = Auth::user()->team_code;
+    $today = date('Y-m-d');
+    $find = Training::where('team_code', $teamCode)->where('date', $today)->first();
+
+    if (isset($find)) {
+        $value = true;
+    } else {
+        $value = false;
+    }
+    return $value;
+}
+
 function presenceOfTraining($id)
 {
     $presence = PresenceTraining::query()
@@ -225,12 +240,12 @@ function presenceOfTraining($id)
         ->paginate(1000);
 
     if (isset($presence)) {
-        $presence;
+        $value = $presence;
     } else {
-        false;
+        $value = false;
     }
 
-    return $presence;
+    return $value;
 
 }
 
@@ -241,13 +256,51 @@ function presence($id)
         ->latest('created_at')
         ->count();
 
-    $find = Training::where('id', $id)->where('active', true)->first();
+    $find = Training::where('id', $id)->first();
 
-    $countPlayers = countPlayers($find->team_code);
+    if ($find) {
+        $countPlayers = countPlayers($find->team_code);
 
-    $percent = ($presence / $countPlayers) * 100;
+        $percent = ($presence / $countPlayers) * 100;
 
-    return round($percent, 0).'% ('.$presence.'/'.$countPlayers.')';
+        return round($percent, 0).'% ('.$presence.'/'.$countPlayers.')';
+    } else {
+        return '0';
+    }
+
+}
+
+function presenceAll()
+{
+    $userId = Auth::user()->id;
+
+    $trainings = Training::query()
+        ->where('user_id', $userId)
+        ->where('active', true)
+        ->where('confirmed', true)
+        ->latest('created_at')
+        ->paginate(10000);
+
+    if (whatInArray($trainings)) {
+
+        $allTrainingValues = [];
+        foreach ($trainings as $training) {
+            $presence = PresenceTraining::query()
+                ->where('training_id', $training->id)
+                ->latest('created_at')
+                ->count();
+
+            $countPlayers = countPlayers($training->team_code);
+            $percent = ($presence / $countPlayers) * 100;
+            array_push($allTrainingValues, $percent);
+
+        }
+
+        $valueAllTrainings = round(array_sum($allTrainingValues) / count($allTrainingValues), 0);
+        $value = $valueAllTrainings;
+        return $value;
+    }
+    return 0;
 }
 
 function presenceCheck($id)
@@ -294,9 +347,21 @@ function allTrainingCount()
     $userId = Auth::user()->id;
     $trainings = Training::query()
         ->where('user_id', $userId)
+        ->where('active', true)
         ->where('confirmed', true)
         ->latest('created_at')
         ->count();
 
     return $trainings;
+}
+
+function checkLoadControl()
+{
+    if (Auth::user()->load_control == '1') {
+        $status = true;
+    } else {
+        $status = false;
+    }
+
+    return $status;
 }

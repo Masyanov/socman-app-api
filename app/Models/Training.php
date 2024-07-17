@@ -17,6 +17,7 @@ class Training extends Model
     protected $fillable = [
         'user_id',
         'team_code',
+        'user2',
         'date',
         'start',
         'finish',
@@ -28,4 +29,5 @@ class Training extends Model
         'active',
         'confirmed',
     ];
+
 }

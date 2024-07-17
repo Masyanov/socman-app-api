@@ -99,6 +99,7 @@ return [
     'Дополнительная информация' => 'Some information',
     'Удалить' => 'Delete',
     'В этой команде нет игроков' => 'This team don\'t has players.',
+    'У вас нет ни одного игрока' => 'You don\'t have any players',
 
     'Успешно' => 'Success',
     'Игрок создан' => 'Player created',
@@ -132,6 +133,7 @@ return [
     'Проведена' => 'Conducted',
     'Дополнительно' => 'Extras',
     'Не активна' => 'Not active',
+    'Отменена' => 'Canceled',
     'Отметить присутствующих' => 'Mark those presences',
     'Явка' => 'Presence',
     'Чтобы подтвердить проведение тренировки отметьте 3 или более игроков!' => 'To confirm the training, mark 3 or more players!',

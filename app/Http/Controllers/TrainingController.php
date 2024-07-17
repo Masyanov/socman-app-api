@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TrainingController extends Controller
 {
@@ -18,6 +19,7 @@ class TrainingController extends Controller
     public function index()
     {
         $userId = Auth::user()->id;
+        $teamCode = Auth::user()->team_code;
 
         $teamActive = Team::query()
             ->where('user_id', $userId)
@@ -27,11 +29,17 @@ class TrainingController extends Controller
         $trainingActive = Training::query()
             ->where('user_id', $userId)
             ->latest('date')
-            ->paginate(1000);
+            ->paginate(12);
+
+        $trainingForPlayer = Training::query()
+            ->where('team_code', $teamCode)
+            ->latest('date')
+            ->paginate(12);
+
         $trainingClass = ClassTraining::query()
             ->paginate(100);
 
-        return view('trainings.index', compact('teamActive','trainingActive', 'trainingClass'));
+        return view('trainings.index', compact('teamActive','trainingActive', 'trainingForPlayer', 'trainingClass'));
     }
 
     /**
@@ -47,8 +55,12 @@ class TrainingController extends Controller
      */
     public function store(Request $request)
     {
-        $userId = Auth::user()->id;
+        dd($request);
 
+        Log::debug('Создана тренировка для команды '. $request->team_code);
+        Log::debug($request);
+
+        $userId = Auth::user()->id;
         $validated = $request->validate([
             'team_code' => ['required', 'max:7'],
             'date' => ['required', 'string', 'date'],
@@ -62,7 +74,7 @@ class TrainingController extends Controller
             'active' => ['nullable', 'boolean'],
         ]);
 
-        $raining = Training::query()->create([
+        $training = Training::query()->create([
             'user_id' => $userId,
             'team_code' => $validated['team_code'],
             'date' => $validated['date'],
@@ -75,7 +87,7 @@ class TrainingController extends Controller
             'link_docs' => $validated['link_docs'],
             'active' => true,
         ]);
-        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $raining], 200);
+        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $training], 200);
     }
 
     /**
@@ -95,6 +107,9 @@ class TrainingController extends Controller
 
         $training = Training::where('id', $id)->where('user_id', $userId)->first();
 
+        if (!$training) {
+            return redirect('/dashboard')->with('error', 'The training does not exist.');
+        }
 
         return view('trainings.training', compact('training', 'teamActive', 'trainingClass'));
     }
@@ -145,6 +160,9 @@ class TrainingController extends Controller
     public function destroy(string $training)
     {
         Training::find($training)->delete();
+
+        // при удалении команды удаляем всстатистику присутствия на тренировках этой команды
+        DB::table( 'presence_trainings' )->where( 'training_id', $training )->delete();
 
         return response()->json(['success' => 'Запись успешно удалена']);
     }

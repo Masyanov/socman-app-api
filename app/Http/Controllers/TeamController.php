@@ -108,7 +108,23 @@ class TeamController extends Controller
      */
     public function destroy(Team $team)
     {
+        $teamCode = $team->team_code;
+        $allPlayersThisTeam = User::where('team_code', $teamCode)->get();
+
         $team->delete();
+
+        // при удалении команды удаляем все тренировки этой команды
+        DB::table( 'trainings' )->where( 'team_code', $teamCode )->delete();
+
+        // при удалении команды удаляем всстатистику присутствия на тренировках этой команды
+        DB::table( 'presence_trainings' )->where( 'team_code', $teamCode )->delete();
+
+        // при удалении команды все игроки этой команды деактивируются
+        foreach ($allPlayersThisTeam as $player) {
+            $player->update([
+                'active' => 0,
+            ]);
+        }
 
         return response()->json(['success' => 'Запись успешно удалена']);
 

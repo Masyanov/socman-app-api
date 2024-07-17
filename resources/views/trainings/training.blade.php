@@ -7,11 +7,11 @@
                         : {{ dateFormatDM($training->date) }}</h2>
                     @if ($training->active == 0)
                         <span
-                                class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-gray-400 to-gray-600 border-2 border-white shadow-lg shadow-black/20">
+                            class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-gray-400 to-gray-600 border-2 border-white shadow-lg shadow-black/20">
                                             <svg
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="2.5" stroke="currentColor"
-                                                    aria-hidden="true" class="w-4 h-4 text-white">
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="2.5" stroke="currentColor"
+                                                aria-hidden="true" class="w-4 h-4 text-white">
                                               <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M4.5 12.75l6 6 9-13.5">
                                               </path>
@@ -19,12 +19,12 @@
                                           </span>
                     @else
                         <span
-                                class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-green-400 to-green-600 border-2 border-white shadow-lg shadow-black/20">
+                            class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-green-400 to-green-600 border-2 border-white shadow-lg shadow-black/20">
                                                 <svg
-                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke-width="2.5" stroke="currentColor"
-                                                        aria-hidden="true" class="w-4 h-4 text-white">
+                                                    xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="2.5" stroke="currentColor"
+                                                    aria-hidden="true" class="w-4 h-4 text-white">
                                                   <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M4.5 12.75l6 6 9-13.5">
                                                   </path>
@@ -56,9 +56,9 @@
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                             <g id="SVGRepo_iconCarrier">
                                 <path
-                                        d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16"
-                                        stroke="#d1d1d1" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"></path>
+                                    d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16"
+                                    stroke="#d1d1d1" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
                             </g>
                         </svg>
                         <span class="sr-only">{{ __('messages.Удалить') }}</span>
@@ -105,8 +105,9 @@
                                                        value="{{ $training->team_code }}"/>
                                             @endforeach
                                         @endif
+
                                         <div
-                                                class="col-span-1  @if(CountTeam() >= 2) sm:col-span-1 @else sm:col-span-2 @endif">
+                                            class="  @if(CountTeam() >= 2) col-span-1 sm:col-span-1 @else col-span-2 sm:col-span-2 @endif">
                                             <label for="class"
                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Классификация') }}</label>
                                             <select id="class" name="class"
@@ -131,12 +132,12 @@
                                         </label>
                                         <div class="relative">
                                             <div
-                                                    class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                                class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                      xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                                      viewBox="0 0 20 20">
                                                     <path
-                                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                                        d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                                                 </svg>
                                             </div>
                                             <input datepicker datepicker-autohide datepicker-format="yyyy-mm-dd"
@@ -158,7 +159,7 @@
                                                            class="time rounded-none rounded-s-lg bg-gray-50 border text-gray-900 leading-none focus:ring-blue-500 focus:border-blue-500 block flex-1 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                            required value="{{ $training->start }}">
                                                     <span
-                                                            class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                                        class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                      xmlns="http://www.w3.org/2000/svg"
                                                      fill="currentColor" viewBox="0 0 24 24">
@@ -179,7 +180,7 @@
                                                            class="time rounded-none rounded-s-lg bg-gray-50 border text-gray-900 leading-none focus:ring-blue-500 focus:border-blue-500 block flex-1 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                            required value="{{ $training->finish }}">
                                                     <span
-                                                            class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                                        class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                                      xmlns="http://www.w3.org/2000/svg"
                                                      fill="currentColor" viewBox="0 0 24 24">
@@ -210,38 +211,41 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-span-1 sm:col-span-1">
-                                        <div id="load_control"
-                                             class="flex flex-col items-center rounded-md p-4 shadow-inner select-none"
-                                             style="background: rgb(17 24 39);">
-                                            <h3 class="text-xl mb-3 font-semibold text-gray-900 dark:text-white">LOAD
-                                                CONTROL</h3>
-                                            <div class="grid grid-cols-2 gap-3 sm:grid-cols-2">
-                                                <div class="col-span-1">
-                                                    <label for="recovery"
-                                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Восстановление') }}</label>
-                                                    <input type="number" name="recovery"
-                                                           id="recovery"
-                                                           max="100"
-                                                           min="1"
-                                                           value="{{ $training->recovery }}"
-                                                           class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                    >
-                                                </div>
-                                                <div class="col-span-1">
-                                                    <label for="load"
-                                                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Нагрузка') }}</label>
-                                                    <input type="number" name="load"
-                                                           id="load"
-                                                           max="100"
-                                                           min="1"
-                                                           value="{{ $training->load }}"
-                                                           class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                    >
+                                    @if(checkLoadControl())
+                                        <div class="col-span-1 sm:col-span-1">
+                                            <div id="load_control"
+                                                 class="flex flex-col items-center rounded-md p-4 shadow-inner select-none"
+                                                 style="background: rgb(17 24 39);">
+                                                <h3 class="text-xl mb-3 font-semibold text-gray-900 dark:text-white">
+                                                    LOAD
+                                                    CONTROL</h3>
+                                                <div class="grid grid-cols-2 gap-3 sm:grid-cols-2">
+                                                    <div class="col-span-1">
+                                                        <label for="recovery"
+                                                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Восстановление') }}</label>
+                                                        <input type="number" name="recovery"
+                                                               id="recovery"
+                                                               max="100"
+                                                               min="1"
+                                                               value="{{ $training->recovery }}"
+                                                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                        >
+                                                    </div>
+                                                    <div class="col-span-1">
+                                                        <label for="load"
+                                                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Нагрузка') }}</label>
+                                                        <input type="number" name="load"
+                                                               id="load"
+                                                               max="100"
+                                                               min="1"
+                                                               value="{{ $training->load }}"
+                                                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                        >
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endif
                                 </div>
 
 
@@ -264,7 +268,7 @@
                                                        class="ids before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
                                                 >
                                                 <span
-                                                        class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                                                    class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
                                                      viewBox="0 0 20 20" fill="currentColor"
                                                      stroke="currentColor" stroke-width="1">
@@ -282,9 +286,11 @@
                                                     <div class="ps-3">
                                                         <a href="/users/{{ $player->id }}" type="button"
                                                            class="font-medium text-white dark:text-white">
-                                                            <div class="flex gap-3 text-base font-semibold @if ($player->active == 0) dark:text-gray-400 @endif">
+                                                            <div
+                                                                class="flex gap-3 text-base font-semibold @if ($player->active == 0) dark:text-gray-400 @endif">
                                                                 @if($player->meta->number)
-                                                                    <div class="text-gray-500">{{ $player->meta->number }}</div>
+                                                                    <div
+                                                                        class="text-gray-500">{{ $player->meta->number }}</div>
                                                                 @endif
                                                                 <div>{{ $player->last_name }} {{ $player->name }}</div>
                                                             </div>
@@ -305,8 +311,8 @@
                                     {{ __('messages.Активный') }}
                                 </x-checkbox>
                                 <label
-                                        class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
-                                        for="active">{{ __('messages.Активный') }}</label>
+                                    class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
+                                    for="active">{{ __('messages.Активный') }}</label>
                             </div>
                             <div class="flex">
                                 <x-checkbox name="confirmed"
@@ -315,8 +321,8 @@
                                     {{ __('messages.Проведена') }}
                                 </x-checkbox>
                                 <label
-                                        class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
-                                        for="confirmed">
+                                    class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
+                                    for="confirmed">
                                     {{ __('messages.Проведена') }}
                                 </label>
                             </div>
@@ -327,7 +333,7 @@
                                     <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true"
                                          xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                         <path
-                                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                                     </svg>
                                     <span class="sr-only">Info</span>
                                     <div class="ms-3 text-sm font-medium">
@@ -364,7 +370,7 @@
                             <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                  fill="currentColor" viewBox="0 0 20 20">
                                 <path
-                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                             </svg>
                             <div class="ms-3 text-sm font-medium">
                                 {{ __('messages.Сохранено') }}

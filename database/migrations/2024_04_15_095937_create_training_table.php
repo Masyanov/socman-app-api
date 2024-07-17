@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('training', function (Blueprint $table) {
+        Schema::create('trainings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
             $table->string('team_code');
@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->timeTz('start', precision: 0);
             $table->timeTz('finish', precision: 0);
             $table->string('class');
+            $table->string('count_players')->nullable();
             $table->string('desc')->nullable();
             $table->integer('recovery')->nullable();
             $table->integer('load')->nullable();

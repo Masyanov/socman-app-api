@@ -112,10 +112,7 @@
                                      class="flex relative flex-col justify-between m-2 max-w-sm p-6 bg-white border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                                     <div>
                                         <a href="teams/{{ $team->id }}">
-                                            <h5 class=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $team->name }} </h5>
-                                            <span
-                                                class=" text-xs">{{ __('messages.Игроков') }}: {{ countPlayers($team->team_code) }}</span>
-
+                                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $team->name }} </h5>
                                         </a>
 
                                         <p class="mb-1 text-xs text-gray-700 dark:text-gray-400">{{ __('messages.Код команды') }}
@@ -139,29 +136,11 @@
                                     </a>
                                     <div class="mb-2">
                                         @if ($team->active == 0)
-                                            <span
-                                                class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[4%] right-[2%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-gray-400 to-gray-600 border-2 border-white shadow-lg shadow-black/20">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2.5" stroke="currentColor"
-                                                aria-hidden="true" class="w-4 h-4 text-white">
-                                              <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M4.5 12.75l6 6 9-13.5">
-                                              </path>
-                                            </svg>
-                                          </span>
+                                            <div
+                                                class="absolute inline-flex items-center justify-center w-8 h-8 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ countPlayers($team->team_code) }}</div>
                                         @else
-                                            <span
-                                                class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[4%] right-[2%] translate-x-2/4 -translate-y-2/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-green-400 to-green-600 border-2 border-white shadow-lg shadow-black/20">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="2.5" stroke="currentColor"
-                                                    aria-hidden="true" class="w-4 h-4 text-white">
-                                                  <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M4.5 12.75l6 6 9-13.5">
-                                                  </path>
-                                                </svg>
-                                              </span>
+                                            <div
+                                                class="absolute inline-flex items-center justify-center w-8 h-8 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ countPlayers($team->team_code) }}</div>
                                         @endif
                                     </div>
 

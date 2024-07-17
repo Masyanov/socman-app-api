@@ -10,10 +10,10 @@
                         {{ $team->name }}
                         @if ($team->active == 0)
                             <div
-                                class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"></div>
+                                class="absolute inline-flex items-center justify-center w-7 h-7 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ countPlayers($team->team_code) }}</div>
                         @else
                             <div
-                                class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900"></div>
+                                class="absolute inline-flex items-center justify-center w-7 h-7 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ countPlayers($team->team_code) }}</div>
                         @endif
                     </button>
                 </div>
@@ -30,11 +30,6 @@
                         {{ __('messages.Код команды') }}
                         : {{ $team->team_code }}
                     </p>
-                    @if(countPlayers($team->team_code) != 0)
-                        <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight pх-2">
-                            {{ __('messages.Игроков') }}: {{ countPlayers($team->team_code) }}
-                        </p>
-                    @endif
                 </div>
 
                 <!-- Modal toggle -->
@@ -269,7 +264,7 @@
                                                 <td scope="row"
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
-                                                        <a class="relative" data-fancybox
+                                                        <a class=" w-10 h-10 relative" data-fancybox
                                                            data-src="/avatars/{{ $user->meta->avatar }}">
                                                             <img
                                                                 class="w-10 h-10 rounded-full object-cover @if ($user->active == 0) grayscale @endif"

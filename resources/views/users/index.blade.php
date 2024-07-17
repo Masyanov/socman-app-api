@@ -180,7 +180,7 @@
                                                 <td scope="row"
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
-                                                        <div class="relative">
+                                                        <div class="w-10 h-10 relative">
                                                             <img class="w-10 h-10 rounded-full object-cover @if ($user->active == 0) grayscale @endif"
                                                                  src="/avatars/{{ $user->meta->avatar }}"
                                                                  alt="{{ $user->last_name }} {{ $user->name }}">
@@ -331,7 +331,7 @@
                             @endif
                         @endforeach
                     @else
-                        <div class="font-normal text-gray-500">{{ __('messages.У вас нет ни одной команды') }}</div>
+                        <div class="font-normal text-gray-500">{{ __('messages.У вас нет ни одного игрока') }}</div>
                     @endif
                 </div>
             </div>
