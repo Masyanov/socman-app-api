@@ -121,13 +121,19 @@
             <button id="btn_user_success" data-modal-target="add_user_success" data-modal-toggle="add_user_success" class="hidden" type="button"></button>
             <div id="add_user_success" tabindex="-1" aria-hidden="true"
                  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-
-                <div class="bg-indigo-900 text-center py-4 lg:px-4">
-                    <div class="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex" role="alert">
-                        <span class="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">{{ __('messages.Успешно') }}</span>
-                        <span class="font-semibold mr-2 text-left flex-auto">{{ __('messages.Игрок создан') }}</span>
-                        <svg class="fill-current opacity-75 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"/></svg>
+                <div id="alert-border-3" class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800" role="alert">
+                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <div class="ms-3 text-sm font-medium">
+                        {{ __('messages.Игрок создан') }}
                     </div>
+                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"  data-dismiss-target="#alert-border-3" aria-label="Close">
+                        <span class="sr-only">Dismiss</span>
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -139,8 +145,9 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     @if(whatInArray($teamActive))
                         @foreach($teamActive as $team)
-                            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
+                            <h2 class="flex justify-between items-center font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
                                 {{ $team->name }}
+                                <div class="ml-3 text-gray-500 text-sm">{{ countPlayers($team->team_code) }} {{ pluralPlayers(countPlayers($team->team_code)) }}</div>
                             </h2>
                             <hr class="pb-3">
                             @if(whatInArray(CountPlaerOfTeam($team->team_code)))
@@ -169,31 +176,48 @@
                                         </thead>
                                         <tbody>
                                         @foreach(CountPlaerOfTeam($team->team_code) as $user)
-                                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            <tr class="bg-white border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 dark:bg-gray-800 ">
                                                 <td scope="row"
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
-                                                        <img class="w-10 h-10 rounded-full object-cover"
-                                                             src="/avatars/{{ $user->meta->avatar }}"
-                                                             alt="{{ $user->last_name }} {{ $user->name }}">
+                                                        <div class="w-10 h-10 relative">
+                                                            <img class="w-10 h-10 rounded-full object-cover @if ($user->active == 0) grayscale @endif"
+                                                                 src="/avatars/{{ $user->meta->avatar }}"
+                                                                 alt="{{ $user->last_name }} {{ $user->name }}">
+                                                            @if ($user->active == 0)
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
+                                                                </span>
+                                                            @else
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
+                                                                </span>
+                                                            @endif
+                                                        </div>
+
                                                     @else
+                                                        <div class="relative">
                                                         <img class="w-10 h-10 rounded-full object-cover" src="/images/default-avatar.jpg"
                                                              alt="{{ $user->last_name }} {{ $user->name }}">
+                                                        @if ($user->active == 0)
+                                                            <span
+                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
+                                                                </span>
+                                                        @else
+                                                            <span
+                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
+                                                                </span>
+                                                        @endif
+                                                        </div>
                                                     @endif
                                                     <div class="ps-3">
                                                         <a href="/users/{{ $user->id }}" type="button"
                                                            class="font-medium text-white dark:text-white">
                                                             <div
-                                                                class="text-base font-semibold">{{ $user->last_name }} {{ $user->name }}</div>
+                                                                class="text-base font-semibold @if ($user->active == 0) dark:text-gray-400 @endif">{{ $user->last_name }} {{ $user->name }}</div>
                                                         </a>
-                                                        <div class="font-normal text-gray-500">{{ $user->email }}
-                                                            @if ($user->active == 0)
-                                                                <span
-                                                                    class="ml-3 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 pt-1">{{ __('messages.Не активно') }}</span>
-                                                            @else
-                                                                <span
-                                                                    class="ml-3  bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 pt-1">{{ __('messages.Активно') }}</span>
-                                                            @endif
+                                                        <div class="font-normal text-gray-500">
+                                                            {{ $user->email }}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -307,7 +331,7 @@
                             @endif
                         @endforeach
                     @else
-                        <div class="font-normal text-gray-500">{{ __('messages.У вас нет ни одной команды') }}</div>
+                        <div class="font-normal text-gray-500">{{ __('messages.У вас нет ни одного игрока') }}</div>
                     @endif
                 </div>
             </div>

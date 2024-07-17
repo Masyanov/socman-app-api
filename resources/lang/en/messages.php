@@ -99,8 +99,46 @@ return [
     'Дополнительная информация' => 'Some information',
     'Удалить' => 'Delete',
     'В этой команде нет игроков' => 'This team don\'t has players.',
+    'У вас нет ни одного игрока' => 'You don\'t have any players',
 
     'Успешно' => 'Success',
     'Игрок создан' => 'Player created',
     'Команда создана' => 'Team created',
-];
+
+    'Управляй футбольной командой с SocMan' => 'Manage a soccer team with SocMan',
+    'Все что нужно для управления футбольной командой в одном приложении' => 'Everything you need to manage a football team in one application',
+    'О нас' => 'About us',
+
+    'Команда' => 'Team',
+
+    'Тренировки' => 'Trainings',
+    'Классификация' => 'Classification',
+    'Добавить тренировку' => 'Add training',
+    'Добавить новую тренировку' => 'Add new training',
+    'Дата' => 'Date',
+    'Время начала' => 'Time start',
+    'Время завершения' => 'Time finish',
+
+    'Восстановление' => 'Recovery',
+    'Нагрузка' => 'Load',
+    'Ссылка на документ' => 'Link',
+    'Тренировка создана' => 'Training created',
+    'Сегодня' => 'Today',
+    'На сегодня тренировок не запланировано' => 'No training scheduled for today',
+    'Запланировать' => 'Schedule',
+
+    'Подробнее' => 'More',
+    'Тренировка' => 'Training',
+    'Редактировать' => 'Edit',
+    'Проведена' => 'Conducted',
+    'Дополнительно' => 'Extras',
+    'Не активна' => 'Not active',
+    'Отменена' => 'Canceled',
+    'Отметить присутствующих' => 'Mark those presences',
+    'Явка' => 'Presence',
+    'Чтобы подтвердить проведение тренировки отметьте 3 или более игроков!' => 'To confirm the training, mark 3 or more players!',
+    'Проведено' => 'Conducted',
+    'тренировка' => 'training',
+    'тренировки' => 'trainings',
+    'тренировок' => 'trainings',
+    ];

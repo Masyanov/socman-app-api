@@ -14,6 +14,11 @@
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
         />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/jquery.js', 'resources/js/app.js', 'resources/js/flowbite.js', 'resources/js/custom.js'])
 
@@ -37,5 +42,6 @@
             </main>
         </div>
     </body>
+    <script src="/js/custom.js"></script>
 
 </html>

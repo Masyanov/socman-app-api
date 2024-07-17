@@ -1,29 +1,77 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex w-full">
-            <div class="flex flex-col sm:flex-row items-center justify-between w-full">
-                <div class="flex mb-2">
-                    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ $team->name }}</h2>
-                    @if ($team->active == 0)
-                        <span
-                            class="ml-3 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 pt-1">{{ __('messages.Не активно') }}</span>
-                    @else
-                        <span
-                            class="ml-3 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 pt-1">{{ __('messages.Активно') }}</span>
-                    @endif
+            <div class="flex flex-col lg:flex-row items-center justify-between w-full">
+
+                <div class="flex mb-2 relative">
+                    <button data-modal-target="add_team" data-modal-toggle="add_team" type="button"
+                            class="relative text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-semibold rounded-full text-lg px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                        <span class="sr-only">Notifications</span>
+                        {{ $team->name }}
+                        @if ($team->active == 0)
+                            <div
+                                class="absolute inline-flex items-center justify-center w-7 h-7 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ countPlayers($team->team_code) }}</div>
+                        @else
+                            <div
+                                class="absolute inline-flex items-center justify-center w-7 h-7 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ countPlayers($team->team_code) }}</div>
+                        @endif
+                    </button>
                 </div>
-                <div class="flex gap-3 mb-2">
+
+                <div class="flex gap-6 mb-6 lg:mb-0 flex-col lg:justify-center lg:flex-row">
                     @if($team->desc)
-                        <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight pt-3 pb-3 sm:pl-0">{{ __('messages.Описание')}}
-                            : {{ $team->desc }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight pх-2">
+                            {{ __('messages.Описание')}}
+                            : {{ $team->desc }}
+                        </p>
                     @endif
 
-                    <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight sm:pb-3 sm:p-3">{{ __('messages.Код команды') }}
-                        : {{ $team->team_code }}</p>
-                    <span class="text-sm text-gray-500 dark:text-gray-400 leading-tight sm:pb-3 sm:p-3">{{ __('messages.Игроков') }}: {{ countPlayers($team->team_code) }}</span>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 leading-tight pх-2">
+                        {{ __('messages.Код команды') }}
+                        : {{ $team->team_code }}
+                    </p>
                 </div>
+
                 <!-- Modal toggle -->
-                <div class="flex">
+                <div class="flex gap-6">
+                    <button data-popover-target="popover-click" data-popover-trigger="click" type="button"
+                            class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <svg version="1.1" id="Layer_1" viewBox="0 0 511.998 511.998" xml:space="preserve" width="34px"
+                             height="34px" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <g>
+                                    <path style="fill:#ffffff;"
+                                          d="M369.656,476.269h-227.31c-27.913,0-50.622-22.708-50.622-50.622V223.836 c-5.662,3.533-12.161,5.594-19.048,5.959c-11.077,0.585-21.6-3.281-29.655-10.895l-30.459-28.789 c-14.842-14.026-16.774-36.908-4.498-53.226L71.68,52.326c7.236-9.617,21.224-16.597,33.258-16.597h51.088 c9.351,0,17.572,5.032,22.557,13.806c8.006,14.096,37.169,28.365,77.416,28.365c11.392,0,22.428-1.163,32.797-3.458 c7.373-1.628,14.666,3.023,16.296,10.392c1.63,7.37-3.022,14.666-10.392,16.296c-12.304,2.722-25.326,4.101-38.701,4.101 c-46.89,0-86.594-16.552-101.167-42.171h-49.892c-3.398,0-9.373,2.982-11.417,5.698l-63.616,84.558 c-3.905,5.191-3.29,12.468,1.43,16.929l30.459,28.789c2.562,2.42,5.926,3.65,9.431,3.464c3.521-0.187,6.72-1.764,9.01-4.443 l11.167-13.054c5.621-6.571,12.719-6.951,17.488-5.121c10.842,4.167,10.537,15.758,10.242,26.967 c-0.038,1.465-0.077,2.858-0.077,4.053v214.744c0,12.841,10.448,23.289,23.289,23.289h227.311 c12.841,0,23.289-10.448,23.289-23.289c0-7.548,6.118-13.667,13.667-13.667s13.667,6.118,13.667,13.667 C420.278,453.561,397.569,476.269,369.656,476.269z"></path>
+                                    <path style="fill:#ffffff;"
+                                          d="M406.612,350.299c-7.548,0-13.667-6.119-13.667-13.667v-125.73c0-1.196-0.038-2.59-0.078-4.053 c-0.294-11.209-0.599-22.8,10.243-26.967c4.77-1.831,11.868-1.45,17.486,5.122l11.166,13.052c2.292,2.679,5.491,4.257,9.012,4.443 c3.522,0.198,6.87-1.043,9.431-3.464l30.459-28.789c4.72-4.461,5.335-11.738,1.431-16.927L418.477,68.76 c-2.043-2.716-8.018-5.698-11.417-5.698h-51.377c-7.548,0-13.667-6.119-13.667-13.667s6.119-13.667,13.667-13.667h51.377 c12.035,0,26.023,6.98,33.258,16.598l63.618,84.559c12.277,16.317,10.343,39.2-4.498,53.226l-30.46,28.789 c-8.056,7.614-18.581,11.474-29.655,10.895c-6.888-0.366-13.385-2.424-19.048-5.959v112.797 C420.278,344.181,414.16,350.299,406.612,350.299z"></path>
+                                </g>
+                                <rect x="105.383" y="189.035" style="fill:#ffffff;" width="301.225"
+                                      height="158.081"></rect>
+                                <g>
+                                    <path style="fill:#ffffff;"
+                                          d="M406.612,360.775H105.39c-7.548,0-13.667-6.118-13.667-13.667V189.032 c0-7.548,6.119-13.667,13.667-13.667h301.222c7.548,0,13.667,6.119,13.667,13.667v158.077 C420.278,354.656,414.16,360.775,406.612,360.775z M119.056,333.441h273.889V202.697H119.056V333.441z"></path>
+                                    <path style="fill:#000000;"
+                                          d="M196.845,289.753v-39.837c0-25.859,16.086-35.48,36.831-35.48s36.982,9.621,36.982,35.48v39.837 c0,25.858-16.236,35.48-36.982,35.48S196.845,315.612,196.845,289.753z M247.208,249.915c0-10.374-5.111-15.033-13.53-15.033 c-8.419,0-13.38,4.659-13.38,15.033v39.837c0,10.374,4.961,15.033,13.38,15.033c8.419,0,13.53-4.659,13.53-15.033V249.915z"></path>
+                                    <path style="fill:#000000;"
+                                          d="M291.703,240.595l-4.36,2.705c-1.353,0.902-2.706,1.204-3.758,1.204c-4.36,0-7.366-4.66-7.366-9.321 c0-3.158,1.353-6.164,4.36-7.968l19.844-12.027c1.203-0.753,2.706-1.054,4.36-1.054c4.811,0,10.373,2.856,10.373,7.368v95.611 c0,4.812-5.863,7.216-11.726,7.216c-5.863,0-11.726-2.405-11.726-7.216V240.595z"></path>
+                                </g>
+                            </g></svg>
+                        <span class="sr-only">Notifications</span>
+                        <div
+                            class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ count(freeNumber($team->team_code)) }}</div>
+                    </button>
+                    <div data-popover id="popover-click" role="tooltip"
+                         class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+                        <div
+                            class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                            <h3 class="font-semibold text-gray-900 dark:text-white">Свободные номера</h3>
+                        </div>
+                        <div class="px-3 py-2">
+                            <p>{{ implode(', ', freeNumber($team->team_code)) }}</p>
+                        </div>
+                        <div data-popper-arrow></div>
+                    </div>
                     <button data-modal-target="add_team" data-modal-toggle="add_team"
                             class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                             type="button">
@@ -40,7 +88,7 @@
                         <span class="sr-only">{{ __('messages.Редактировать команду') }}</span>
                     </button>
                     <button id="button_del_team" type="button"
-                            class="ml-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -121,6 +169,34 @@
         </div>
     </x-slot>
 
+    <button id="btn_team_success" data-modal-target="add_team_success" data-modal-toggle="add_team_success"
+            class="hidden" type="button"></button>
+    <div id="add_team_success" tabindex="-1" aria-hidden="true"
+         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div id="alert-border-3"
+             class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
+             role="alert">
+            <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                 viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <div class="ms-3 text-sm font-medium">
+                {{ __('messages.Сохранено') }}
+            </div>
+            <button type="button"
+                    class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                    data-dismiss-target="#alert-border-3" aria-label="Close">
+                <span class="sr-only">Dismiss</span>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -188,29 +264,50 @@
                                                 <td scope="row"
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
-                                                        <a data-fancybox data-src="/avatars/{{ $user->meta->avatar }}">
-                                                            <img class="w-10 h-10 rounded-full object-cover"
-                                                                 src="/avatars/{{ $user->meta->avatar }}"
-                                                                 alt="{{ $user->last_name }} {{ $user->name }}">
+                                                        <a class=" w-10 h-10 relative" data-fancybox
+                                                           data-src="/avatars/{{ $user->meta->avatar }}">
+                                                            <img
+                                                                class="w-10 h-10 rounded-full object-cover @if ($user->active == 0) grayscale @endif"
+                                                                src="/avatars/{{ $user->meta->avatar }}"
+                                                                alt="{{ $user->last_name }} {{ $user->name }}">
+                                                            @if ($user->active == 0)
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
+                                                                </span>
+                                                            @else
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
+                                                                </span>
+                                                            @endif
+
                                                         </a>
                                                     @else
-                                                        <img class="w-10 h-10 rounded-full object-cover" src="/images/default-avatar.jpg"
-                                                             alt="{{ $user->last_name }} {{ $user->name }}">
+                                                        <a class="relative" data-fancybox
+                                                           data-src="/avatars/{{ $user->meta->avatar }}">
+                                                            <img class="w-10 h-10 rounded-full object-cover"
+                                                                 src="/images/default-avatar.jpg"
+                                                                 alt="{{ $user->last_name }} {{ $user->name }}">
+                                                            @if ($user->active == 0)
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
+                                                                </span>
+                                                            @else
+                                                                <span
+                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
+                                                                </span>
+                                                            @endif
+
+                                                        </a>
+
                                                     @endif
                                                     <div class="ps-3">
                                                         <a href="/users/{{ $user->id }}" type="button"
                                                            class="font-medium text-white dark:text-white">
                                                             <div
-                                                                class="text-base font-semibold">{{ $user->last_name }} {{ $user->name }}</div>
+                                                                class="text-base font-semibold @if ($user->active == 0) dark:text-gray-400 @endif">{{ $user->last_name }} {{ $user->name }}</div>
                                                         </a>
-                                                        <div class="font-normal text-gray-500">{{ $user->email }}
-                                                            @if ($user->active == 0)
-                                                                <span
-                                                                    class="ml-3 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 pt-1">{{ __('messages.Не активно') }}</span>
-                                                            @else
-                                                                <span
-                                                                    class="ml-3  bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 pt-1">{{ __('messages.Активно') }}</span>
-                                                            @endif
+                                                        <div class="font-normal text-gray-500">
+                                                            {{ $user->email }}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -221,9 +318,10 @@
                                                     {{ $user->meta->number ?? 'None'  }}
                                                 </td>
                                                 <td class="px-6 py-4">
-                                                    <div class="flex gap-3 items-center justify-center h-full min-w-max">
+                                                    <div
+                                                        class="flex gap-3 items-center justify-center h-full min-w-max">
                                                         {{ $user->meta->tel ?? 'None'  }}
-                                                        @if($user->meta->tel != 'None' && $user->meta->tel != NULL)
+                                                        @if($user->meta->tel != 'None' && $user->meta->tel != null)
                                                             <a href="tel:{{ $user->meta->tel }}"
                                                                class="p-1 rounded-md bg-green-500 hover:bg-green-700 flex h-full">
                                                                 <svg class="w-3 h-3 " viewBox="0 0 24 24" fill="none"
@@ -286,6 +384,28 @@
                                                             </svg>
                                                         </a>
                                                     </div>
+                                                    <script>
+                                                        function deleteUser($id) {
+
+                                                            let _url = '/users/' + $id;
+                                                            console.log(_url)
+                                                            let _token = $('input[name~="_token"]').val();
+
+                                                            if (confirm('Удалить игрока?')) {
+                                                                $.ajax({
+                                                                    url: _url,
+                                                                    type: 'DELETE',
+                                                                    data: {
+                                                                        _token: _token
+                                                                    },
+                                                                    success: function (response) {
+                                                                        window.location.href = '/teams/{{ $team->id }}';
+                                                                    }
+                                                                });
+                                                            }
+
+                                                        };
+                                                    </script>
                                                 </td>
 
                                             </tr>

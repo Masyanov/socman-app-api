@@ -37,6 +37,7 @@ class User extends Authenticatable
         'email',
         'password',
         'active',
+        'load_control',
     ];
 
     /**

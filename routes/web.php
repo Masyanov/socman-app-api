@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserMetaController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/trainings', [TrainingController::class, 'index'])->name('trainings.index');
+});
+
+Route::group(['middleware' => ['auth', 'coach']], function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::patch('/users', [UserController::class, 'update'])->name('users.update');
@@ -47,7 +52,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
     Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
 
+    Route::post('/trainings', [TrainingController::class, 'store'])->name('trainings.store');
 
+    Route::get('/trainings/{training}', [TrainingController::class, 'show'])->name('trainings.show');
+    Route::patch('/trainings/{training}', [TrainingController::class, 'update'])->name('trainings.update');
+    Route::delete('/trainings/{training}', [TrainingController::class, 'destroy'])->name('trainings.destroy');
 });
+
 
 require __DIR__.'/auth.php';

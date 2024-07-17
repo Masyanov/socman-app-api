@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\ClassTraining;
+use App\Models\Team;
+use App\Models\Training;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+class TrainingController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $userId = Auth::user()->id;
+        $teamCode = Auth::user()->team_code;
+
+        $teamActive = Team::query()
+            ->where('user_id', $userId)
+            ->latest('created_at')
+            ->paginate(10);
+
+        $trainingActive = Training::query()
+            ->where('user_id', $userId)
+            ->latest('date')
+            ->paginate(12);
+
+        $trainingForPlayer = Training::query()
+            ->where('team_code', $teamCode)
+            ->latest('date')
+            ->paginate(12);
+
+        $trainingClass = ClassTraining::query()
+            ->paginate(100);
+
+        return view('trainings.index', compact('teamActive','trainingActive', 'trainingForPlayer', 'trainingClass'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        dd($request);
+
+        Log::debug('Создана тренировка для команды '. $request->team_code);
+        Log::debug($request);
+
+        $userId = Auth::user()->id;
+        $validated = $request->validate([
+            'team_code' => ['required', 'max:7'],
+            'date' => ['required', 'string', 'date'],
+            'start' => ['required', 'string'],
+            'finish' => ['required', 'string'],
+            'class' => ['required','nullable'],
+            'desc' => ['nullable', 'string', 'max:1500'],
+            'recovery' => ['nullable'],
+            'load' => ['nullable'],
+            'link_docs' => ['nullable'],
+            'active' => ['nullable', 'boolean'],
+        ]);
+
+        $training = Training::query()->create([
+            'user_id' => $userId,
+            'team_code' => $validated['team_code'],
+            'date' => $validated['date'],
+            'start' => $validated['start'],
+            'finish' => $validated['finish'],
+            'class' => $validated['class'],
+            'desc' => $validated['desc'],
+            'recovery' => $validated['recovery'],
+            'load' => $validated['load'],
+            'link_docs' => $validated['link_docs'],
+            'active' => true,
+        ]);
+        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $training], 200);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        $userId = Auth::user()->id;
+
+        $teamActive = Team::query()
+            ->where('user_id', $userId)
+            ->latest('created_at')
+            ->paginate(10);
+
+        $trainingClass = ClassTraining::query()
+            ->paginate(100);
+
+        $training = Training::where('id', $id)->where('user_id', $userId)->first();
+
+        if (!$training) {
+            return redirect('/dashboard')->with('error', 'The training does not exist.');
+        }
+
+        return view('trainings.training', compact('training', 'teamActive', 'trainingClass'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $training)
+    {
+        $trainingId = $request->trainingId;
+
+        Training::find($trainingId)->update([
+            'team_code' => $request->team_code,
+            'date' => $request->date,
+            'start' => $request->start,
+            'finish' => $request->finish,
+            'class' => $request->class,
+            'desc' => $request->desc,
+            'recovery' => $request->recovery,
+            'load' => $request->load,
+            'link_docs' => $request->link_docs,
+            'active' => $request->active,
+            'confirmed' => $request->confirmed,
+        ]);
+
+        DB::table( 'presence_trainings' )->where( 'training_id', $trainingId )->delete();
+        if ( isset( $request->users ) ) {
+            foreach ( $request->users as $player ) {
+                DB::insert( 'insert into presence_trainings (training_id, user_id, team_code) values (?, ?, ?)',
+                    [ $trainingId, $player, $request->team_code ] );
+            }
+        }
+
+        return response()->json(['code'=>200, 'success'=>'Запись успешно создана','data' => $training], 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $training)
+    {
+        Training::find($training)->delete();
+
+        // при удалении команды удаляем всстатистику присутствия на тренировках этой команды
+        DB::table( 'presence_trainings' )->where( 'training_id', $training )->delete();
+
+        return response()->json(['success' => 'Запись успешно удалена']);
+    }
+}

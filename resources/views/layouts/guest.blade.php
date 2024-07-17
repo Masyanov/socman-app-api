@@ -15,7 +15,7 @@
             href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
         />
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/flowbite.js', 'resources/js/custom.js'])
+        @vite(['resources/css/app.css', 'resources/js/jquery.js', 'resources/js/app.js', 'resources/js/flowbite.js', 'resources/js/custom.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class=" min-h-screen flex flex-col sm:justify-center items-center p-4 sm:p-6 pt-10 sm:pt-12 bg-gray-100 dark:bg-gray-900">

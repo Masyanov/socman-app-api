@@ -24,6 +24,7 @@ class UserController extends Controller
 
         $teamActive = Team::query()
             ->where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
             ->paginate(100);
 
         return view('users.index', compact('teamActive'));
@@ -46,7 +47,7 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'role' => ['required', 'string', 'max:255'],
-            'team_code' => ['required', 'string', 'min:7'],
+            'team_code' => ['required', 'string', 'min:7', 'exists:teams,team_code'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -67,7 +68,6 @@ class UserController extends Controller
         event(new Registered($user));
 
         return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $user], 200);
-//        return view('users.index', compact('teamActive'));
     }
 
     /**
@@ -77,7 +77,13 @@ class UserController extends Controller
     {
         $player = User::where('id', $id)->first();
 
-        return view('users.user', compact('player'));
+        $userId = Auth::user()->id;
+
+        $teamActive = Team::query()
+            ->where('user_id', $userId)
+            ->paginate(100);
+
+        return view('users.user', compact('player', 'teamActive'));
     }
 
     /**
@@ -124,6 +130,7 @@ class UserController extends Controller
             'name' => $request->name,
             'second_name' => $request->second_name,
             'last_name' => $request->last_name,
+            'team_code' => $request->team_code,
             'email' => $request->email,
             'active' => $active,
         ]);
@@ -138,9 +145,7 @@ class UserController extends Controller
             'avatar' => $avatarName,
         ]);
 
-        $player = User::where('id', $request->player_id)->first();
-
-        return view('users.user', compact('player'))->with('status', 'profile-updated');
+        return back()->with('success', __('Сохранено'));
     }
 
     /**
