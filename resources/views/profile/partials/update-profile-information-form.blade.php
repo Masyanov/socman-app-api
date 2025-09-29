@@ -26,21 +26,43 @@
                     <input type="hidden" id="player_id"
                            name="player_id"
                            value="{{ $user->id }}"/>
-                    <div class=" flex flex-col col-span-3 sm:col-span-1">
-                        <label for="avatar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Фото') }}</label>
-                        @if($user->meta->avatar)
-                            <img class="w-full h-60 rounded-lg object-cover mb-3 border dark:border-gray-500"
-                                 src="/avatars/{{ $user->meta->avatar }}"
-                                 alt="{{ $user->last_name }} {{ $user->name }}">
-                        @else
-                            <img class="w-full h-60 rounded-lg object-cover mb-3 border dark:border-gray-500"
-                                 src="/images/default-avatar.jpg"
-                                 alt="{{ $user->last_name }} {{ $user->name }}">
-                        @endif
-                        <input class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" name="avatar" id="avatar" type="file" value="{{ $user->meta->avatar }}">
+                    <div class="flex flex-col col-span-3 sm:col-span-1">
+                        <label for="avatar"
+                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Фото') }}</label>
+
+                        @php
+                            $avatarPath = $user->meta->avatar ? "/avatars/{$user->meta->avatar}" : "/images/default-avatar.jpg";
+                        @endphp
+
+                        <img id="avatarPreview"
+                             class="w-full h-60 rounded-lg object-cover mb-3 border dark:border-gray-500"
+                             src="{{ $avatarPath }}"
+                             alt="{{ $user->last_name }} {{ $user->name }}">
+
+                        <input
+                            class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                            name="avatar"
+                            id="avatar"
+                            type="file"
+                            accept="image/*">
 
                         <x-input-error :messages="$errors->get('avatar')" class="mt-2"/>
                     </div>
+                    <script>
+                        document.getElementById('avatar').addEventListener('change', function (event) {
+                            const [file] = this.files;
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    const preview = document.getElementById('avatarPreview');
+                                    preview.src = e.target.result;
+                                    preview.classList.remove('object-contain');
+                                    preview.classList.add('object-cover'); // меняем стиль, если нужно
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    </script>
                     <div class=" flex flex-col gap-4 col-span-3 sm:col-span-2">
                         <div class="col-span-1 sm:col-span-1">
                             <label for="last_name"
@@ -71,7 +93,15 @@
                                    value="{{ $user->second_name }}">
                             <x-input-error :messages="$errors->get('second_name')" class="mt-2"/>
                         </div>
-
+                        <div class="col-span-1 sm:col-span-1">
+                            <label for="birthday"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Дата рождения</label>
+                            <input type="date" name="birthday"
+                                   id="birthday"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   required value="{{ $user->meta->birthday }}">
+                            <x-input-error :messages="$errors->get('birthday')" class="mt-2"/>
+                        </div>
                         <div class="col-span-1 sm:col-span-1">
                             <label for="email"
                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
@@ -84,58 +114,59 @@
                     </div>
 
                 </div>
+                @if(Auth::user()->role != 'coach')
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="tel"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон') }}</label>
+                            <input type="tel" name="tel"
+                                   id="tel"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   value="{{ $user->meta->tel ?? 'None'  }}">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="position"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Позиция') }}</label>
+                            <input type="text" name="position"
+                                   id="position"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   value="{{ $user->meta->position ?? 'None'  }}">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="number"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Номер') }}</label>
+                            <input type="number" name="number"
+                                   id="number"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   value="{{ $user->meta->number ?? 'None'  }}">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="tel_mother"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон матери') }}</label>
+                            <input type="tel" name="tel_mother"
+                                   id="tel_mother"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   value="{{ $user->meta->tel_mother ?? 'None'  }}">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="tel_father"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон отца') }}</label>
+                            <input type="tel" name="tel_father"
+                                   id="tel_father"
+                                   class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   value="{{ $user->meta->tel_father ?? 'None'  }}">
+                        </div>
+                        <div class="col-span-2 sm:col-span-2">
+                            <label for="comment"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Комментарий') }}</label>
+                            <textarea type="text" name="comment"
+                                      id="comment"
+                                      class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                      value="{{ $user->meta->comment ?? 'None'  }}">{{ $user->meta->comment ?? 'None'  }}</textarea>
+                        </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="tel"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон') }}</label>
-                        <input type="tel" name="tel"
-                               id="tel"
-                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               value="{{ $user->meta->tel ?? 'None'  }}">
                     </div>
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="position"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Позиция') }}</label>
-                        <input type="text" name="position"
-                               id="position"
-                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               value="{{ $user->meta->position ?? 'None'  }}">
-                    </div>
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="number"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Номер') }}</label>
-                        <input type="number" name="number"
-                               id="number"
-                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               value="{{ $user->meta->number ?? 'None'  }}">
-                    </div>
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="tel_mother"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон матери') }}</label>
-                        <input type="tel" name="tel_mother"
-                               id="tel_mother"
-                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               value="{{ $user->meta->tel_mother ?? 'None'  }}">
-                    </div>
-                    <div class="col-span-2 sm:col-span-1">
-                        <label for="tel_father"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Телефон отца') }}</label>
-                        <input type="tel" name="tel_father"
-                               id="tel_father"
-                               class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                               value="{{ $user->meta->tel_father ?? 'None'  }}">
-                    </div>
-                    <div class="col-span-2 sm:col-span-2">
-                        <label for="comment"
-                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Комментарий') }}</label>
-                        <textarea type="text" name="comment"
-                                  id="comment"
-                                  class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                  value="{{ $user->meta->comment ?? 'None'  }}">{{ $user->meta->comment ?? 'None'  }}</textarea>
-                    </div>
-
-                </div>
+                @endif
             </div>
 
         </div>
@@ -146,6 +177,7 @@
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 {{ __('messages.Сохранить') }}
             </button>
+            @if(Auth::user()->role == 'admin')
             <div class="flex">
                 <x-checkbox name="active"
                             id="active"
@@ -156,6 +188,7 @@
                     class="ml-2 font-medium text-sm text-gray-700 dark:text-gray-300"
                     for="active">{{ __('messages.Активный') }}</label>
             </div>
+            @endif
         </div>
     </form>
 </section>

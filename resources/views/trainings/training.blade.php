@@ -6,30 +6,30 @@
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ __('messages.Тренировка') }}
                         : {{ dateFormatDM($training->date) }}</h2>
                     @if ($training->active == 0)
-                        <span
+                        <div
                             class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-gray-400 to-gray-600 border-2 border-white shadow-lg shadow-black/20">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2.5" stroke="currentColor"
-                                                aria-hidden="true" class="w-4 h-4 text-white">
-                                              <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M4.5 12.75l6 6 9-13.5">
-                                              </path>
-                                            </svg>
-                                          </span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="2.5" stroke="currentColor"
+                                aria-hidden="true" class="w-4 h-4 text-white">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M4.5 12.75l6 6 9-13.5">
+                                </path>
+                            </svg>
+                        </div>
                     @else
-                        <span
+                        <div
                             class="absolute rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center top-[6%] right-[1%] translate-x-12 -translate-y-1/4 bg-red-500 text-white min-w-[24px] min-h-[24px] bg-gradient-to-tr from-green-400 to-green-600 border-2 border-white shadow-lg shadow-black/20">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke-width="2.5" stroke="currentColor"
-                                                    aria-hidden="true" class="w-4 h-4 text-white">
-                                                  <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M4.5 12.75l6 6 9-13.5">
-                                                  </path>
-                                                </svg>
-                                              </span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="2.5" stroke="currentColor"
+                                aria-hidden="true" class="w-4 h-4 text-white">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M4.5 12.75l6 6 9-13.5">
+                                </path>
+                            </svg>
+                        </div>
                     @endif
                 </div>
                 <div class="flex gap-3 mb-2">
@@ -77,22 +77,26 @@
                             @csrf
                             <input type="hidden" id="user_id" name="user_id" value="{{ Auth::user()->id }}"/>
                             <input type="hidden" id="training_id" name="training_id" value="{{ $training->id }}"/>
+                            <input type="hidden" id="count_players_udate" name="count_players"
+                                   value="{{ countPlayers($training->team_code) }}"/>
                             <!-- Name -->
                             <div class="col-span-1">
                                 <div class="grid grid-cols-1 gap-3">
                                     <div class="grid grid-cols-2 gap-3">
                                         @if(CountTeam() >= 2)
                                             <div class="col-span-1 sm:col-span-1">
-                                                <label for="team_code"
+                                                <label for="team_code_training"
                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Команда') }}</label>
-                                                <select id="team_code" name="team_code"
+                                                <select id="team_code_training" name="team_code"
                                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                    <option selected value="{{ $training->team_code }}">
+                                                    <option selected value="{{ $training->team_code }}"
+                                                            data-count-players="{{ countPlayers($training->team_code) }}">
                                                         <span class="pt-2">{{ playerTeam($training->team_code) }}</span>
                                                     </option>
                                                     @foreach($teamActive as $key => $team)
                                                         @if($team->team_code != $training->team_code)
-                                                            <option value="{{ $team->team_code }}">
+                                                            <option value="{{ $team->team_code }}"
+                                                                    data-count-players="{{ countPlayers($team->team_code) }}">
                                                                 <span class="pt-2">{{ $team->name }}</span>
                                                             </option>
                                                         @endif
@@ -101,7 +105,7 @@
                                             </div>
                                         @else
                                             @foreach($teamActive as $key => $team)
-                                                <input type="hidden" id="team_code" name="team_code"
+                                                <input type="hidden" id="team_code_training" name="team_code"
                                                        value="{{ $training->team_code }}"/>
                                             @endforeach
                                         @endif
@@ -140,10 +144,9 @@
                                                         d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
                                                 </svg>
                                             </div>
-                                            <input datepicker datepicker-autohide datepicker-format="yyyy-mm-dd"
-                                                   type="text"
+                                            <input type="date"
                                                    name="date" id="date"
-                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                    placeholder="Select date" required value="{{ $training->date }}">
                                         </div>
                                     </div>
@@ -158,16 +161,17 @@
                                                     <input type="text" id="start" name="start"
                                                            class="time rounded-none rounded-s-lg bg-gray-50 border text-gray-900 leading-none focus:ring-blue-500 focus:border-blue-500 block flex-1 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                            required value="{{ $training->start }}">
-                                                    <span
+                                                    <div
                                                         class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                                     xmlns="http://www.w3.org/2000/svg"
-                                                     fill="currentColor" viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd"
-                                                          d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                                                          clip-rule="evenodd"/>
-                                                </svg>
-                                            </span>
+                                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                                                             aria-hidden="true"
+                                                             xmlns="http://www.w3.org/2000/svg"
+                                                             fill="currentColor" viewBox="0 0 24 24">
+                                                            <path fill-rule="evenodd"
+                                                                  d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
+                                                                  clip-rule="evenodd"/>
+                                                        </svg>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-1">
@@ -179,16 +183,17 @@
                                                     <input type="text" id="finish" name="finish"
                                                            class="time rounded-none rounded-s-lg bg-gray-50 border text-gray-900 leading-none focus:ring-blue-500 focus:border-blue-500 block flex-1 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                            required value="{{ $training->finish }}">
-                                                    <span
+                                                    <div
                                                         class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-s-0 border-s-0 border-gray-300 rounded-e-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                                     xmlns="http://www.w3.org/2000/svg"
-                                                     fill="currentColor" viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd"
-                                                          d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                                                          clip-rule="evenodd"/>
-                                                </svg>
-                                            </span>
+                                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                                                             aria-hidden="true"
+                                                             xmlns="http://www.w3.org/2000/svg"
+                                                             fill="currentColor" viewBox="0 0 24 24">
+                                                            <path fill-rule="evenodd"
+                                                                  d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
+                                                                  clip-rule="evenodd"/>
+                                                        </svg>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-span-2">
@@ -209,6 +214,25 @@
                                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 >
                                             </div>
+                                            <div>
+                                                <label for="addresses"
+                                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Классификация') }}</label>
+                                                <select id="addresses" name="addresses"
+                                                        class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                    <option selected value="{{ $training->addresses }}">
+                                                        <span
+                                                            class="pt-2">{{ nameAddress($training->addresses) }}</span>
+                                                    </option>
+                                                    @foreach($trainingAddresses as $key => $addres)
+                                                        @if($addres->id != $training->addresses)
+                                                            <option value="{{ $addres->id }}">
+                                                                <span class="pt-2">{{ $addres->name }}</span>
+                                                            </option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
                                         </div>
                                     </div>
                                     @if(checkLoadControl())
@@ -226,7 +250,7 @@
                                                         <input type="number" name="recovery"
                                                                id="recovery"
                                                                max="100"
-                                                               min="1"
+                                                               min="0"
                                                                value="{{ $training->recovery }}"
                                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                         >
@@ -237,7 +261,7 @@
                                                         <input type="number" name="load"
                                                                id="load"
                                                                max="100"
-                                                               min="1"
+                                                               min="0"
                                                                value="{{ $training->load }}"
                                                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                         >
@@ -251,10 +275,19 @@
 
                             </div>
                             <div class="col-1 col-span-1 sm:col-span-2 px-5">
-                                <h2 class="pl-3 mb-3 font-semibold text-xl text-gray-700 dark:text-gray-300 leading-tight">{{ __('messages.Отметить присутствующих') }}</h2>
-                                <div class="flex flex-column flex-wrap">
+                                <div class="flex justify-between gap-3">
+                                    <h2 class="pl-3 mb-3 font-semibold text-xl text-gray-700 dark:text-gray-300 leading-tight">{{ __('messages.Отметить присутствующих') }}</h2>
+                                    <div
+                                        class="w-fit flex items-center px-2 border border-gray-200 rounded dark:border-gray-700">
+                                        <input id="check_all" type="checkbox" value="" name="check_all"
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="bordered-checkbox-2"
+                                               class="w-full py-1 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ __('messages.Выбрать всех') }}</label>
+                                    </div>
+                                </div>
+                                <div class="flex flex-column flex-wrap py-3">
                                     @foreach (PlayerOfTeam($training->team_code) as $player)
-                                        <div class="flex items-center w-6/6 sm:w-3/6">
+                                        <div class="flex items-center w-6/6 sm:w-3/6 ">
                                             <label class="relative flex items-center p-1 rounded-full cursor-pointer"
                                                    for="ripple-on-{{ $player->id }}"
                                                    data-ripple-dark="true">
@@ -265,7 +298,7 @@
                                                                checked
                                                        @endif
                                                        @endforeach
-                                                       class="ids before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
+                                                       class="chk ids before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-gray-900 checked:bg-gray-900 checked:before:bg-gray-900 hover:before:opacity-10"
                                                 >
                                                 <span
                                                     class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
@@ -288,7 +321,7 @@
                                                            class="font-medium text-white dark:text-white">
                                                             <div
                                                                 class="flex gap-3 text-base font-semibold @if ($player->active == 0) dark:text-gray-400 @endif">
-                                                                @if($player->meta->number)
+                                                                @if($player->meta && $player->meta->number)
                                                                     <div
                                                                         class="text-gray-500">{{ $player->meta->number }}</div>
                                                                 @endif
@@ -360,38 +393,33 @@
                         </div>
                         <div id="response"></div>
                     </form>
-                    <button id="btn_training_success" data-modal-target="add_training_success"
-                            data-modal-toggle="add_training_success" class="hidden" type="button"></button>
-                    <div id="add_training_success" tabindex="-1" aria-hidden="true"
-                         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                        <div id="alert-border-3"
-                             class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
-                             role="alert">
-                            <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                 fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                            </svg>
-                            <div class="ms-3 text-sm font-medium">
-                                {{ __('messages.Сохранено') }}
-                            </div>
-                            <button type="button"
-                                    class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
-                                    data-dismiss-target="#alert-border-3" aria-label="Close">
-                                <span class="sr-only">Dismiss</span>
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                     viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                          stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-
+    <div id="trainingCreate"
+         class="fixed top-3 right-2 flex opacity-0 -z-10 items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-700"
+         role="alert">
+        <div
+            class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                 viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="ms-3 text-sm font-normal">{{ __('messages.Тренировка сохранена') }}</div>
+        <button type="button"
+                class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                data-dismiss-target="#trainingCreate" aria-label="Close">
+            <span class="sr-only">Close</span>
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+        </button>
+    </div>
 </x-app-layout>
 
 

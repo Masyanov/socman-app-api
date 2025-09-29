@@ -14,6 +14,16 @@ return [
     |
     */
 
+
+    'nocaptcha' => [
+        'sitekey' => env('NOCAPTCHA_SITEKEY'),
+        'secret' => env('NOCAPTCHA_SECRET'),
+    ],
+
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

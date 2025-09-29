@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+if (env('APP_ENV') !== 'local') {
+        URL::forceScheme('https');
+    }
         view()->composer( 'components.language_switcher', function ( $view ) {
             $view->with( 'current_locale', app()->getLocale() );
             $view->with( 'available_locales', config( 'app.available_locales' ) );

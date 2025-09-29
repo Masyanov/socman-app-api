@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\SettingUser;
+use App\Models\Subscription;
+use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\UserMeta;
+use App\Models\SettingLoadcontrol;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+
+class TelegramRegisterController extends Controller
+{
+    public function register(Request $request)
+    {
+
+        $teamCode = $request->team_code ?? '000-000';
+
+        $request->validate([
+            'name'      => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'role'      => ['required', 'string', 'max:255'],
+            'team_code' => ['nullable', 'regex:/^\d{3}-\d{3}$/'],
+            'email'     => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+            'password'  => ['required', Rules\Password::defaults()],
+            'ref'       => ['nullable', 'string'],
+        ]);
+
+        if ($request->role === 'coach') {
+            $active      = 1;
+            $loadControl = 0;
+        } else {
+            $active      = 0;
+            $loadControl = 0;
+        }
+
+        $user = User::create([
+            'name'         => $request->name,
+            'second_name'  => $request->second_name,
+            'last_name'    => $request->last_name,
+            'role'         => $request->role,
+            'team_code'    => $teamCode,
+            'email'        => $request->email,
+            'load_control' => $loadControl,
+            'password'     => Hash::make($request->password),
+            'active'       => $active,
+        ]);
+
+        // Для админа генерируем и сохраняем реферальный код
+        if ($user->role === 'admin') {
+            $user->generateReferralCode();
+        }
+
+        // Если тренер создан по реферальному коду, связываем с администратором
+        if ($user->role === 'coach' && $request->ref) {
+            $setting = SettingUser::where('slug', 'referral_code')
+                                  ->where('value', $request->ref)
+                                  ->where('active', true)
+                                  ->first();
+            if ($setting && $setting->user && $setting->user->role === 'admin') {
+                $setting->user->coaches()->attach($user->id);
+            }
+        }
+
+        UserMeta::create([
+            'user_id' => $user->id,
+            'telegram_id' => $request->telegram_id ?? null,
+        ]);
+
+        if ($request->role == 'coach') {
+            Subscription::create([
+                'user_id'    => $user->id,
+                'start_date' => Carbon::now()->toDateString(),
+                'end_date'   => Carbon::now()->addDays(365)->toDateString(),
+                'subscription'    => 'mini',
+                'is_paid'    => false,
+            ]);
+
+            SettingLoadcontrol::create([
+                'user_id'               => $user->id,
+                'on_load'               => 0,
+                'on_extra_questions'    => 0,
+                'question_recovery_min' => 0,
+                'question_load_min'     => 0,
+            ]);
+        }
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+
+        return response()->json(['success' => true]);
+    }
+}
+

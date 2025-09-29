@@ -2,22 +2,26 @@
 
 namespace Database\Factories;
 
+use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use Ramsey\Uuid\Type\Integer;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Team>
  */
 class TeamFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+
+    protected $model = Team::class;
+
     public function definition(): array
     {
         return [
-            'team_code' => fake()->unique()->teamCode(),
+            'user_id' => 1,
+            'team_code' => rand(100, 999).'-'.rand(100, 999),
+            'name' => fake()->word,
         ];
     }
+
 }

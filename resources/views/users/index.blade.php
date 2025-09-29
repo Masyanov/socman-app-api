@@ -1,141 +1,177 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-3 sm:flex-row items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('messages.Мои игроки') }}
             </h2>
-            <!-- Modal toggle -->
-            <button data-modal-target="add_team" data-modal-toggle="add_team"
-                    class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                    type="button">
-                {{ __('messages.Добавить игрока') }}
-            </button>
-
-            <!-- Main modal -->
-            <div id="add_team" tabindex="-1" aria-hidden="true"
-                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div class="relative p-4 w-full max-w-md max-h-full">
-                    <!-- Modal content -->
-                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                        <!-- Modal header -->
-                        <div
-                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                {{ __('messages.Добавить нового игрока') }}
-                            </h3>
-                            <button type="button"
-                                    class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                    data-modal-hide="add_team">
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                     viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                          stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                </svg>
-                                <span class="sr-only">{{ __('messages.Закрыть окно') }}</span>
-                            </button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="p-4 md:p-5">
-
-                            <form method="POST" action="{{ route('users.store') }}">
-                                @csrf
-
-                                <!-- Name -->
-                                <div>
-                                    <x-input-label for="name" :value="__('messages.Имя')"/>
-                                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
-                                                  :value="old('name')" required
-                                                  autofocus autocomplete="name"/>
-                                    <x-input-error :messages="$errors->get('name')" class="mt-2"/>
-                                </div>
-                                <!-- Last Name -->
-                                <div class="mt-4">
-                                    <x-input-label for="last_name" :value="__('messages.Фамилия')"/>
-                                    <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name"
-                                                  :value="old('last_name')" required autocomplete="last_name"/>
-                                    <x-input-error :messages="$errors->get('last_name')" class="mt-2"/>
-                                </div>
-                                <!-- Role -->
-
-                                <input id="role" type="hidden" name="role" value="player" class="hidden peer role">
 
 
-                                <!-- Team Code -->
-                                <div class="mt-4" id="code_field">
-                                    <x-input-label for="team_code" :value="__('messages.Код команды')"/>
-                                    <x-text-input id="team_code" class="block mt-1 w-full team_code" type="text"
-                                                  name="team_code"
-                                                  :value="old('team_code')" autocomplete="team_code"
-                                                  placeholder="999-999"/>
-                                    <x-input-error :messages="$errors->get('team_code')" class="mt-2"/>
-                                </div>
+            @if(CountTeam() > 0)
+                <!-- Modal toggle -->
+                <button data-modal-target="add_team" data-modal-toggle="add_team"
+                        class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                        type="button">
+                    {{ __('messages.Добавить игрока') }}
+                </button>
 
-                                <!-- Email Address -->
-                                <div class="mt-4">
-                                    <x-input-label for="email" :value="__('Email')"/>
-                                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
-                                                  :value="old('email')" required
-                                                  autocomplete="username"/>
-                                    <x-input-error :messages="$errors->get('email')" class="mt-2"/>
-                                </div>
+                <!-- Main modal -->
+                <div id="add_team" tabindex="-1" aria-hidden="true"
+                     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative p-4 w-full max-w-md max-h-full">
+                        <!-- Modal content -->
+                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                            <!-- Modal header -->
+                            <div
+                                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                    {{ __('messages.Добавить нового игрока') }}
+                                </h3>
+                                <button type="button"
+                                        class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                        data-modal-hide="add_team">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                         fill="none"
+                                         viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                              stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                    </svg>
+                                    <span class="sr-only">{{ __('messages.Закрыть окно') }}</span>
+                                </button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="p-4 md:p-5">
 
-                                <!-- Password -->
-                                <div class="mt-4">
-                                    <x-input-label for="password" :value="__('messages.Пароль')"/>
+                                <form method="POST" action="{{ route('users.store') }}">
+                                    @csrf
 
-                                    <x-text-input id="password" class="block mt-1 w-full"
-                                                  type="password"
-                                                  name="password"
-                                                  required autocomplete="new-password"/>
+                                    <!-- Name -->
+                                    <div>
+                                        <x-input-label for="name" :value="__('messages.Имя')"/>
+                                        <x-text-input id="name" class="block mt-1 w-full" type="text" name="name"
+                                                      :value="old('name')" required
+                                                      autofocus autocomplete="name"/>
+                                        <x-input-error :messages="$errors->get('name')" class="mt-2"/>
+                                    </div>
+                                    <!-- Last Name -->
+                                    <div class="mt-4">
+                                        <x-input-label for="last_name" :value="__('messages.Фамилия')"/>
+                                        <x-text-input id="last_name" class="block mt-1 w-full" type="text"
+                                                      name="last_name"
+                                                      :value="old('last_name')" required autocomplete="last_name"/>
+                                        <x-input-error :messages="$errors->get('last_name')" class="mt-2"/>
+                                    </div>
+                                    <!-- Role -->
 
-                                    <x-input-error :messages="$errors->get('password')" class="mt-2"/>
-                                </div>
+                                    <input id="role" type="hidden" name="role" value="player" class="hidden peer role">
 
-                                <!-- Confirm Password -->
-                                <div class="mt-4">
-                                    <x-input-label for="password_confirmation"
-                                                   :value="__('messages.Подтверждение пароля')"/>
 
-                                    <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                                  type="password"
-                                                  name="password_confirmation" required autocomplete="new-password"/>
+                                    <!-- Team Code -->
+                                    <div class="mt-4" id="code_field">
+                                        <x-input-label for="team_code" :value="__('messages.Код команды')"/>
+                                        <x-text-input id="team_code" class="block mt-1 w-full team_code" type="text"
+                                                      name="team_code"
+                                                      :value="old('team_code')" autocomplete="team_code"
+                                                      placeholder="999-999"/>
+                                        <x-input-error :messages="$errors->get('team_code')" class="mt-2"/>
+                                    </div>
 
-                                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2"/>
-                                </div>
+                                    <!-- Email Address -->
+                                    <div class="mt-4">
+                                        <x-input-label for="email" :value="__('Email')"/>
+                                        <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
+                                                      :value="old('email')" required
+                                                      autocomplete="username"/>
+                                        <x-input-error :messages="$errors->get('email')" class="mt-2"/>
+                                    </div>
 
-                                <div class="flex items-center justify-end mt-4">
+                                    <!-- Password -->
+                                    <div class="mt-4">
+                                        <x-input-label for="password" :value="__('messages.Пароль')"/>
 
-                                    <button type="button" id="button_save_user"
-                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        {{ __('messages.Регистрация') }}
-                                    </button>
-                                </div>
-                                <div id="response"></div>
-                            </form>
+                                        <x-text-input id="password" class="block mt-1 w-full"
+                                                      type="password"
+                                                      name="password"
+                                                      required autocomplete="new-password"/>
 
+                                        <x-input-error :messages="$errors->get('password')" class="mt-2"/>
+                                    </div>
+
+                                    <!-- Confirm Password -->
+                                    <div class="mt-4">
+                                        <x-input-label for="password_confirmation"
+                                                       :value="__('messages.Подтверждение пароля')"/>
+
+                                        <x-text-input id="password_confirmation" class="block mt-1 w-full"
+                                                      type="password"
+                                                      name="password_confirmation" required
+                                                      autocomplete="new-password"/>
+
+                                        <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2"/>
+                                    </div>
+
+                                    <div class="flex items-center justify-end mt-4">
+
+                                        <button type="button" id="button_save_user"
+                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            {{ __('messages.Регистрация') }}
+                                        </button>
+                                    </div>
+                                    <div id="response"></div>
+                                </form>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <button id="btn_user_success" data-modal-target="add_user_success" data-modal-toggle="add_user_success" class="hidden" type="button"></button>
-            <div id="add_user_success" tabindex="-1" aria-hidden="true"
-                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div id="alert-border-3" class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800" role="alert">
-                    <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                    </svg>
-                    <div class="ms-3 text-sm font-medium">
-                        {{ __('messages.Игрок создан') }}
-                    </div>
-                    <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"  data-dismiss-target="#alert-border-3" aria-label="Close">
-                        <span class="sr-only">Dismiss</span>
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                <button id="btn_user_success" data-modal-target="add_user_success" data-modal-toggle="add_user_success"
+                        class="hidden" type="button"></button>
+                <div id="add_user_success" tabindex="-1" aria-hidden="true"
+                     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div id="alert-border-3"
+                         class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
+                         role="alert">
+                        <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
                         </svg>
-                    </button>
+                        <div class="ms-3 text-sm font-medium">
+                            {{ __('messages.Игрок создан') }}
+                        </div>
+                        <button type="button"
+                                class="ms-auto -mx-1.5 -my-1.5 bg-green-50 text-green-500 rounded-lg focus:ring-2 focus:ring-green-400 p-1.5 hover:bg-green-200 inline-flex items-center justify-center h-8 w-8 dark:bg-gray-800 dark:text-green-400 dark:hover:bg-gray-700"
+                                data-dismiss-target="#alert-border-3" aria-label="Close">
+                            <span class="sr-only">Dismiss</span>
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                 viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            @else
+                <div
+                    class="flex items-center p-4 text-sm text-gray-800 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600"
+                    role="alert">
+                    <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <div class="flex items-center flex-col gap-3  sm:flex-row">
+                        {{ __('messages.Чтобы добавить игрока, вам необходимо создать команду.') }}
+                        @if(Auth::user()->role == 'coach' || Auth::user()->role == 'admin')
+                            <a href="{{ route('teams.index') }}"
+                               class="ml-3 text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-2 py-1 text-center me-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800">
+                                {{ __('messages.Мои команды') }}
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            @endif
+
         </div>
     </x-slot>
 
@@ -147,7 +183,8 @@
                         @foreach($teamActive as $team)
                             <h2 class="flex justify-between items-center font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
                                 {{ $team->name }}
-                                <div class="ml-3 text-gray-500 text-sm">{{ countPlayers($team->team_code) }} {{ pluralPlayers(countPlayers($team->team_code)) }}</div>
+                                <div
+                                    class="ml-3 text-gray-500 text-sm">{{ countPlayers($team->team_code) }} {{ pluralPlayers(countPlayers($team->team_code)) }}</div>
                             </h2>
                             <hr class="pb-3">
                             @if(whatInArray(CountPlaerOfTeam($team->team_code)))
@@ -171,6 +208,10 @@
                                                 {{ __('messages.Телефон') }}
                                             </th>
                                             <th scope="col" class="px-6 py-3">
+                                                {{ __('messages.Активный') }}
+                                            </th>
+                                            <th scope="col" class="px-6 py-3">
+
                                             </th>
                                         </tr>
                                         </thead>
@@ -181,44 +222,49 @@
                                                     class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                                                     @if($user->meta->avatar)
                                                         <div class="w-10 h-10 relative">
-                                                            <img class="w-10 h-10 rounded-full object-cover @if ($user->active == 0) grayscale @endif"
-                                                                 src="/avatars/{{ $user->meta->avatar }}"
-                                                                 alt="{{ $user->last_name }} {{ $user->name }}">
-                                                            @if ($user->active == 0)
-                                                                <span
-                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
-                                                                </span>
-                                                            @else
-                                                                <span
-                                                                    class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
-                                                                </span>
-                                                            @endif
+                                                            <img
+                                                                class="w-10 h-10 rounded-full object-contain @if ($user->active == 0) grayscale @endif"
+                                                                src="/avatars/{{ $user->meta->avatar }}"
+                                                                alt="{{ $user->last_name }} {{ $user->name }}">
                                                         </div>
 
                                                     @else
-                                                        <div class="relative">
-                                                        <img class="w-10 h-10 rounded-full object-cover" src="/images/default-avatar.jpg"
-                                                             alt="{{ $user->last_name }} {{ $user->name }}">
-                                                        @if ($user->active == 0)
-                                                            <span
-                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-gray-300 text-white">
-                                                                </span>
-                                                        @else
-                                                            <span
-                                                                class="absolute min-w-[12px] min-h-[12px] rounded-full py-1 px-1 text-xs font-medium content-[''] leading-none grid place-items-center bottom-[14%] right-[14%] translate-x-2/4 translate-y-2/4 bg-green-500 text-white">
-                                                                </span>
-                                                        @endif
+                                                        <div class="w-10 h-10 relative">
+                                                            <img class="w-10 h-10 rounded-full object-contain"
+                                                                 src="/images/default-avatar.jpg"
+                                                                 alt="{{ $user->last_name }} {{ $user->name }}">
                                                         </div>
                                                     @endif
                                                     <div class="ps-3">
                                                         <a href="/users/{{ $user->id }}" type="button"
                                                            class="font-medium text-white dark:text-white">
                                                             <div
-                                                                class="text-base font-semibold @if ($user->active == 0) dark:text-gray-400 @endif">{{ $user->last_name }} {{ $user->name }}</div>
+                                                                class="text-base font-semibold @if ($user->active == 0) dark:text-gray-400 @endif">
+                                                                {{ $user->last_name }} {{ $user->name }}
+                                                            </div>
                                                         </a>
                                                         <div class="font-normal text-gray-500">
                                                             {{ $user->email }}
                                                         </div>
+                                                        @if($user->active)
+                                                            <div id="changeAvailable{{ $user->id }}">
+                                                                <div
+                                                                    class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                                                    <div
+                                                                        class="w-2 h-2 me-1 bg-green-500 rounded-full"></div>
+                                                                    {{ __('messages.Активный') }}
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div id="changeAvailable{{ $user->id }}">
+                                                                <div
+                                                                    class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                                                    <div
+                                                                        class="w-2 h-2 me-1 bg-red-500 rounded-full"></div>
+                                                                    {{ __('messages.Не активный') }}
+                                                                </div>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 </td>
                                                 <td class="px-6 py-4">
@@ -228,9 +274,10 @@
                                                     {{ $user->meta->number ?? 'None'  }}
                                                 </td>
                                                 <td class="px-6 py-4">
-                                                    <div class="flex gap-3 items-center justify-center h-full min-w-max">
+                                                    <div
+                                                        class="flex gap-3 items-center justify-center h-full min-w-max">
                                                         {{ $user->meta->tel ?? 'None'  }}
-                                                        @if($user->meta->tel != 'None' && $user->meta->tel != NULL)
+                                                        @if($user->meta->tel != 'None' && $user->meta->tel != null)
                                                             <a href="tel:{{ $user->meta->tel }}"
                                                                class="p-1 rounded-md bg-green-500 hover:bg-green-700 flex h-full">
                                                                 <svg class="w-3 h-3 " viewBox="0 0 24 24" fill="none"
@@ -257,6 +304,15 @@
                                                     </div>
 
                                                 </td>
+
+                                                <td class="px-6 py-4 ">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                    <div class="flex">
+                                                        <input type="checkbox" onclick="updateActive({{ $user->id }}, '{{ __('messages.Активный') }}', '{{ __('messages.Не активный') }}', this)"
+                                                               data-user-id="{{ $user->id }}" {{ $user->active ? 'checked' : '' }}>
+                                                    </div>
+                                                </td>
+
                                                 <td class="px-6 py-4 ">
                                                     <div class="flex gap-3 items-center justify-center h-full">
                                                         <a href="/users/{{ $user->id }}" type="button"
@@ -295,28 +351,7 @@
                                                         </a>
                                                     </div>
 
-                                                    <script>
-                                                        function deleteUser($id) {
 
-                                                            let _url = '/users/' + $id;
-                                                            console.log(_url)
-                                                            let _token = $('input[name~="_token"]').val();
-
-                                                            if (confirm('Удалить игрока?')) {
-                                                                $.ajax({
-                                                                    url: _url,
-                                                                    type: 'DELETE',
-                                                                    data: {
-                                                                        _token: _token
-                                                                    },
-                                                                    success: function (response) {
-                                                                        window.location.href = '/users';
-                                                                    }
-                                                                });
-                                                            }
-
-                                                        };
-                                                    </script>
                                                 </td>
 
                                             </tr>
@@ -331,7 +366,8 @@
                             @endif
                         @endforeach
                     @else
-                        <div class="font-normal text-gray-500">{{ __('messages.У вас нет ни одного игрока') }}</div>
+                        <div
+                            class="font-normal text-gray-500">{{ __('messages.У вас нет ни одного игрока или команда не активна') }}</div>
                     @endif
                 </div>
             </div>

@@ -2,168 +2,197 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Training\StoreTrainingRequest;
+use App\Http\Requests\Training\UpdateTrainingRequest;
+use App\Http\Requests\Training\SettingsTrainingRequest;
+use App\Http\Requests\Training\AddressesTrainingRequest;
 use App\Models\ClassTraining;
+use App\Models\AddressesTraining;
 use App\Models\Team;
-use App\Models\Training;
-use App\Models\User;
+use App\Services\TrainingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class TrainingController extends Controller
 {
+    protected TrainingService $trainingService;
+
+    public function __construct(TrainingService $trainingService)
+    {
+        $this->trainingService = $trainingService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $userId = Auth::user()->id;
+        $userId = Auth::id();
         $teamCode = Auth::user()->team_code;
 
-        $teamActive = Team::query()
-            ->where('user_id', $userId)
-            ->latest('created_at')
-            ->paginate(10);
+        $teamActive = Team::where('user_id', $userId)
+                          ->where('active', true)
+                          ->latest('created_at')
+                          ->paginate(10);
 
-        $trainingActive = Training::query()
-            ->where('user_id', $userId)
-            ->latest('date')
-            ->paginate(12);
+        $trainingActive = $this->trainingService->getTrainingsByUser($userId);
+        $trainingForPlayer = $this->trainingService->getTrainingsByTeamCode($teamCode);
 
-        $trainingForPlayer = Training::query()
-            ->where('team_code', $teamCode)
-            ->latest('date')
-            ->paginate(12);
+        $trainingClass = ClassTraining::where('user_id', $userId)->paginate(100);
+        $trainingAddresses = AddressesTraining::where('user_id', $userId)->paginate(100);
 
-        $trainingClass = ClassTraining::query()
-            ->paginate(100);
-
-        return view('trainings.index', compact('teamActive','trainingActive', 'trainingForPlayer', 'trainingClass'));
+        return view('trainings.index', compact(
+            'teamActive',
+            'trainingActive',
+            'trainingForPlayer',
+            'trainingClass',
+            'trainingAddresses'
+        ));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Create new classifications
      */
-    public function create()
+    public function settings(SettingsTrainingRequest $request)
     {
-        //
+        $userId = Auth::id();
+
+        foreach ($request->classification_names as $name) {
+            ClassTraining::create(['user_id' => $userId, 'name' => $name]);
+        }
+
+        return redirect()->back()->with('success', 'Классификации успешно сохранены!');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create new addresses trainings
      */
-    public function store(Request $request)
+    public function addressesTrainings(AddressesTrainingRequest $request)
     {
-        dd($request);
+        $userId = Auth::id();
 
-        Log::debug('Создана тренировка для команды '. $request->team_code);
-        Log::debug($request);
+        foreach ($request->addresses_names as $name) {
+            AddressesTraining::create(['user_id' => $userId, 'name' => $name]);
+        }
 
-        $userId = Auth::user()->id;
-        $validated = $request->validate([
-            'team_code' => ['required', 'max:7'],
-            'date' => ['required', 'string', 'date'],
-            'start' => ['required', 'string'],
-            'finish' => ['required', 'string'],
-            'class' => ['required','nullable'],
-            'desc' => ['nullable', 'string', 'max:1500'],
-            'recovery' => ['nullable'],
-            'load' => ['nullable'],
-            'link_docs' => ['nullable'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-
-        $training = Training::query()->create([
-            'user_id' => $userId,
-            'team_code' => $validated['team_code'],
-            'date' => $validated['date'],
-            'start' => $validated['start'],
-            'finish' => $validated['finish'],
-            'class' => $validated['class'],
-            'desc' => $validated['desc'],
-            'recovery' => $validated['recovery'],
-            'load' => $validated['load'],
-            'link_docs' => $validated['link_docs'],
-            'active' => true,
-        ]);
-        return response()->json(['code'=>200, 'message'=>'Запись успешно создана','data' => $training], 200);
+        return redirect()->back()->with('success', 'Адреса успешно сохранены!');
     }
 
     /**
-     * Display the specified resource.
+     * Delete address
+     */
+    public function deleteAddressesTrainings(string $id)
+    {
+        \Log::debug("Попытка удалить адрес с ID: " . $id);
+        $address = AddressesTraining::find($id);
+        if (!$address) {
+            \Log::warning("Адрес с ID {$id} не найден.");
+            return response()->json(['message' => 'Адрес не найдена'], 404);
+        }
+
+        $address->delete();
+
+        return response()->json(['success' => 'Адрес успешно удален']);
+    }
+
+    /**
+     * Delete class training
+     */
+    public function deleteClassTraining(string $id)
+    {
+        \Log::debug("Попытка удалить классификацию с ID: " . $id);
+        $class = ClassTraining::find($id);
+        if (!$class) {
+            \Log::warning("Классификация с ID {$id} не найден.");
+            return response()->json(['message' => 'Классификация не найдена'], 404);
+        }
+
+        $class->delete();
+
+        return response()->json(['success' => 'Классификация успешно удалена']);
+    }
+
+    /**
+     * Store a newly created training.
+     */
+    public function store(StoreTrainingRequest $request)
+    {
+        $data = $request->validated();
+        $userId = Auth::id();
+
+        $training = $this->trainingService->createTraining($data, $userId);
+
+        return response()->json([
+            'code' => 200,
+            'message' => 'Запись успешно создана',
+            'data' => $training,
+        ]);
+    }
+
+    /**
+     * Display a specific training.
      */
     public function show(string $id)
     {
-        $userId = Auth::user()->id;
+        $userId = Auth::id();
 
-        $teamActive = Team::query()
-            ->where('user_id', $userId)
-            ->latest('created_at')
-            ->paginate(10);
+        $teamActive = Team::where('user_id', $userId)
+                          ->latest('created_at')
+                          ->paginate(10);
 
-        $trainingClass = ClassTraining::query()
-            ->paginate(100);
+        $trainingClass = ClassTraining::paginate(100);
+        $trainingAddresses = AddressesTraining::paginate(100);
 
-        $training = Training::where('id', $id)->where('user_id', $userId)->first();
+        $training = $this->trainingService->getTrainingByIdAndUser($id, $userId);
 
         if (!$training) {
-            return redirect('/dashboard')->with('error', 'The training does not exist.');
+            return redirect('/dashboard')->with('error', 'Тренировка не найдена.');
         }
 
-        return view('trainings.training', compact('training', 'teamActive', 'trainingClass'));
+        return view('trainings.training', compact('training', 'teamActive', 'trainingClass', 'trainingAddresses'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update the specified training.
      */
-    public function edit(string $id)
+    public function update(UpdateTrainingRequest $request, string $id)
     {
-        //
-    }
+        $data = $request->validated();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $training)
-    {
-        $trainingId = $request->trainingId;
+        $training = $this->trainingService->updateTraining($data['trainingId'], $data);
 
-        Training::find($trainingId)->update([
-            'team_code' => $request->team_code,
-            'date' => $request->date,
-            'start' => $request->start,
-            'finish' => $request->finish,
-            'class' => $request->class,
-            'desc' => $request->desc,
-            'recovery' => $request->recovery,
-            'load' => $request->load,
-            'link_docs' => $request->link_docs,
-            'active' => $request->active,
-            'confirmed' => $request->confirmed,
+        if (!$training) {
+            return response()->json(['message' => 'Тренировка не найдена'], 404);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'success' => 'Запись успешно обновлена',
+            'data' => $training,
         ]);
-
-        DB::table( 'presence_trainings' )->where( 'training_id', $trainingId )->delete();
-        if ( isset( $request->users ) ) {
-            foreach ( $request->users as $player ) {
-                DB::insert( 'insert into presence_trainings (training_id, user_id, team_code) values (?, ?, ?)',
-                    [ $trainingId, $player, $request->team_code ] );
-            }
-        }
-
-        return response()->json(['code'=>200, 'success'=>'Запись успешно создана','data' => $training], 200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified training.
      */
-    public function destroy(string $training)
+    public function destroy(string $id)
     {
-        Training::find($training)->delete();
+        $deleted = $this->trainingService->deleteTraining((int)$id);
 
-        // при удалении команды удаляем всстатистику присутствия на тренировках этой команды
-        DB::table( 'presence_trainings' )->where( 'training_id', $training )->delete();
+        if (!$deleted) {
+            return response()->json(['message' => 'Тренировка не найдена'], 404);
+        }
 
         return response()->json(['success' => 'Запись успешно удалена']);
+    }
+
+    /**
+     * Calendar data.
+     */
+    public function calendar(Request $request)
+    {
+        $result = $this->trainingService->getTrainingsForCalendar($request->input('start'), $request->input('end'));
+
+        return response()->json($result);
     }
 }

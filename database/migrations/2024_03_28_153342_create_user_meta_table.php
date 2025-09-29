@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('user_metas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
+            $table->date('birthday')->nullable();
             $table->string('tel')->nullable();
+            $table->string('telegram_id')->nullable();
             $table->string('position')->nullable();
             $table->string('number')->nullable();
             $table->string('tel_mother')->nullable();
