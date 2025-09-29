@@ -1,6 +1,8 @@
-import './bootstrap';
+import $ from 'jquery';
+window.$ = window.jQuery = $;
 
-import "@fancyapps/ui/dist/fancybox/fancybox.css";
+import 'flowbite';
+
 
 import Alpine from 'alpinejs';
 
@@ -8,4 +10,7 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
+import './custom.js';
+
+import './datepicker.min.js';
 

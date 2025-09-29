@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('class_trainings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
             $table->timestamps();
             $table->string('name');
-            $table->string('desc')->nullable();
             $table->boolean('active')->default(true);
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('class_training');
+        Schema::dropIfExists('class_trainings');
     }
 };

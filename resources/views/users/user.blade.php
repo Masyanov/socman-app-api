@@ -98,22 +98,41 @@
                                         <input type="hidden" id="team_code"
                                                name="team_code"
                                                value="{{ $player->team_code }}"/>
-                                        <div class=" flex flex-col col-span-3 sm:col-span-1">
+                                        <div class="flex flex-col col-span-3 sm:col-span-1">
                                             <label for="avatar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Фото') }}</label>
-                                            @if($player->meta->avatar)
-                                                <img class="w-full h-60 rounded-lg object-cover mb-3 border dark:border-gray-500"
-                                                     src="/avatars/{{ $player->meta->avatar }}"
-                                                     alt="{{ $player->last_name }} {{ $player->name }}">
-                                            @else
-                                                <img class="w-full h-60 rounded-lg object-cover mb-3 border dark:border-gray-500"
-                                                     src="/images/default-avatar.jpg"
-                                                     alt="{{ $player->last_name }} {{ $player->name }}">
-                                            @endif
 
-                                            <input class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" name="avatar" id="avatar" type="file" value="{{ $player->meta->avatar }}">
+                                            @php
+                                                $avatarPath = $player->meta->avatar ? "/avatars/{$player->meta->avatar}" : "/images/default-avatar.jpg";
+                                            @endphp
+
+                                            <img id="avatarPreview"
+                                                 class="w-full h-60 rounded-lg object-cover mb-3 border dark:border-gray-500"
+                                                 src="{{ $avatarPath }}"
+                                                 alt="{{ $player->last_name }} {{ $player->name }}">
+
+                                            <input class="block w-full text-lg text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                                   name="avatar"
+                                                   id="avatar"
+                                                   type="file"
+                                                   accept="image/*">
 
                                             <x-input-error :messages="$errors->get('avatar')" class="mt-2"/>
                                         </div>
+                                        <script>
+                                            document.getElementById('avatar').addEventListener('change', function(event) {
+                                                const [file] = this.files;
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onload = function(e) {
+                                                        const preview = document.getElementById('avatarPreview');
+                                                        preview.src = e.target.result;
+                                                        preview.classList.remove('object-contain');
+                                                        preview.classList.add('object-cover'); // меняем стиль, если нужно
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            });
+                                        </script>
                                         <div class=" flex flex-col gap-4 col-span-3 sm:col-span-2">
                                             <div class="col-span-1 sm:col-span-1">
                                                 <label for="last_name"
@@ -141,7 +160,15 @@
                                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                        value="{{ $player->second_name }}">
                                             </div>
-
+                                            <div class="col-span-1 sm:col-span-1">
+                                                <label for="birthday"
+                                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Дата рождения</label>
+                                                <input type="date" name="birthday"
+                                                       id="birthday"
+                                                       class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                       required value="{{ $player->meta->birthday }}">
+                                                <x-input-error :messages="$errors->get('birthday')" class="mt-2"/>
+                                            </div>
 
 
                                             @if(CountTeam() >= 2)

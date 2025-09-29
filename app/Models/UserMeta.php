@@ -25,6 +25,8 @@ class UserMeta extends Authenticatable
     protected $fillable = [
         'user_id',
         'tel',
+        'birthday',
+        'telegram_id',
         'position',
         'number',
         'tel_mother',

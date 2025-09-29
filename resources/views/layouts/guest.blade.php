@@ -1,105 +1,87 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ config('app.name', 'SportControl') }}</title>
+    <link rel="icon" href="{{ url('images/logo_sc.png') }}">
+    <link rel="icon" href="{{ url('images/logo_sc.png') }}" type="image/svg+xml">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
 
-        <title>{{ config('app.name', 'SocMan') }}</title>
-        <link rel="icon" href="{{ url('images/favicon.png') }}">
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
-        />
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/jquery.js', 'resources/js/app.js', 'resources/js/flowbite.js', 'resources/js/custom.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class=" min-h-screen flex flex-col sm:justify-center items-center p-4 sm:p-6 pt-10 sm:pt-12 bg-gray-100 dark:bg-gray-900">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+    <link href="{{ asset('src/fontawesome.min.css') }}" rel="stylesheet"/>
+    <script src="{{ asset('src/jquery.min.js') }}" type="text/javascript"></script>
+    <!-- Fancybox -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+
+</head>
+
+<body class="font-sans antialiased">
+<div class="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
+    <header class="fixed top-0 z-10 w-full">
+        <nav class="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+            <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+                <x-application-logo class="block h-16 w-auto fill-current text-gray-800 dark:text-gray-200"/>
             </div>
-            <ul class="pt-6 px-4 gap-2 grid grid-cols-2 ">
-                <li>
-                    <a class="flex items-center font-medium text-xs text-gray-400 dark:text-gray-200" href="{{ route('locale', ['locale' => 'ru']) }}">
-                        <svg width="24px" height="24px" viewBox="0 -4 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g clip-path="url(#clip0_503_2726)"> <rect x="0.25" y="0.25" width="27.5" height="19.5" rx="1.75" fill="white" stroke="#F5F5F5" stroke-width="0.5"></rect> <mask id="mask0_503_2726" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="28" height="20"> <rect x="0.25" y="0.25" width="27.5" height="19.5" rx="1.75" fill="white" stroke="white" stroke-width="0.5"></rect> </mask> <g mask="url(#mask0_503_2726)"> <path fill-rule="evenodd" clip-rule="evenodd" d="M0 13.3333H28V6.66667H0V13.3333Z" fill="#0C47B7"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M0 20H28V13.3333H0V20Z" fill="#E53B35"></path> </g> </g> <defs> <clipPath id="clip0_503_2726"> <rect width="28" height="20" rx="2" fill="white"></rect> </clipPath> </defs> </g></svg>
-                        <span class="pl-2">RU</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="flex items-center font-medium text-xs text-gray-400 dark:text-gray-200" href="{{ route('locale', ['locale' => 'en']) }}">
-                        <svg width="24px" height="24px" viewBox="0 -4 28 28" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                               stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <g clip-path="url(#clip0_503_3486)">
-                                    <rect width="28" height="20" rx="2" fill="white"></rect>
-                                    <mask id="mask0_503_3486" style="mask-type:alpha"
-                                          maskUnits="userSpaceOnUse" x="0" y="0" width="28"
-                                          height="20">
-                                        <rect width="28" height="20" rx="2" fill="white"></rect>
-                                    </mask>
-                                    <g mask="url(#mask0_503_3486)">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                              d="M28 0H0V1.33333H28V0ZM28 2.66667H0V4H28V2.66667ZM0 5.33333H28V6.66667H0V5.33333ZM28 8H0V9.33333H28V8ZM0 10.6667H28V12H0V10.6667ZM28 13.3333H0V14.6667H28V13.3333ZM0 16H28V17.3333H0V16ZM28 18.6667H0V20H28V18.6667Z"
-                                              fill="#D02F44"></path>
-                                        <rect width="12" height="9.33333" fill="#46467F"></rect>
-                                        <g filter="url(#filter0_d_503_3486)">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                  d="M2.66665 1.99999C2.66665 2.36818 2.36817 2.66666 1.99998 2.66666C1.63179 2.66666 1.33331 2.36818 1.33331 1.99999C1.33331 1.63181 1.63179 1.33333 1.99998 1.33333C2.36817 1.33333 2.66665 1.63181 2.66665 1.99999ZM5.33331 1.99999C5.33331 2.36818 5.03484 2.66666 4.66665 2.66666C4.29846 2.66666 3.99998 2.36818 3.99998 1.99999C3.99998 1.63181 4.29846 1.33333 4.66665 1.33333C5.03484 1.33333 5.33331 1.63181 5.33331 1.99999ZM7.33331 2.66666C7.7015 2.66666 7.99998 2.36818 7.99998 1.99999C7.99998 1.63181 7.7015 1.33333 7.33331 1.33333C6.96512 1.33333 6.66665 1.63181 6.66665 1.99999C6.66665 2.36818 6.96512 2.66666 7.33331 2.66666ZM10.6666 1.99999C10.6666 2.36818 10.3682 2.66666 9.99998 2.66666C9.63179 2.66666 9.33331 2.36818 9.33331 1.99999C9.33331 1.63181 9.63179 1.33333 9.99998 1.33333C10.3682 1.33333 10.6666 1.63181 10.6666 1.99999ZM3.33331 3.99999C3.7015 3.99999 3.99998 3.70152 3.99998 3.33333C3.99998 2.96514 3.7015 2.66666 3.33331 2.66666C2.96512 2.66666 2.66665 2.96514 2.66665 3.33333C2.66665 3.70152 2.96512 3.99999 3.33331 3.99999ZM6.66665 3.33333C6.66665 3.70152 6.36817 3.99999 5.99998 3.99999C5.63179 3.99999 5.33331 3.70152 5.33331 3.33333C5.33331 2.96514 5.63179 2.66666 5.99998 2.66666C6.36817 2.66666 6.66665 2.96514 6.66665 3.33333ZM8.66665 3.99999C9.03484 3.99999 9.33331 3.70152 9.33331 3.33333C9.33331 2.96514 9.03484 2.66666 8.66665 2.66666C8.29846 2.66666 7.99998 2.96514 7.99998 3.33333C7.99998 3.70152 8.29846 3.99999 8.66665 3.99999ZM10.6666 4.66666C10.6666 5.03485 10.3682 5.33333 9.99998 5.33333C9.63179 5.33333 9.33331 5.03485 9.33331 4.66666C9.33331 4.29847 9.63179 3.99999 9.99998 3.99999C10.3682 3.99999 10.6666 4.29847 10.6666 4.66666ZM7.33331 5.33333C7.7015 5.33333 7.99998 5.03485 7.99998 4.66666C7.99998 4.29847 7.7015 3.99999 7.33331 3.99999C6.96512 3.99999 6.66665 4.29847 6.66665 4.66666C6.66665 5.03485 6.96512 5.33333 7.33331 5.33333ZM5.33331 4.66666C5.33331 5.03485 5.03484 5.33333 4.66665 5.33333C4.29846 5.33333 3.99998 5.03485 3.99998 4.66666C3.99998 4.29847 4.29846 3.99999 4.66665 3.99999C5.03484 3.99999 5.33331 4.29847 5.33331 4.66666ZM1.99998 5.33333C2.36817 5.33333 2.66665 5.03485 2.66665 4.66666C2.66665 4.29847 2.36817 3.99999 1.99998 3.99999C1.63179 3.99999 1.33331 4.29847 1.33331 4.66666C1.33331 5.03485 1.63179 5.33333 1.99998 5.33333ZM3.99998 5.99999C3.99998 6.36819 3.7015 6.66666 3.33331 6.66666C2.96512 6.66666 2.66665 6.36819 2.66665 5.99999C2.66665 5.6318 2.96512 5.33333 3.33331 5.33333C3.7015 5.33333 3.99998 5.6318 3.99998 5.99999ZM5.99998 6.66666C6.36817 6.66666 6.66665 6.36819 6.66665 5.99999C6.66665 5.6318 6.36817 5.33333 5.99998 5.33333C5.63179 5.33333 5.33331 5.6318 5.33331 5.99999C5.33331 6.36819 5.63179 6.66666 5.99998 6.66666ZM9.33331 5.99999C9.33331 6.36819 9.03484 6.66666 8.66665 6.66666C8.29846 6.66666 7.99998 6.36819 7.99998 5.99999C7.99998 5.6318 8.29846 5.33333 8.66665 5.33333C9.03484 5.33333 9.33331 5.6318 9.33331 5.99999ZM9.99998 8C10.3682 8 10.6666 7.70152 10.6666 7.33333C10.6666 6.96514 10.3682 6.66666 9.99998 6.66666C9.63179 6.66666 9.33331 6.96514 9.33331 7.33333C9.33331 7.70152 9.63179 8 9.99998 8ZM7.99998 7.33333C7.99998 7.70152 7.7015 8 7.33331 8C6.96512 8 6.66665 7.70152 6.66665 7.33333C6.66665 6.96514 6.96512 6.66666 7.33331 6.66666C7.7015 6.66666 7.99998 6.96514 7.99998 7.33333ZM4.66665 8C5.03484 8 5.33331 7.70152 5.33331 7.33333C5.33331 6.96514 5.03484 6.66666 4.66665 6.66666C4.29846 6.66666 3.99998 6.96514 3.99998 7.33333C3.99998 7.70152 4.29846 8 4.66665 8ZM2.66665 7.33333C2.66665 7.70152 2.36817 8 1.99998 8C1.63179 8 1.33331 7.70152 1.33331 7.33333C1.33331 6.96514 1.63179 6.66666 1.99998 6.66666C2.36817 6.66666 2.66665 6.96514 2.66665 7.33333Z"
-                                                  fill="url(#paint0_linear_503_3486)"></path>
+        </nav>
+    </header>
+
+    <!-- Page Content -->
+    <main  class="flex-1">
+        {{ $slot }}
+    </main>
+    <footer class="w-full p-4  bg-gray-900">
+        <div class="bg-white rounded-lg shadow-sm  dark:bg-gray-800">
+            <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
+                <div class="text-sm text-gray-500 sm:text-center dark:text-gray-400">© {{ date('Y') }} <a
+                        href="https://load-control.ru/" class="hover:underline">SportControl™</a>. Все права защищены.
+                </div>
+                <div class="grid grid-cols-1 gap-3 py-6 sm:space-x-8 sm:space-y-0 rtl:space-x-reverse md:gap-6 md:grid-cols-3">
+                    <a href="/oferta" target="_blank" class="text-xs text-white hover:text-indigo-500" title="Оферта">Оферта</a>
+                    <a href="/policy" target="_blank" class="text-xs text-white hover:text-indigo-500" title="Политика конфиденциальности">Политика конфиденциальности</a>
+                    <a href="/rules" target="_blank" class="text-xs text-white hover:text-indigo-500" title="Пользовательское соглашение">Пользовательское соглашение</a>
+                </div>
+                <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+                    <li>
+                        <a href="https://t.me/masyanov" class="flex gap-3 align-items-center" target="_blank"
+                           title="Напишите нам в телеграм">
+                            <svg width="30" height="30" viewBox="0 0 100 100" version="1.1" xml:space="preserve"
+                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <style type="text/css">
+                                        .st117 {
+                                            fill: #1B92D1;
+                                        } </style>
+                                    <g id="Layer_1"></g>
+                                    <g id="Layer_2">
+                                        <g>
+                                            <path class="st117"
+                                                  d="M88.723,12.142C76.419,17.238,23.661,39.091,9.084,45.047c-9.776,3.815-4.053,7.392-4.053,7.392 s8.345,2.861,15.499,5.007c7.153,2.146,10.968-0.238,10.968-0.238l33.62-22.652c11.922-8.107,9.061-1.431,6.199,1.431 c-6.199,6.2-16.452,15.975-25.036,23.844c-3.815,3.338-1.908,6.199-0.238,7.63c6.199,5.246,23.129,15.976,24.082,16.691 c5.037,3.566,14.945,8.699,16.452-2.146c0,0,5.961-37.435,5.961-37.435c1.908-12.637,3.815-24.321,4.053-27.659 C97.307,8.804,88.723,12.142,88.723,12.142z"></path>
                                         </g>
                                     </g>
                                 </g>
-                                <defs>
-                                    <filter id="filter0_d_503_3486" x="1.33331" y="1.33333"
-                                            width="9.33331" height="7.66667"
-                                            filterUnits="userSpaceOnUse"
-                                            color-interpolation-filters="sRGB">
-                                        <feFlood flood-opacity="0"
-                                                 result="BackgroundImageFix"></feFlood>
-                                        <feColorMatrix in="SourceAlpha" type="matrix"
-                                                       values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                                                       result="hardAlpha"></feColorMatrix>
-                                        <feOffset dy="1"></feOffset>
-                                        <feColorMatrix type="matrix"
-                                                       values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0"></feColorMatrix>
-                                        <feBlend mode="normal" in2="BackgroundImageFix"
-                                                 result="effect1_dropShadow_503_3486"></feBlend>
-                                        <feBlend mode="normal" in="SourceGraphic"
-                                                 in2="effect1_dropShadow_503_3486"
-                                                 result="shape"></feBlend>
-                                    </filter>
-                                    <linearGradient id="paint0_linear_503_3486" x1="1.33331"
-                                                    y1="1.33333" x2="1.33331" y2="7.99999"
-                                                    gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="white"></stop>
-                                        <stop offset="1" stop-color="#F0F0F0"></stop>
-                                    </linearGradient>
-                                    <clipPath id="clip0_503_3486">
-                                        <rect width="28" height="20" rx="2" fill="white"></rect>
-                                    </clipPath>
-                                </defs>
-                            </g>
-                        </svg>
-                        <span class="pl-2">EN</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
             </div>
-
         </div>
-    </body>
+    </footer>
+    <button id="backToTop"
+            class="hidden fixed bottom-6 right-6 bg-indigo-500 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 hover:bg-rose-500"
+            aria-label="Наверх">
+        ↑
+    </button>
+</div>
+</body>
 
-    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-</html>
+

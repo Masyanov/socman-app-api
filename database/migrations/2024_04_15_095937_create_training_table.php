@@ -25,6 +25,8 @@ return new class extends Migration {
             $table->string('link_docs')->nullable();
             $table->boolean('confirmed')->default(false);
             $table->boolean('active')->default(true);
+            $table->boolean('notified')->default(false);
+            $table->boolean('notified_after_training')->default(false);
             $table->timestamps();
         });
     }
@@ -34,6 +36,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('training');
+        Schema::dropIfExists('trainings');
     }
 };

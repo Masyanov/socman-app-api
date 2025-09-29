@@ -24,8 +24,12 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $this->faker->firstName(),             // можно оставить или заменить подходящим
+            'second_name' => $this->faker->middleName(),      // если используете, иначе уберите
+            'last_name' => $this->faker->lastName(),          // вот добавляем это поле
+            'role' => 'coach',
+            'team_code' => rand(100, 999).'-'.rand(100, 999),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

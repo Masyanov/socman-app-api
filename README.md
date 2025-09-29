@@ -1,3 +1,3 @@
-# socman-app-api
+# SportControl-app-api
 
 Приложение для профессиональных тренеров по футболу
