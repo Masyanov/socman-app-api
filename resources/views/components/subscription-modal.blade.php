@@ -222,7 +222,7 @@
             </div>
             <!-- Сообщение об успехе -->
             <div id="success-message" class="hidden mb-6 p-3 text-white text-center">
-                ✅ Заявка успешно отправлена!
+                ✅ Заявка успешно отправлена! Отправили на вашу почту инструкцию!
             </div>
             <div id="loader" role="status" class="hidden w-full flex justify-center  mb-6 p-3">
                 <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
