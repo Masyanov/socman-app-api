@@ -26,7 +26,7 @@
                 <!-- Form -->
                 <form id="subscription-form" class="space-y-4">
                     @csrf
-
+                    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
                     <!-- Имя -->
                     <div>
                         <label class="block text-gray-300 mb-1">Имя</label>
@@ -100,11 +100,124 @@
                         </label>
                     </div>
 
-                    <!-- Кнопка -->
-                    <button type="submit"
+                    <!-- Кнопка с исправленным ID -->
+                    <button type="submit" id="submit-btn"
                             class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">
                         Отправить заявку
                     </button>
+                    <script
+                        src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const form = document.getElementById('subscription-form');
+                            const submitBtn = document.getElementById('submit-btn');
+                            const formContainer = document.getElementById('subscription-form-container');
+                            const loader = document.getElementById('loader');
+                            const successMessage = document.getElementById('success-message');
+                            let recaptchaReady = false;
+
+                            function initRecaptcha() {
+                                if (typeof grecaptcha === 'undefined') {
+                                    console.error('reCAPTCHA script not loaded');
+                                    return false;
+                                }
+
+                                grecaptcha.ready(() => {
+                                    recaptchaReady = true;
+                                    generateRecaptchaToken().catch(console.error);
+                                });
+
+                                return true;
+                            }
+
+                            async function generateRecaptchaToken() {
+                                if (!recaptchaReady) {
+                                    throw new Error('reCAPTCHA not initialized');
+                                }
+
+                                try {
+                                    const token = await grecaptcha.execute(
+                                        '{{ env('RECAPTCHA_SITE_KEY') }}',
+                                        {action: 'submit'}
+                                    );
+                                    document.getElementById('g-recaptcha-response').value = token;
+                                    return token;
+                                } catch (error) {
+                                    console.error('reCAPTCHA execution error:', error);
+                                    throw new Error('Ошибка генерации токена безопасности');
+                                }
+                            }
+
+                            // Инициализация reCAPTCHA
+                            if (!initRecaptcha()) {
+                                const script = document.createElement('script');
+                                script.src = 'https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}';
+                                script.onload = initRecaptcha;
+                                script.onerror = () => console.error('Failed to load reCAPTCHA');
+                                document.head.appendChild(script);
+                            }
+
+                            // Единственный обработчик submit
+                            form.addEventListener('submit', async (e) => {
+                                e.preventDefault();
+
+                                const originalText = submitBtn.textContent;
+                                submitBtn.disabled = true;
+                                submitBtn.textContent = 'Отправка...';
+                                formContainer.classList.add('hidden');
+                                successMessage.classList.add('hidden');
+                                loader.classList.remove('hidden');
+
+                                try {
+                                    await generateRecaptchaToken();
+
+                                    const formData = new FormData(form);
+                                    const response = await fetch('{{ route("subscription-order.store") }}', {
+                                        method: 'POST',
+                                        body: formData,
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'X-Requested-With': 'XMLHttpRequest',
+                                            'X-CSRF-TOKEN': formData.get('_token')
+                                        }
+                                    });
+
+                                    const result = await response.json();
+                                    loader.classList.add('hidden');
+
+                                    if (result.success) {
+                                        successMessage.classList.remove('hidden');
+                                        form.reset();
+
+                                        // Auto close modal in 2 seconds
+                                        setTimeout(() => {
+                                            const modal = document.getElementById('subscriptionModal');
+                                            modal.classList.add('hidden');
+                                        }, 2000);
+                                    } else {
+                                        alert('❌ ' + (result.message || 'Ошибка при отправке формы'));
+                                        formContainer.classList.remove('hidden');
+                                    }
+                                } catch (error) {
+                                    console.error('Form submission error:', error);
+                                    loader.classList.add('hidden');
+                                    formContainer.classList.remove('hidden');
+                                    alert('❌ Ошибка при отправке формы');
+                                } finally {
+                                    submitBtn.disabled = false;
+                                    submitBtn.textContent = originalText;
+                                }
+                            });
+                        }); // Закрытие DOMContentLoaded
+
+                    </script>
+
+
+                    <style>
+                        .grecaptcha-badge {
+                            display: none;
+                        }
+                    </style>
                 </form>
             </div>
             <!-- Сообщение об успехе -->
@@ -127,50 +240,3 @@
     </div>
 </div>
 
-<script>
-    document.getElementById('subscription-form').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        const form = e.target;
-        const formConteiner = document.getElementById('subscription-form-container');
-        const loader = document.getElementById('loader');
-        const successMessage = document.getElementById('success-message');
-
-        // Скрываем форму и показываем лоадер
-        formConteiner.classList.add('hidden');
-        successMessage.classList.add('hidden'); // скрываем на всякий случай
-        loader.classList.remove('hidden');
-
-        try {
-            const formData = new FormData(form);
-
-            const res = await fetch("{{ route('subscription-order.store') }}", {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': formData.get('_token'),
-                }
-            });
-
-            const json = await res.json();
-
-            loader.classList.add('hidden');
-
-            if (json.success) {
-                successMessage.classList.remove('hidden');
-                form.reset();
-            } else {
-                // при ошибке возвращаем форму и выводим сообщение
-                form.classList.remove('hidden');
-                alert(json.message || 'Ошибка при отправке формы');
-            }
-        } catch (error) {
-            loader.classList.add('hidden');
-            form.classList.remove('hidden');
-            alert('Ошибка при отправке формы');
-            console.error(error);
-        }
-    });
-
-</script>
