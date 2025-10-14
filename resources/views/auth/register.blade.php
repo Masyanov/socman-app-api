@@ -121,27 +121,50 @@
                     <x-primary-button class="ms-4">
                         {{ __('messages.Регистрация') }}
                     </x-primary-button>
+
+                    <script
+                        src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
+                    <script>
+                        (function () {
+                            const form = document.querySelector('form[action="{{ route('register') }}"]');
+                            if (!form) return;
+
+                            form.addEventListener('submit', function (e) {
+                                // Prevent default submit to fetch fresh token first
+                                e.preventDefault();
+
+                                grecaptcha.ready(function () {
+                                    grecaptcha.execute('{{ env('RECAPTCHA_SITE_KEY') }}', {action: 'register'}).then(function (token) {
+                                        // set token and submit form
+                                        document.getElementById('g-recaptcha-response').value = token;
+                                        form.submit();
+                                    }).catch(function (err) {
+                                        console.error('reCAPTCHA error', err);
+                                        // If recaptcha fails, allow user to try again
+                                        alert('Не удалось проверить безопасность. Попробуйте ещё раз.');
+                                    });
+                                });
+                            });
+                        })();
+                    </script>
+
+                    <style>
+                        .grecaptcha-badge {
+                            display: none;
+                        }
+                    </style>
                 </div>
             </form>
             <div class="w-full mt-6 flex flex-col align-items-center justify-center">
                 <h2 class="text-2xl mb-6 font-medium text-gray-900 dark:text-gray-100" style="width: 300px">
                     Вы можете использовать телеграм бот для регистрации
                 </h2>
-                <a href="https://t.me/load_control_bot" target="_blank" class="mb-6 text-gray-900 dark:text-gray-100">Перейти в бот</a>
+                <a href="https://t.me/load_control_bot" target="_blank" class="mb-6 text-gray-900 dark:text-gray-100">Перейти
+                    в бот</a>
                 <img width="300" src="/images/img.png" alt="Телеграм бот - Load Control">
             </div>
 
         </div>
     </div>
-    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
-    <script>
-        grecaptcha.ready(function () {
-            grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {action: 'register'}).then(function (token) {
-                if (document.getElementById('g-recaptcha-response')) {
-                    document.getElementById('g-recaptcha-response').value = token;
-                }
-            });
-        });
-    </script>
 </x-guest-layout>
 
