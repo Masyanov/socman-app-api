@@ -17,17 +17,16 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Carbon\Carbon;
-
+use App\Services\RecaptchaService; // <- add this
 
 class RegisteredUserController extends Controller {
     public function create() {
-        return view( 'auth.register' );
+        return view('auth.register');
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $teamCode = $request->team_code ?? '000-000';
-
+        // Validate main fields (do not validate recaptcha with a custom rule here)
         $request->validate([
             'name'      => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
@@ -37,6 +36,38 @@ class RegisteredUserController extends Controller {
             'password'  => ['required', 'confirmed', Rules\Password::defaults()],
             'ref'       => ['nullable', 'string'],
         ]);
+
+        // comments in code are in English as requested
+        // Get token from request
+        $token = $request->input('g-recaptcha-response');
+
+        if (empty($token)) {
+            return back()->withErrors(['g-recaptcha-response' => 'Ошибка проверки безопасности. Обновите страницу и попробуйте снова.'])->withInput();
+        }
+
+        // Verify token with RecaptchaService
+        $recaptcha = new RecaptchaService();
+        $result = $recaptcha->verify($token);
+
+        // Log result for debugging
+        \Log::info('register recaptcha', [
+            'success' => $result['success'] ?? false,
+            'score' => $result['score'] ?? null,
+            'response' => $result
+        ]);
+
+        // Check verification result (for v3 check score if you want)
+        if (empty($result['success'])) {
+            return back()->withErrors(['g-recaptcha-response' => 'Ошибка проверки безопасности. Попробуйте позже.'])->withInput();
+        }
+
+        // Optional: enforce minimum score for v3 (e.g. 0.5)
+        if (isset($result['score']) && $result['score'] < 0.5) {
+            return back()->withErrors(['g-recaptcha-response' => 'Подозрительная активность. Попробуйте снова.'])->withInput();
+        }
+
+        // Continue registration flow (your existing code)
+        $teamCode = $request->team_code ?? '000-000';
 
         if ($request->role === 'coach') {
             $active      = 1;
@@ -58,25 +89,22 @@ class RegisteredUserController extends Controller {
             'active'       => $active,
         ]);
 
-        // Для админа генерируем и сохраняем реферальный код
+        // rest of your code unchanged...
         if ($user->role === 'admin') {
             $user->generateReferralCode();
         }
 
-        // Если тренер создан по реферальному коду, связываем с администратором
         if ($user->role === 'coach' && $request->ref) {
             $setting = SettingUser::where('slug', 'referral_code')
-                                              ->where('value', $request->ref)
-                                              ->where('active', true)
-                                              ->first();
+                                  ->where('value', $request->ref)
+                                  ->where('active', true)
+                                  ->first();
             if ($setting && $setting->user && $setting->user->role === 'admin') {
                 $setting->user->coaches()->attach($user->id);
             }
         }
 
-        UserMeta::create([
-            'user_id' => $user->id,
-        ]);
+        UserMeta::create(['user_id' => $user->id]);
 
         if ($request->role == 'coach') {
             Subscription::create([
@@ -97,10 +125,7 @@ class RegisteredUserController extends Controller {
         }
 
         event(new Registered($user));
-
         Auth::login($user);
-
         return redirect(RouteServiceProvider::HOME);
     }
-
 }
