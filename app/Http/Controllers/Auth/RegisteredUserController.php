@@ -37,8 +37,6 @@ class RegisteredUserController extends Controller {
             'ref'       => ['nullable', 'string'],
         ]);
 
-        // comments in code are in English as requested
-        // Get token from request
         $token = $request->input('g-recaptcha-response');
 
         if (empty($token)) {
