@@ -234,14 +234,14 @@
                             руководителя</p>
                         <div class="flex flex-col gap-3 justify-center my-8">
                             <div class="flex justify-center mb-3">
-                                <span class="relative mr-2 text-5xl font-extrabold" id="totalSum">2490 </span>
+                                <span class="relative mr-2 text-5xl font-extrabold" id="totalSum">490</span>
                                 <span class="text-gray-500 dark:text-gray-400">₽/месяц</span>
                             </div>
 
                             <div class="flex w-full">
-                                <form class="max-w-xs mx-auto">
+                                <form class="max-w-xs mx-auto flex flex-col items-center justify-center">
                                     <label for="numberInput" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Количество тренеров:</label>
-                                    <div class="relative flex items-center max-w-[8rem]">
+                                    <div class="relative flex items-center justify-center max-w-[8rem]">
                                         <button type="button" id="decrement-button" data-input-counter-decrement="numberInput" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                                             <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
@@ -262,7 +262,7 @@
                                 document.addEventListener('DOMContentLoaded', () => {
                                     const input = document.getElementById('numberInput');
                                     const totalSumElem = document.getElementById('totalSum');
-                                    const pricePerCoach = 2490;
+                                    const pricePerCoach = 490;
 
                                     // Создаем элемент индикатора скидки рядом с totalSum, если его ещё нет
                                     let discountLabel = totalSumElem.querySelector('.discount-label');
@@ -288,8 +288,8 @@
                                             '-translate-y-1/2',
                                             '-translate-x-1/2',
                                         );
-                                        discountLabel.style.pointerEvents = 'none'; // Чтобы не мешал кликам
-                                        totalSumElem.style.position = 'relative'; // Чтобы абсолютное позиционирование было внутри
+                                        discountLabel.style.pointerEvents = 'none';
+                                        totalSumElem.style.position = 'relative';
                                         totalSumElem.appendChild(discountLabel);
                                     }
 
@@ -425,7 +425,7 @@
                         <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">Приложение размещается на
                             выделеном сервере.</p>
                         <div class="flex justify-center my-8">
-                            <span class="mr-2 text-5xl font-extrabold">149 000</span>
+                            <span class="mr-2 text-5xl font-extrabold">49 000</span>
                             <span class="text-gray-500 dark:text-gray-400">₽/месяц</span>
                         </div>
                         <div class="flex h-full flex-col gap-3 justify-between">

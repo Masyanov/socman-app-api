@@ -329,11 +329,19 @@
                                     </li>
                                 @endif
                                 <li class="me-2" role="presentation">
+                                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="calendar-tab"
+                                            data-tabs-target="#calendar" type="button" role="tab"
+                                            aria-controls="calendar"
+                                            aria-selected="false">
+                                        {{ __('messages.Посещение') }}
+                                    </button>
+                                </li>
+                                <li class="me-2" role="presentation">
                                     <button class="inline-block p-4 border-b-2 rounded-t-lg" id="test-tab"
                                             data-tabs-target="#test" type="button" role="tab"
                                             aria-controls="test"
                                             aria-selected="false">
-                                        {{ __('messages.Посещение') }}
+                                        {{ __('messages.Тесты') }}
                                     </button>
                                 </li>
                             </ul>
@@ -345,142 +353,121 @@
                                 <div class="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="profile" role="tabpanel"
                                      aria-labelledby="profile-tab">
                                     <!-- Modal toggle -->
-                                    <button data-modal-target="add_player" data-modal-toggle="add_player"
-                                            class="mb-4 block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                            type="button" title="{{ __('messages.Добавить игрока') }}">
+                                    <button id="toggle-form-button"
+                                        class="mb-4 block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                        type="button" title="{{ __('messages.Добавить игрока') }}">
                                         {{ __('messages.Добавить игрока') }}
                                     </button>
 
-                                    <!-- Main modal -->
-                                    <div id="add_player" tabindex="-1" aria-hidden="true"
-                                         class="hidden bg-gray-900/80 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                        <div class="relative p-4 w-full max-w-md max-h-full">
-                                            <!-- Modal content -->
-                                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                                <!-- Modal header -->
-                                                <div
-                                                    class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        {{ __('messages.Добавить нового игрока') }} в команду
-                                                        - {{ $team->name }}
-                                                    </h3>
-                                                    <button type="button"
-                                                            class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                                            data-modal-hide="add_player">
-                                                        <svg class="w-3 h-3" aria-hidden="true"
-                                                             xmlns="http://www.w3.org/2000/svg"
-                                                             fill="none"
-                                                             viewBox="0 0 14 14">
-                                                            <path stroke="currentColor" stroke-linecap="round"
-                                                                  stroke-linejoin="round"
-                                                                  stroke-width="2"
-                                                                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                                        </svg>
-                                                        <span class="sr-only">{{ __('messages.Закрыть окно') }}</span>
+                                    <div  id="add-player-form-container" class="hidden relative bg-white rounded-lg shadow dark:bg-gray-700 mb-3">
+                                        <!-- Modal header -->
+                                        <div
+                                            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                                {{ __('messages.Добавить нового игрока') }} в команду
+                                                - {{ $team->name }}
+                                            </h3>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="p-4 md:p-5">
+                                            <form method="POST" action="{{ route('users.store') }}"
+                                                  class="grid grid-cols-3 gap-3">
+                                                @csrf
+
+                                                <!-- Name -->
+                                                <div>
+                                                    <x-input-label for="name" :value="__('messages.Имя')"/>
+                                                    <x-text-input id="name" class="block mt-1 w-full"
+                                                                  type="text" name="name"
+                                                                  :value="old('name')" required
+                                                                  autofocus autocomplete="name"/>
+                                                    <x-input-error :messages="$errors->get('name')"
+                                                                   class="mt-2"/>
+                                                </div>
+                                                <!-- Last Name -->
+                                                <div>
+                                                    <x-input-label for="last_name"
+                                                                   :value="__('messages.Фамилия')"/>
+                                                    <x-text-input id="last_name" class="block mt-1 w-full"
+                                                                  type="text"
+                                                                  name="last_name"
+                                                                  :value="old('last_name')" required
+                                                                  autocomplete="last_name"/>
+                                                    <x-input-error :messages="$errors->get('last_name')"
+                                                                   class="mt-2"/>
+                                                </div>
+                                                <!-- Role -->
+
+                                                <input id="role" type="hidden" name="role" value="player"
+                                                       class="hidden peer role">
+
+
+                                                <!-- Team Code -->
+                                                <div class="hidden" id="code_field">
+                                                    <x-input-label for="team_code"
+                                                                   :value="__('messages.Код команды')"/>
+                                                    <x-text-input id="team_code"
+                                                                  class="block mt-1 w-full team_code"
+                                                                  type="text"
+                                                                  name="team_code"
+                                                                  :value="$team->team_code"
+                                                                  autocomplete="team_code"
+                                                                  placeholder="999-999"/>
+                                                    <x-input-error :messages="$errors->get('team_code')"
+                                                                   class="mt-2"/>
+                                                </div>
+
+                                                <!-- Email Address -->
+                                                <div>
+                                                    <x-input-label for="email" :value="__('Email')"/>
+                                                    <x-text-input id="email" class="block mt-1 w-full"
+                                                                  type="email" name="email"
+                                                                  :value="old('email')" required
+                                                                  autocomplete="username"/>
+                                                    <x-input-error :messages="$errors->get('email')"
+                                                                   class="mt-2"/>
+                                                </div>
+
+                                                <!-- Password -->
+                                                <div>
+                                                    <x-input-label for="password"
+                                                                   :value="__('messages.Пароль')"/>
+
+                                                    <x-text-input id="password" class="block mt-1 w-full"
+                                                                  type="password"
+                                                                  name="password"
+                                                                  required autocomplete="new-password"/>
+
+                                                    <x-input-error :messages="$errors->get('password')"
+                                                                   class="mt-2"/>
+                                                </div>
+
+                                                <!-- Confirm Password -->
+                                                <div>
+                                                    <x-input-label for="password_confirmation"
+                                                                   :value="__('messages.Подтверждение пароля')"/>
+
+                                                    <x-text-input id="password_confirmation"
+                                                                  class="block mt-1 w-full"
+                                                                  type="password"
+                                                                  name="password_confirmation" required
+                                                                  autocomplete="new-password"/>
+
+                                                    <x-input-error
+                                                        :messages="$errors->get('password_confirmation')"
+                                                        class="mt-2"/>
+                                                </div>
+
+                                                <div class="flex items-center justify-end ">
+
+                                                    <button type="button" id="button_save_user"
+                                                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                        {{ __('messages.Регистрация') }}
                                                     </button>
                                                 </div>
-                                                <!-- Modal body -->
-                                                <div class="p-4 md:p-5">
+                                                <div id="response"></div>
+                                            </form>
 
-                                                    <form method="POST" action="{{ route('users.store') }}">
-                                                        @csrf
-
-                                                        <!-- Name -->
-                                                        <div>
-                                                            <x-input-label for="name" :value="__('messages.Имя')"/>
-                                                            <x-text-input id="name" class="block mt-1 w-full"
-                                                                          type="text" name="name"
-                                                                          :value="old('name')" required
-                                                                          autofocus autocomplete="name"/>
-                                                            <x-input-error :messages="$errors->get('name')"
-                                                                           class="mt-2"/>
-                                                        </div>
-                                                        <!-- Last Name -->
-                                                        <div class="mt-4">
-                                                            <x-input-label for="last_name"
-                                                                           :value="__('messages.Фамилия')"/>
-                                                            <x-text-input id="last_name" class="block mt-1 w-full"
-                                                                          type="text"
-                                                                          name="last_name"
-                                                                          :value="old('last_name')" required
-                                                                          autocomplete="last_name"/>
-                                                            <x-input-error :messages="$errors->get('last_name')"
-                                                                           class="mt-2"/>
-                                                        </div>
-                                                        <!-- Role -->
-
-                                                        <input id="role" type="hidden" name="role" value="player"
-                                                               class="hidden peer role">
-
-
-                                                        <!-- Team Code -->
-                                                        <div class="mt-4 hidden" id="code_field">
-                                                            <x-input-label for="team_code"
-                                                                           :value="__('messages.Код команды')"/>
-                                                            <x-text-input id="team_code"
-                                                                          class="block mt-1 w-full team_code"
-                                                                          type="text"
-                                                                          name="team_code"
-                                                                          :value="$team->team_code"
-                                                                          autocomplete="team_code"
-                                                                          placeholder="999-999"/>
-                                                            <x-input-error :messages="$errors->get('team_code')"
-                                                                           class="mt-2"/>
-                                                        </div>
-
-                                                        <!-- Email Address -->
-                                                        <div class="mt-4">
-                                                            <x-input-label for="email" :value="__('Email')"/>
-                                                            <x-text-input id="email" class="block mt-1 w-full"
-                                                                          type="email" name="email"
-                                                                          :value="old('email')" required
-                                                                          autocomplete="username"/>
-                                                            <x-input-error :messages="$errors->get('email')"
-                                                                           class="mt-2"/>
-                                                        </div>
-
-                                                        <!-- Password -->
-                                                        <div class="mt-4">
-                                                            <x-input-label for="password"
-                                                                           :value="__('messages.Пароль')"/>
-
-                                                            <x-text-input id="password" class="block mt-1 w-full"
-                                                                          type="password"
-                                                                          name="password"
-                                                                          required autocomplete="new-password"/>
-
-                                                            <x-input-error :messages="$errors->get('password')"
-                                                                           class="mt-2"/>
-                                                        </div>
-
-                                                        <!-- Confirm Password -->
-                                                        <div class="mt-4">
-                                                            <x-input-label for="password_confirmation"
-                                                                           :value="__('messages.Подтверждение пароля')"/>
-
-                                                            <x-text-input id="password_confirmation"
-                                                                          class="block mt-1 w-full"
-                                                                          type="password"
-                                                                          name="password_confirmation" required
-                                                                          autocomplete="new-password"/>
-
-                                                            <x-input-error
-                                                                :messages="$errors->get('password_confirmation')"
-                                                                class="mt-2"/>
-                                                        </div>
-
-                                                        <div class="flex items-center justify-end mt-4">
-
-                                                            <button type="button" id="button_save_user"
-                                                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                                {{ __('messages.Регистрация') }}
-                                                            </button>
-                                                        </div>
-                                                        <div id="response"></div>
-                                                    </form>
-
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -910,9 +897,9 @@
 
                                     </div>
                                 @endif
-                                <div class="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="test"
+                                <div class="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="calendar"
                                      role="tabpanel"
-                                     aria-labelledby="test-tab">
+                                     aria-labelledby="calendar-tab">
                                     <div class="p-4">
                                         <form id="filterForm" class="flex flex-col mb-4 flex gap-2 items-center">
                                             <input type="hidden" name="team_code" value="{{ $team->team_code }}">
@@ -971,6 +958,10 @@
                                         });
                                     </script>
                                 </div>
+                                <div class="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="test"
+                                     role="tabpanel"
+                                     aria-labelledby="test-tab">
+                                </div>
                             </div>
                         @else
                             <div
@@ -978,11 +969,6 @@
                                 role="alert">
                                 {{ __('messages.В команде нет игроков') }}
                             </div>
-                            <a href="/users"
-                               class="block w-fit text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                            >
-                                {{ __('messages.Добавить игрока') }}
-                            </a>
                         @endif
                     </div>
                 </div>
@@ -1052,7 +1038,7 @@
                 })
                     .then(r => r.json())
                     .then(data => {
-                        document.getElementById('results_AI_data').innerHTML = '<div class="flex flex-col w-full p-5 my-2.5 bg-gray-700 rounded-lg"><div class="flex w-full mb-3 flex-col gap-3 sm:flex-row sm:justify-between "><h2  class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Результат анализа ИИ</h2><button id="showHideResultContent" type="button" class="py-2.5 px-5 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Скрыть</button></div><div id="resultContent" class="font-normal text-gray-700 dark:text-gray-400">' + data.result + '</div></div>';
+                        document.getElementById('results_AI_data').innerHTML = '<div class="flex flex-col w-full p-5 my-2.5 bg-gray-700 rounded-lg results_AI_data" id=""><div class="flex w-full mb-3 flex-col gap-3 sm:flex-row sm:justify-between "><h2  class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Результат анализа ИИ</h2><button id="showHideResultContent" type="button" class="py-2.5 px-5 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Скрыть</button></div><div id="resultContent" class="font-normal text-gray-700 dark:text-gray-400">' + data.result + '</div></div>';
                     })
                     .catch(err => {
                         console.log('Ошибка:' + err);
@@ -1081,6 +1067,11 @@
 
 
     </script>
+    <style>
+        .results_AI_data ul {
+            list-style: none !important;
+        }
+    </style>
 </x-app-layout>
 
 

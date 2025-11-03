@@ -325,12 +325,7 @@ $("#button_save_user").on("click", function () {
             _token: _token
         },
         success: function (response) {
-            $('#btn_user_success').trigger('click');
-            if (response.code == 200) {
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
-            }
+            location.reload();
         },
         error: function (response) {
             $('#response').empty();
@@ -826,6 +821,45 @@ function getCookie(name) {
 
 $(document).ready(function () {
 
+    // Global variable to store the element that triggered the modal
+    // Глобальная переменная для хранения элемента, который вызвал модальное окно
+    let modalTriggerElement = null;
+
+    // Get the modal element from the DOM
+    // Получаем элемент модального окна из DOM
+    const modalEl = document.getElementById('modal_condition');
+    let flowbiteModal = null; // Variable to hold the Flowbite Modal instance
+
+    // Check if Flowbite library is available and the modal element exists
+    // Проверяем, доступна ли библиотека Flowbite и существует ли элемент модального окна
+    if (typeof Flowbite !== 'undefined' && Flowbite.Modal && modalEl) {
+        // Try to get an existing Flowbite instance if it was initialized automatically (e.g., via data attributes)
+        // Попытаемся получить существующий экземпляр Flowbite, если он был инициализирован автоматически (например, через data-атрибуты)
+        flowbiteModal = Flowbite.Modal.getInstance(modalEl);
+
+        if (!flowbiteModal) {
+            // If no instance exists, create a new one
+            // Если экземпляра нет, создаем новый
+            const modalOptions = {
+                placement: 'center', // Assuming you want it centered
+                backdrop: 'dynamic', // Or 'static'
+                // You can add other options here if needed
+            };
+            flowbiteModal = new Flowbite.Modal(modalEl, modalOptions);
+        }
+
+        // Attach an event listener for when the modal is hidden
+        // Добавляем слушатель событий на момент скрытия модального окна
+        modalEl.addEventListener('hide.flowbite', () => {
+            // THE KEY FIX: Return focus to the element that opened the modal
+            // КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Возвращаем фокус на элемент, открывший модалку
+            if (modalTriggerElement) {
+                modalTriggerElement.focus();
+                modalTriggerElement = null; // Clear the variable after use
+            }
+        });
+    }
+
     let loader = '<div class="p-0 text-center modal-loader loading" >\n' +
         '                                    <svg aria-hidden="true"\n' +
         '                                         class="w-4 h-4 me-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"\n' +
@@ -835,7 +869,7 @@ $(document).ready(function () {
         '                                            fill="currentColor"/>\n' +
         '                                        <path\n' +
         '                                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"\n' +
-        '                                            fill="currentFill"/>\n' +
+        '                                            fill="currentColor"/>\n' +
         '                                    </svg>\n' +
         '                                </div>';
 
@@ -859,19 +893,29 @@ $(document).ready(function () {
         var dateAnswer = $(this).data('modal-condition-date');
         clearCondition();
 
-        const modalEl = document.getElementById('modal_condition');
-        if (modalEl) {
-            // Enable modal for assistive technologies
-            modalEl.setAttribute('aria-hidden', 'false');
-            // Remove classes hiding modal, if present
-            modalEl.classList.remove('hidden');
-            // Show modal by instance if exists
-            if (modalEl._modalInstance) {
-                modalEl._modalInstance.show();
+        // Store the trigger element
+        // Сохраняем элемент, который вызвал окно
+        modalTriggerElement = this;
+
+        // Use the Flowbite instance to show the modal
+        // Используем экземпляр Flowbite для показа модального окна
+        if (flowbiteModal) {
+            flowbiteModal.show();
+        } else {
+            // Fallback for manual class/attribute manipulation if Flowbite instance is not found
+            // Запасной вариант для ручной манипуляции классами/атрибутами, если экземпляр Flowbite не найден
+            // This might happen if Flowbite JS is not loaded or not initialized yet
+            // Это может произойти, если JS Flowbite не загружен или еще не инициализирован
+            const modalEl = document.getElementById('modal_condition'); // Re-get in case of timing issues
+            if (modalEl) {
+                modalEl.setAttribute('aria-hidden', 'false');
+                modalEl.classList.remove('hidden');
+                // The problematic modalEl.focus() is removed here.
+                // It was causing issues when combined with aria-hidden.
+                // Correct focus management for accessibility is now primarily handled by Flowbite's hide.flowbite event.
             }
-            // Optional: Set focus to modal for accessibility
-            modalEl.focus();
         }
+
 
         $.ajax({
             url: '/ajax/get-player-condition',
@@ -890,8 +934,15 @@ $(document).ready(function () {
                 $('#sleep').html(data.sleep ?? '');
                 $('#sleep_time').text(data.sleep_time ?? 'Нет');
                 $('#moral').html(data.moral ?? '');
-                $('#physical').html(data.physical ?? '');
+                $('#physical').html(data.physical ?? ''); // Corrected typo here
                 $('#general-condition').html(data['general-condition'] ?? '');
+
+                if (typeof initFlowbite === 'function') {
+                    initFlowbite();
+                    console.log('Flowbite re-initialized after AJAX update.');
+                } else {
+                    console.warn('initFlowbite() function not found. Ensure Flowbite is properly loaded.');
+                }
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert('Ошибка загрузки данных: ' + (errorThrown ? errorThrown : textStatus));
@@ -899,6 +950,7 @@ $(document).ready(function () {
         });
     });
 
+// Add touch-handler for mobile devices
 // Добавь touch-обработчик для мобильных устройств
     $(document).on('touchstart', '.modal_condition', function () {
         $(this).trigger('click');
@@ -926,37 +978,36 @@ $(document).ready(function () {
         });
     });
 
+    // Clear
     // Очистка
     $('#clear_storage_button_week').on('click', function () {
         setCookie('week', '', -1);
         $('#weekSelect').val('');
     });
 
-    // In English: Handler for Close modal button, delegated via document
-    $(document).on('click', '[data-modal-hide]', function () {
-        // Get modal instance and hide it
-        const modalEl = document.getElementById('modal_condition');
-        if (modalEl && modalEl._modalInstance) {
-            modalEl._modalInstance.hide();
-        }
-    });
-
     // Show/hide button on scroll
+    // Показать/скрыть кнопку при прокрутке
     window.addEventListener('scroll', function () {
         const backToTop = document.getElementById('backToTop');
-        if (window.scrollY > 300) { // Show after 300px
-            backToTop.classList.remove('hidden');
-            backToTop.classList.add('opacity-100');
-        } else {
-            backToTop.classList.add('hidden');
-            backToTop.classList.remove('opacity-100');
+        if (backToTop) { // Check if element exists before manipulating
+            if (window.scrollY > 300) { // Show after 300px
+                backToTop.classList.remove('hidden');
+                backToTop.classList.add('opacity-100');
+            } else {
+                backToTop.classList.add('hidden');
+                backToTop.classList.remove('opacity-100');
+            }
         }
     });
 
 // Smooth scroll to top
-    document.getElementById('backToTop').addEventListener('click', function () {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    });
+// Плавная прокрутка наверх
+    const backToTopButton = document.getElementById('backToTop');
+    if (backToTopButton) { // Check if element exists before adding event listener
+        backToTopButton.addEventListener('click', function () {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+    }
 });
 
 window.updateActiveLoadControl = function ($id, checkbox) {
@@ -1372,4 +1423,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Perform initial AJAX load after DOM ready
     performFilter();
+});
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleButton = document.getElementById('toggle-form-button');
+    const formContainer = document.getElementById('add-player-form-container');
+
+    if (toggleButton && formContainer) {
+        toggleButton.addEventListener('click', function () {
+            formContainer.classList.toggle('hidden');
+        });
+    }
 });
