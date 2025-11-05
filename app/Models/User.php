@@ -58,8 +58,8 @@ class User extends Authenticatable {
     /**
      * Get all tests associated with the user.
      */
-    public function tests(): HasMany {
-        return $this->hasMany( Test::class );
+    public function tests() {
+        return $this->hasMany( PlayerTest::class );
     }
 
     /**

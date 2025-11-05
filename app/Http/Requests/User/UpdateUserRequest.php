@@ -12,28 +12,36 @@ class UpdateUserRequest extends FormRequest
         return true;
     }
 
-    public function rules()
+    public function rules(): array
     {
-        return [
-            'name'        => 'required|string|max:255',
-            'second_name' => 'nullable|string|max:255',
-            'last_name'   => 'required|string|max:255',
-            'team_code'   => 'nullable|string|max:20',
-            'email'       => [
-                'required','email','max:255',
-                Rule::unique('users', 'email')->ignore($this->route('id'))
-            ],
-            'active'      => 'boolean',
-            'avatar'      => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        // Получаем ID пользователя, которого мы обновляем.
+        // Это можно сделать, обратившись к параметру маршрута.
+        // Например, если ваш маршрут '/users/{id}', то id доступен через $this->route('id')
+        $userId = $this->route('id');
 
-            // Для user_meta
-            'tel'        => 'nullable|string|max:25',
-            'birthday'   => 'nullable|date',
-            'position'   => 'nullable|string|max:255',
-            'number'     => 'nullable|string|max:10',
-            'tel_mother' => 'nullable|string|max:25',
-            'tel_father' => 'nullable|string|max:25',
-            'comment'    => 'nullable|string|max:255',
+        return [
+            'name'        => ['required', 'string', 'max:255'],
+            'last_name'   => ['required', 'string', 'max:255'],
+            'second_name' => ['nullable', 'string', 'max:255'], // Возможно, это отчество
+            'email'       => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                // Модифицированное правило unique
+                Rule::unique('users')->ignore($userId),
+            ],
+            'team_code'   => ['nullable', 'string', 'max:255'],
+            'active'      => ['boolean'], // Добавил, если 'active' может быть в запросе
+            'avatar'      => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'], // Пример для аватара
+            // Добавьте сюда другие правила для полей из UserMeta, если они приходят через этот реквест
+            'tel'         => ['nullable', 'string', 'max:20'],
+            'birthday'    => ['nullable', 'date'],
+            'position'    => ['nullable', 'string', 'max:255'],
+            'number'      => ['nullable', 'string', 'max:20'],
+            'tel_mother'  => ['nullable', 'string', 'max:20'],
+            'tel_father'  => ['nullable', 'string', 'max:20'],
+            'comment'     => ['nullable', 'string'],
         ];
     }
 }

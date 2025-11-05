@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PlayerTest;
 use App\Models\PresenceTraining;
 use App\Models\Question;
 use App\Models\Team;
@@ -32,12 +33,15 @@ class TeamController extends Controller {
                           ->latest( 'created_at' )
                           ->paginate( 10 );
 
+        $tests = PlayerTest::with( 'user' )->get();
+
         if ( $request->ajax() ) {
-            return view( 'teams.index', [ 'teamActive' => $teamActive, 'teams' => $teams ] )->render();
+            return view( 'teams.index',
+                [ 'teamActive' => $teamActive, 'teams' => $teams, 'tests' => $tests ] )->render();
         }
 
 
-        return view( 'teams.index', compact( 'teamActive', 'teams' ) );
+        return view( 'teams.index', compact( 'teamActive', 'teams', 'tests' ) );
     }
 
     /**
@@ -354,6 +358,227 @@ class TeamController extends Controller {
 
         $teamChars = 2;
 
+        $tests = PlayerTest::whereHas( 'user', function ( $query ) use ( $team ) {
+            $query->where( 'team_code', $team->team_code );
+        } )
+                           ->with( 'user' )
+                           ->orderBy( 'created_at', 'desc' )
+                           ->get();
+
+        // 1. Получаем все тесты для данной команды
+        // Используем 'with' для жадной загрузки связанного пользователя, чтобы получить его имя.
+        // Сортируем по дате теста в порядке возрастания, чтобы потом было удобно выбрать последние.
+        $allTeamTests = PlayerTest::whereHas( 'user', function ( $query ) use ( $team ) {
+            // Предполагаем, что users.team_code содержит код команды
+            // и PlayerTest связан с User через player_id, который является foreign key к users.id
+            $query->where( 'team_code', $team->team_code );
+        } )
+                                  ->with( 'user' )
+                                  ->orderBy( 'date_of_test',
+                                      'asc' )
+                                  ->get();
+
+        // 2. Определяем последние N (например, 3) уникальные даты тестирования по всей команде
+        // Сначала собираем все даты, убираем дубликаты, сортируем по убыванию и берем N последние.
+        $recentTestDates = $allTeamTests->pluck( 'date_of_test' )
+                                        ->unique()
+                                        ->sortDesc()
+                                        ->take( 3 ) // Берем последние 3 даты, как на примере
+                                        ->values(); // Сбрасываем ключи массива для чистоты
+
+        // Преобразуем даты в формат 'YYYY-MM-DD', который используется в коде импорта и удобен для JS
+        $formattedRecentTestDates = $recentTestDates->map( function ( $date ) {
+            return ( new Carbon( $date ) )->format( 'Y-m-d' );
+        } );
+
+        // 3. Группируем тесты по игрокам и затем по датам для удобной обработки на фронтенде
+        // Структура playerData будет примерно такой:
+        // [
+        //   'Имя Игрока 1' => [
+        //     '2024-04-01' => ['push_ups' => 30, 'pull_ups' => 10, ...],
+        //     '2024-07-01' => ['push_ups' => 32, 'pull_ups' => 11, ...],
+        //     // ... другие даты и метрики
+        //   ],
+        //   'Имя Игрока 2' => [...]
+        // ]
+        $playerData = [];
+        foreach ( $allTeamTests as $test ) {
+
+            // Убедитесь, что у User есть поле 'name'. Если нет, используйте 'id' или другое поле.
+            $playerName = $test->user->name ?? 'Игрок ID: ' . $test->player_id;
+            $testDate   = ( new Carbon( $test->date_of_test ) )->format( 'Y-m-d' );
+
+            if ( ! isset( $playerData[ $playerName ] ) ) {
+                $playerData[ $playerName ] = [];
+            }
+
+            // Сохраняем значения метрик для текущего игрока и даты.
+            // Если для одного игрока есть несколько тестов в один день, эта логика возьмет последний.
+            $playerData[ $playerName ][ $testDate ] = [
+                'push_ups'                 => (float) $test->push_ups,
+                'pull_ups'                 => (float) $test->pull_ups,
+                // Добавьте сюда другие поля из PlayerTest, которые вы хотите отобразить на графиках
+                'ten_m'                    => (float) $test->ten_m,
+                'twenty_m'                 => (float) $test->twenty_m,
+                'thirty_m'                 => (float) $test->thirty_m,
+                'long_jump'                => (float) $test->long_jump,
+                'vertical_jump_no_hands'   => (float) $test->vertical_jump_no_hands,
+                'vertical_jump_with_hands' => (float) $test->vertical_jump_with_hands,
+                'illinois_test'            => (float) $test->illinois_test,
+                // Продолжите для всех числовых метрик
+                'height'                   => (float) $test->height,
+                'weight'                   => (float) $test->weight,
+                'body_mass_index'          => (float) $test->body_mass_index,
+                'pause_one'                => (float) $test->pause_one,
+                'pause_two'                => (float) $test->pause_two,
+                'pause_three'              => (float) $test->pause_three,
+                'step'                     => (float) $test->step,
+                'mpk'                      => (float) $test->mpk,
+            ];
+        }
+        // 4. Формируем финальную структуру данных, подходящую для JavaScript библиотеки графиков (например, Chart.js)
+        $chartData = [
+            'labels'  => array_keys( $playerData ), // Имена игроков будут метками по оси X
+            'dates'   => $formattedRecentTestDates->toArray(), // Даты для отображения
+            'metrics' => [
+                'push_ups'                 => [
+                    'title'    => 'Отжимания',
+                    'category' => 'Силовые (кол-во)',
+                    'unit'     => 'кол-во',
+                    'datasets' => [],
+                ],
+                'pull_ups'                 => [
+                    'title'    => 'Подтягивания',
+                    'category' => 'Силовые (кол-во)',
+                    'unit'     => 'кол-во',
+                    'datasets' => [],
+                ],
+                // Добавьте другие метрики и их категории/единицы измерения
+                'ten_m'                    => [
+                    'title'    => 'Бег 10 м',
+                    'category' => 'Скоростные (t)',
+                    'unit'     => 'с',
+                    'datasets' => [],
+                ],
+                'twenty_m'                 => [
+                    'title'    => 'Бег 20 м',
+                    'category' => 'Скоростные (t)',
+                    'unit'     => 'с',
+                    'datasets' => [],
+                ],
+                'thirty_m'                 => [
+                    'title'    => 'Бег 30 м',
+                    'category' => 'Скоростные (t)',
+                    'unit'     => 'с',
+                    'datasets' => [],
+                ],
+                'long_jump'                => [
+                    'title'    => 'Прыжок в длину',
+                    'category' => 'Скоростно-силовые (см)',
+                    'unit'     => 'см',
+                    'datasets' => [],
+                ],
+                'vertical_jump_no_hands'   => [
+                    'title'    => 'Прыжок вверх (без рук)',
+                    'category' => 'Скоростно-силовые (см)',
+                    'unit'     => 'см',
+                    'datasets' => [],
+                ],
+                'vertical_jump_with_hands' => [
+                    'title'    => 'Прыжок вверх (с руками)',
+                    'category' => 'Скоростно-силовые (см)',
+                    'unit'     => 'см',
+                    'datasets' => [],
+                ],
+                'illinois_test'            => [
+                    'title'    => 'Тест Иллинойса',
+                    'category' => 'Ловкость (t)',
+                    'unit'     => 'с',
+                    'datasets' => [],
+                ],
+                'height'                   => [
+                    'title'    => 'Рост',
+                    'category' => 'Антропометрия (см/кг)',
+                    'unit'     => 'см',
+                    'datasets' => [],
+                ],
+                'weight'                   => [
+                    'title'    => 'Вес',
+                    'category' => 'Антропометрия (см/кг)',
+                    'unit'     => 'кг',
+                    'datasets' => [],
+                ],
+                'body_mass_index'          => [
+                    'title'    => 'Индекс массы тела',
+                    'category' => 'Антропометрия (см/кг)',
+                    'unit'     => '',
+                    'datasets' => [],
+                ],
+                'pause_one'                => [
+                    'title'    => 'Пауза 1',
+                    'category' => 'Скоростная выносливость (t)',
+                    'unit'     => 'мс',
+                    'datasets' => [],
+                ],
+                'pause_two'                => [
+                    'title'    => 'Пауза 2',
+                    'category' => 'Скоростная выносливость (t)',
+                    'unit'     => 'мс',
+                    'datasets' => [],
+                ],
+                'pause_three'              => [
+                    'title'    => 'Пауза 3',
+                    'category' => 'Скоростная выносливость (t)',
+                    'unit'     => 'мс',
+                    'datasets' => [],
+                ],
+                'step'                     => [
+                    'title'    => 'Шаг',
+                    'category' => 'Скоростная выносливость (t)',
+                    'unit'     => 'мс',
+                    'datasets' => [],
+                ],
+                'mpk'                      => [
+                    'title'    => 'МПК',
+                    'category' => 'Скоростная выносливость (t)',
+                    'unit'     => 'мл/кг/мин',
+                    'datasets' => [],
+                ],
+            ],
+        ];
+
+        // Создаем наборы данных (datasets) для каждой из N дат для каждой метрики
+        foreach ( $chartData['metrics'] as $metricKey => &$metricConfig ) {
+            foreach ( $formattedRecentTestDates as $date ) {
+                $dataset = [
+                    'label' => $date, // Метка для этого набора данных будет датой
+                    'data'  => [],
+                ];
+
+                foreach ( $chartData['labels'] as $playerName ) {
+                    // Получаем значение для текущего игрока, текущей даты и текущей метрики
+                    // Если данных нет для данной даты/игрока, используем null,
+                    // что позволит графической библиотеке корректно отобразить отсутствие данных.
+                    $value             = $playerData[ $playerName ][ $date ][ $metricKey ] ?? null;
+                    $dataset['data'][] = $value;
+                }
+                $metricConfig['datasets'][] = $dataset;
+            }
+        }
+        unset( $metricConfig ); // Разрушаем ссылку, чтобы избежать непредвиденных изменений
+
+        // Группируем метрики по категориям для удобного вывода на фронтенде
+        $categorizedMetrics = [];
+        foreach ( $chartData['metrics'] as $metricKey => $metric ) {
+            $category = $metric['category'];
+            if ( ! isset( $categorizedMetrics[ $category ] ) ) {
+                $categorizedMetrics[ $category ] = [
+                    'title'   => $category,
+                    'metrics' => [],
+                ];
+            }
+            $categorizedMetrics[ $category ]['metrics'][ $metricKey ] = $metric;
+        }
 
         return view( 'teams.team',
             compact(
@@ -365,7 +590,11 @@ class TeamController extends Controller {
                 'results',
                 'teamChars',
                 'weeks',
-                'resultsCycle'
+                'resultsCycle',
+                'tests',
+                'chartData',
+                'categorizedMetrics',
+                'team',
             )
         );
     }

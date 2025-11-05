@@ -1436,3 +1436,312 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    let info = document.getElementById('info_player');
+    let infoWeight = document.getElementById('info_weight');
+    let infoHeight = document.getElementById('info_height');
+    let infoStep = document.getElementById('info_step');
+    let infoPushUps = document.getElementById('info_push_ups');
+    let infoPullUps = document.getElementById('info_pull_ups');
+    let infoLongJump = document.getElementById('info_long_jump');
+
+    // Предполагаем, что это CANVSA-элементы
+    let ctx = document.getElementById('myChart');
+
+    // Переменные для хранения экземпляров графиков
+    let myChart = null;
+    let mainCharts = null;
+    let infoHeightCharts = null;
+    let stepCharts = null;
+    let infoPushUpsCharts = null;
+    let infoPullUpsCharts = null;
+    let infoLongJumpCharts = null;
+
+    let id = document.getElementById('player-select').value;
+
+    // Вспомогательная функция для отображения сообщения на canvas
+    function displayNoDataOnCanvas(canvasElement, message = 'Нет данных для отображения.') {
+        if (!canvasElement) {
+            console.warn('Canvas элемент не найден:', canvasElement);
+            return;
+        }
+
+        // Уничтожаем существующий экземпляр Chart.js, если он привязан к этому canvas
+        if (canvasElement.chart) {
+            canvasElement.chart.destroy();
+            canvasElement.chart = null; // Обнуляем ссылку
+        }
+
+        const ctx2d = canvasElement.getContext('2d');
+        if (!ctx2d) {
+            console.error('Не удалось получить 2D контекст для canvas:', canvasElement);
+            return;
+        }
+
+        // Очищаем canvas
+        ctx2d.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+        // Устанавливаем свойства текста
+        ctx2d.font = '16px Arial';
+        ctx2d.fillStyle = '#D1D5DB'; // Светло-серый цвет текста, подходящий для темного фона
+        ctx2d.textAlign = 'center';
+        ctx2d.textBaseline = 'middle';
+
+        // Рисуем сообщение по центру canvas
+        ctx2d.fillText(message, canvasElement.width / 2, canvasElement.height / 2);
+    }
+
+    // Список всех canvas элементов для удобства
+    const allChartCanvases = [ctx, infoWeight, infoHeight, infoStep, infoPushUps, infoPullUps, infoLongJump];
+
+
+    if (id) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/admin/players_info/' + id, true);
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var data = JSON.parse(xhr.responseText);
+
+                // Загружаем информацию об игроке (карточку)
+                info.innerHTML = '';
+                let imgUrl = ''
+                if (data[0].infoOfPlayer && data[0].infoOfPlayer.avatar) {
+                    imgUrl = '/avatars/'+ data[0].infoOfPlayer.avatar;
+                } else {
+                    imgUrl = '/images/facebook-profile-picture-no-pic-avatar.jpg';
+                }
+                info.innerHTML = '<div class="w-full max-w-sm bg-gray-700 border border-gray-600 rounded-lg shadow dark:bg-gray-700 dark:border-gray-700 mb-4">\n' +
+                    '            <div class="flex flex-col items-center pb-10 p-10">\n' +
+                    '                <img class="w-[250px] h-[250px] mb-3 rounded-full shadow-lg object-cover object-top bg-gray-600" src="' + imgUrl + '" alt="avatar"/>\n' +
+                    '                <h5 class="mb-1 text-xl font-medium text-white dark:text-white">' + (data[0] && data[0].infoOfPlayer ? data[0].infoOfPlayer.full_name : 'N/A') + '</h5>\n' +
+                    '                <p class="text-sm text-gray-300 dark:text-gray-400 mb-1">Команда: ' + (data[0] && data[0].infoOfPlayer ? data[0].infoOfPlayer.team : 'N/A') + '</p>\n' +
+                    '                <p class="text-sm text-gray-300 dark:text-gray-400 mb-1">День рождения: ' + (data[0] && data[0].infoOfPlayer ? data[0].infoOfPlayer.date_of_birth : 'N/A') + '</p>\n' +
+                    '                <p class="text-sm text-gray-300 dark:text-gray-400 mb-1">Амплуа: ' + (data[0] && data[0].infoOfPlayer ? data[0].infoOfPlayer.positionOfPlayer : 'N/A') + '</p>\n' +
+                    '            </div>\n' +
+                    '        </div>';
+
+                createChart(data); // Передаем данные в функцию создания графика
+            } else {
+                // Если запрос завершился с ошибкой или не 2xx/3xx статус, отображаем сообщение об ошибке на всех графиках
+                allChartCanvases.forEach(canvas => displayNoDataOnCanvas(canvas, 'Ошибка при получении данных.'));
+                info.innerHTML = '<div class="text-center text-red-500 p-5">Нет данных о тестировании игрока</div>';
+            }
+        };
+        xhr.onerror = function () {
+            // Если произошла сетевая ошибка, отображаем сообщение об ошибке на всех графиках
+            allChartCanvases.forEach(canvas => displayNoDataOnCanvas(canvas, 'Ошибка сети при получении данных.'));
+            info.innerHTML = '<div class="text-center text-red-500 p-5">Ошибка сети при получении данных об игроке.</div>';
+        };
+        xhr.send();
+    } else {
+        // Если ID игрока не выбран
+        allChartCanvases.forEach(canvas => displayNoDataOnCanvas(canvas, 'Игрок не выбран или нет данных.'));
+        info.innerHTML = '<div class="text-center text-gray-300 dark:text-gray-400 p-5">Выберите игрока для отображения информации и статистики.</div>';
+    }
+
+
+    function createChart(data) {
+        // Проверяем наличие данных для радар-графика
+        // Убедимся, что data[0].lastDataOfPlayer существует и содержит хотя бы одно не-null/не-undefined значение
+        const labelsOfValue = data[0].lastDataOfPlayer;
+        const hasRadarData = labelsOfValue && Object.values(labelsOfValue).some(value => value !== null && value !== undefined);
+
+        // Проверяем наличие данных для остальных графиков (исторических)
+        const dataOfPlayer = data[0].dataOfPlayer;
+        const hasHistoricalData = dataOfPlayer && dataOfPlayer.length > 0;
+
+        // Уничтожаем все предыдущие графики перед созданием новых или отображением сообщений
+        if (myChart) myChart.destroy(); myChart = null;
+        if (mainCharts) mainCharts.destroy(); mainCharts = null;
+        if (infoHeightCharts) infoHeightCharts.destroy(); infoHeightCharts = null;
+        if (stepCharts) stepCharts.destroy(); stepCharts = null;
+        if (infoPushUpsCharts) infoPushUpsCharts.destroy(); infoPushUpsCharts = null;
+        if (infoPullUpsCharts) infoPullUpsCharts.destroy(); infoPullUpsCharts = null;
+        if (infoLongJumpCharts) infoLongJumpCharts.destroy(); infoLongJumpCharts = null;
+
+
+        // --- Радар-график ---
+        if (!hasRadarData) {
+            displayNoDataOnCanvas(ctx, 'Нет данных для радар-графика.');
+        } else {
+            myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'Иллинойс',
+                        'Подтягивания',
+                        'Отжимания',
+                        'Выпрыг. с руками',
+                        'Выпрыг. без рук',
+                        'Вес',
+                    ],
+                    datasets: [
+                        {
+                            label: 'Игрок', // Метка для набора данных
+                            data: [
+                                labelsOfValue.illinois_test,
+                                labelsOfValue.pull_ups,
+                                labelsOfValue.push_ups,
+                                labelsOfValue.vertical_jump_no_hands,
+                                labelsOfValue.vertical_jump_with_hands,
+                                labelsOfValue.weight,
+                            ],
+                            backgroundColor: 'rgba(39,134,253,0.50)',
+                            borderColor: 'rgb(39,134,253,1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Максимальный по команде', // Метка для набора данных
+                            data: [22, 20, 52, 67, 55, 70], // Примерные данные
+                            backgroundColor: 'rgba(192,103,65, 0.2)',
+                            borderColor: 'rgb(192,103,65, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Модельное значение', // Метка для набора данных
+                            data: [27, 30, 66, 75, 81, 75], // Примерные данные
+                            backgroundColor: 'rgba(91,166,61, 0.2)',
+                            borderColor: 'rgb(91,166,61, 1)',
+                            borderWidth: 1
+                        },
+                    ]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Данные последнего тестирования',
+                            color: '#D1D5DB',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return context.dataset.label + ': ' + context.parsed.r;
+                                }
+                            }
+                        },
+                        legend: { // Настройка легенды
+                            labels: {
+                                color: '#D1D5DB' // Цвет текста легенды
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true,
+                                color: 'rgba(200, 200, 200, 0.4)' // Цвет радиальных линий паутины
+                            },
+                            grid: {
+                                color: 'rgba(200, 200, 200, 0.4)' // Цвет кольцевых линий паутины
+                            },
+                            pointLabels: {
+                                color: '#D1D5DB', // Цвет текстовых меток (Иллинойс, Вес и т.д.)
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            ticks: {
+                                color: '#D1D5DB', // Цвет числовых меток (10, 20, 30...)
+                                backdropColor: 'transparent' // Убираем фон вокруг числовых меток
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            ctx.chart = myChart; // Сохраняем экземпляр графика на canvas для последующего уничтожения
+        }
+
+
+        // --- Исторические графики (столбчатые) ---
+        if (!hasHistoricalData) {
+            displayNoDataOnCanvas(infoWeight, 'Нет исторических данных по весу.');
+            displayNoDataOnCanvas(infoHeight, 'Нет исторических данных по росту.');
+            displayNoDataOnCanvas(infoStep, 'Нет исторических данных по уровням.');
+            displayNoDataOnCanvas(infoPushUps, 'Нет исторических данных по отжиманиям.');
+            displayNoDataOnCanvas(infoPullUps, 'Нет исторических данных по подтягиваниям.');
+            displayNoDataOnCanvas(infoLongJump, 'Нет исторических данных по прыжкам в длину.');
+        } else {
+            const labels = dataOfPlayer.map(item => item.date);
+
+            const weight = dataOfPlayer.map(item => item.weight);
+            const height = dataOfPlayer.map(item => item.height);
+            const push_ups = dataOfPlayer.map(item => item.push_ups);
+            const pull_ups = dataOfPlayer.map(item => item.pull_ups);
+            const long_jump = dataOfPlayer.map(item => item.long_jump);
+            const step = dataOfPlayer.map(item => item.step);
+
+            // Функция для создания столбчатого графика с общими настройками
+            const createBarChart = (canvas, labelText, dataValues, bgColor, borderColor) => {
+                const chartInstance = new Chart(canvas, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: labelText,
+                            data: dataValues,
+                            backgroundColor: bgColor,
+                            borderColor: borderColor,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: '#D1D5DB' // Цвет текста меток оси X
+                                },
+                                grid: {
+                                    color: 'rgba(200, 200, 200, 0.1)' // Цвет сетки оси X
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#D1D5DB' // Цвет текста меток оси Y
+                                },
+                                grid: {
+                                    color: 'rgba(200, 200, 200, 0.2)' // Цвет сетки оси Y
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#D1D5DB' // Цвет текста легенды
+                                }
+                            }
+                        }
+                    }
+                });
+                canvas.chart = chartInstance; // Сохраняем экземпляр графика на canvas
+                return chartInstance;
+            };
+
+            mainCharts = createBarChart(infoWeight, 'Вес', weight, 'rgba(75, 192, 192, 0.2)', 'rgba(75, 192, 192, 1)');
+            infoHeightCharts = createBarChart(infoHeight, 'Рост', height, 'rgba(75,192,108, 0.2)', 'rgb(75,192,108, 1)');
+            stepCharts = createBarChart(infoStep, 'Уровни', step, 'rgba(176,192,75, 0.2)', 'rgb(176,192,75, 1)');
+            infoPushUpsCharts = createBarChart(infoPushUps, 'Отжимания', push_ups, 'rgba(75,134,192, 0.2)', 'rgb(75,134,192, 1)');
+            infoPullUpsCharts = createBarChart(infoPullUps, 'Подтягивания', pull_ups, 'rgba(135,75,192, 0.2)', 'rgb(135,75,192, 1)');
+            infoLongJumpCharts = createBarChart(infoLongJump, 'Прыжок в длину', long_jump, 'rgba(192,75,134, 0.2)', 'rgb(192,75,134, 1)');
+        }
+    }
+});
+
+
+

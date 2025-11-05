@@ -7,8 +7,11 @@ use App\Http\Controllers\AjaxFilterCharsController;
 use App\Http\Controllers\AjaxPlayerCondition;
 use App\Http\Controllers\AttendanceCalendarController;
 use App\Http\Controllers\DockerBotController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\LoadControl;
 use App\Http\Controllers\LoadControlController;
+use App\Http\Controllers\PlayerTestController;
+use App\Http\Controllers\PlayerTestImportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionOrderController;
 use App\Http\Controllers\TeamController;
@@ -66,7 +69,7 @@ Route::patch( '/users/{id}/update-active-player', [ UserController::class, 'upda
 Route::group( [ 'middleware' => [ 'auth', 'coach' ] ], function () {
     Route::get( '/users', [ UserController::class, 'index' ] )->name( 'users.index' );
     Route::post( '/users', [ UserController::class, 'store' ] )->name( 'users.store' );
-    Route::patch( '/users', [ UserController::class, 'update' ] )->name( 'users.update' );
+    Route::patch( '/users/{id}', [ UserController::class, 'update' ] )->name( 'users.update' );
     Route::get( '/users/{user}', [ UserController::class, 'show' ] )->name( 'users.show' );
     Route::delete( '/users/{user}', [ UserController::class, 'destroy' ] )->name( 'users.destroy' );
 
@@ -112,6 +115,17 @@ Route::group( [ 'middleware' => [ 'auth', 'coach' ] ], function () {
 
     Route::get( '/calendar',
         [ TrainingController::class, 'calendar' ] )->name( 'calendar' );
+
+    Route::resource('player-tests', PlayerTestController::class);
+
+    Route::get('/admin/tests/import', [PlayerTestImportController::class, 'create'])->name('admin.tests.import.create');
+    Route::post('/admin/tests/import', [PlayerTestImportController::class, 'store'])->name('admin.tests.import.store');
+
+    Route::get('/export/testing-form/{teamCode}', [ExportController::class, 'exportTestingForm'])
+         ->name('export.testing_form')
+         ->where('teamCode', '[a-zA-Z0-9_-]+');
+
+    Route::get('/admin/players_info/{id}', [UserController::class, 'getPlayerInfo'])->name('players.getPlayerInfo');
 
 } );
 

@@ -1,6 +1,7 @@
 FROM php:8.3-fpm
 
-# Install system dependencies and Node.js + npm for svgo
+# Install system dependencies
+# Добавлена библиотека libzip-dev, необходимая для компиляции расширения zip
 RUN apt-get update && apt-get install -y --no-install-recommends \
     jpegoptim optipng pngquant gifsicle \
     nodejs npm \
@@ -8,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libjpeg-dev \
     libonig-dev \
     libxml2-dev \
+    libzip-dev \
     zip \
     unzip \
     git \
@@ -16,7 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# ПРАВИЛЬНО: 'zip' добавлен в конец ОДНОЙ длинной команды 'docker-php-ext-install'
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

@@ -356,7 +356,7 @@
                                     <button id="toggle-form-button"
                                         class="mb-4 block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                         type="button" title="{{ __('messages.Добавить игрока') }}">
-                                        {{ __('messages.Добавить игрока') }}
+                                        {{ __('messages.Добавить игрока') }} &#9660;
                                     </button>
 
                                     <div  id="add-player-form-container" class="hidden relative bg-white rounded-lg shadow dark:bg-gray-700 mb-3">
@@ -961,6 +961,8 @@
                                 <div class="hidden rounded-lg bg-gray-50 dark:bg-gray-800" id="test"
                                      role="tabpanel"
                                      aria-labelledby="test-tab">
+                                    @include('admin.tests.performance')
+                                    @include('admin.tests.import')
                                 </div>
                             </div>
                         @else

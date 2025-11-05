@@ -58,8 +58,13 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+            <div class="p-6 mb-3 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <button id="toggle-form-button"
+                        class=" block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                        type="button" title="{{ __('messages.Редактировать игрока') }}">
+                    {{ __('messages.Редактировать игрока') }} &#9660;
+                </button>
+                <div id="add-player-form-container" class="mt-3 hidden text-gray-900 dark:text-gray-100">
                     @if(Session::has('success'))
                         <div id="alert-border-3" class="flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-700 dark:border-green-800" role="alert">
                             <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -77,7 +82,7 @@
                         </div>
                     @endif
                     <div>
-                        <form method="post" action="{{ route('users.update') }}" enctype="multipart/form-data"
+                        <form method="post" action="{{ route('users.update', ['id' => $player->id]) }}" enctype="multipart/form-data"
                               class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                             <!-- Modal header -->
                             @csrf
@@ -280,6 +285,15 @@
                     </div>
                 </div>
             </div>
+            @if(checkTestsForPlayer($player->id))
+                <div class="p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    @include('admin.tests.user')
+                </div>
+            @else
+                <div class="p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <p class="text-gray-900 dark:text-gray-100">У этого пользователя пока нет данных по тестам.</p>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

@@ -64,7 +64,7 @@
         </div>
     </div>
     @if (checkLoadControl())
-        <div class="bg-white p-2.5 mb-3 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="bg-white mb-3 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div class="grid gap-4 grid-cols-2 sm:grid-cols-3 p-3 sm:p-7 text-gray-900 dark:text-gray-100">
                 {{ dashboardLoadControlTeams(Auth::user()->id) }}
             </div>

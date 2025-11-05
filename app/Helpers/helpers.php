@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\ClassTraining;
+use App\Models\PlayerTest;
 use App\Models\PresenceTraining;
 use App\Models\Question;
 use App\Models\SettingLoadcontrol;
@@ -700,4 +701,9 @@ function getTimesArray() {
     ];
 
     return response()->json( $todayTrainingsStartFinish );
+}
+
+function checkTestsForPlayer($id) {
+    $hasTests = PlayerTest::where('player_id', $id)->exists();
+    return $hasTests;
 }

@@ -155,6 +155,18 @@
                         <p class="text-base leading-relaxed mt-2">Позволяет быстро сформировать состояние дел в команде,
                             и понять что предпринять в первую очередь.</p>
                     </div>
+                    <div class="p-4 md:w-full sm:mb-0">
+                        <div class="rounded-lg h-64 overflow-hidden">
+                            <a data-fancybox class="w-full h-full"
+                               href="/images/1762273118126.jpg">
+                                <img src="/images/1762273118126.jpg"
+                                     alt="Система тестирования игроков"
+                                     class="object-cover object-left-top h-full w-full">
+                            </a>
+                        </div>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">Система тестирования игроков</h2>
+                        <p class="text-base leading-relaxed mt-2">Управляйте тестовыми данными игроков и контролируйте прогресс физической подготовки.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -234,7 +246,7 @@
                             руководителя</p>
                         <div class="flex flex-col gap-3 justify-center my-8">
                             <div class="flex justify-center mb-3">
-                                <span class="relative mr-2 text-5xl font-extrabold" id="totalSum">490</span>
+                                <span class="relative mr-2 text-5xl font-extrabold" id="totalSum">14900</span>
                                 <span class="text-gray-500 dark:text-gray-400">₽/месяц</span>
                             </div>
 
@@ -262,7 +274,7 @@
                                 document.addEventListener('DOMContentLoaded', () => {
                                     const input = document.getElementById('numberInput');
                                     const totalSumElem = document.getElementById('totalSum');
-                                    const pricePerCoach = 490;
+                                    const pricePerCoach = 14900;
 
                                     // Создаем элемент индикатора скидки рядом с totalSum, если его ещё нет
                                     let discountLabel = totalSumElem.querySelector('.discount-label');
@@ -383,15 +395,16 @@
                                     icon-type="check"
                                 />
                                 <x-item-list-tarif
+                                    text="Тестирование спортменов"
+                                    description="Система фиксации данных тестирования спортсменов для дальнейшего ослеживания динамики развития и своевременного внесения корректировок в тренировочный процесс"
+                                    icon-type="check"
+                                />
+                                <x-item-list-tarif
                                     text="Личный кабинет родителя"
                                     description="В разработке! Место где родитель сможет ознакомиться с динамикой развития своего ребенка как спортсмена"
                                     icon-type="new"
                                 />
-                                <x-item-list-tarif
-                                    text="Тестирование спортменов"
-                                    description="В разработке! Система фиксации данных тестирования спортсменов для дальнейшего ослеживания динамики развития и своевременного внесения корректировок в тренировочный процесс"
-                                    icon-type="new"
-                                />
+
                             </ul>
                             <div
                                 class="flex items-center p-4 mb-4 text-sm text-green-800 border-4 border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
@@ -425,7 +438,7 @@
                         <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">Приложение размещается на
                             выделеном сервере.</p>
                         <div class="flex justify-center my-8">
-                            <span class="mr-2 text-5xl font-extrabold">49 000</span>
+                            <span class="mr-2 text-5xl font-extrabold">149 000</span>
                             <span class="text-gray-500 dark:text-gray-400">₽/месяц</span>
                         </div>
                         <div class="flex h-full flex-col gap-3 justify-between">
@@ -483,15 +496,16 @@
                                         icon-type="check"
                                     />
                                     <x-item-list-tarif
+                                        text="Тестирование спортменов"
+                                        description="Система фиксации данных тестирования спортсменов для дальнейшего ослеживания динамики развития и своевременного внесения корректировок в тренировочный процесс"
+                                        icon-type="check"
+                                    />
+                                    <x-item-list-tarif
                                         text="Личный кабинет родителя"
                                         description="В разработке! Место где родитель сможет ознакомиться с динамикой развития своего ребенка как спортсмена"
                                         icon-type="new"
                                     />
-                                    <x-item-list-tarif
-                                        text="Тестирование спортменов"
-                                        description="В разработке! Система фиксации данных тестирования спортсменов для дальнейшего ослеживания динамики развития и своевременного внесения корректировок в тренировочный процесс"
-                                        icon-type="new"
-                                    />
+
                                 </ul>
                             </ul>
                             <button data-modal-target="subscriptionModal" data-modal-toggle="subscriptionModal"
