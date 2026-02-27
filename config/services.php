@@ -20,6 +20,16 @@ return [
         'secret' => env('NOCAPTCHA_SECRET'),
     ],
 
+    'recaptcha' => [
+        'site_key' => env('RECAPTCHA_SITE_KEY'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+    ],
+
+    'yandex_smart_captcha' => [
+        'client_key' => env('YANDEX_SMART_CAPTCHA_CLIENT_KEY'),
+        'server_key' => env('YANDEX_SMART_CAPTCHA_SERVER_KEY'),
+    ],
+
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
         // Secret для внутренних запросов от бота/интеграции к API

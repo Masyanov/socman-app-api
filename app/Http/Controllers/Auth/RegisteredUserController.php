@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Carbon\Carbon;
-use App\Services\RecaptchaService; // <- add this
+use App\Services\SmartCaptchaService;
 
 class RegisteredUserController extends Controller {
     public function create() {
@@ -37,31 +37,22 @@ class RegisteredUserController extends Controller {
             'ref'       => ['nullable', 'string'],
         ]);
 
-        $token = $request->input('g-recaptcha-response');
+        $token = $request->input('smart-token');
 
         if (empty($token)) {
-            return back()->withErrors(['g-recaptcha-response' => __('messages.Ошибка проверки безопасности. Обновите страницу и попробуйте снова.')])->withInput();
+            return back()->withErrors(['smart-token' => __('messages.Ошибка проверки безопасности. Обновите страницу и попробуйте снова.')])->withInput();
         }
 
-        // Verify token with RecaptchaService
-        $recaptcha = new RecaptchaService();
-        $result = $recaptcha->verify($token);
+        $captcha = new SmartCaptchaService();
+        $result = $captcha->verify($token);
 
-        // Log result for debugging
-        \Log::info('register recaptcha', [
+        \Log::info('register SmartCaptcha', [
+            'status' => $result['status'] ?? null,
             'success' => $result['success'] ?? false,
-            'score' => $result['score'] ?? null,
-            'response' => $result
         ]);
 
-        // Check verification result (for v3 check score if you want)
         if (empty($result['success'])) {
-            return back()->withErrors(['g-recaptcha-response' => __('messages.Ошибка проверки безопасности. Попробуйте позже.')])->withInput();
-        }
-
-        // Optional: enforce minimum score for v3 (e.g. 0.5)
-        if (isset($result['score']) && $result['score'] < 0.5) {
-            return back()->withErrors(['g-recaptcha-response' => __('messages.Подозрительная активность. Попробуйте снова.')])->withInput();
+            return back()->withErrors(['smart-token' => __('messages.Ошибка проверки безопасности. Попробуйте позже.')])->withInput();
         }
 
         // Continue registration flow (your existing code)

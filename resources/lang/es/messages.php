@@ -360,6 +360,10 @@ return [
     'Ошибка проверки безопасности. Обновите страницу и попробуйте снова.' => 'Error de verificación de seguridad. Actualice la página e inténtelo de nuevo.',
     'Ошибка проверки безопасности. Попробуйте позже.' => 'Error de verificación de seguridad. Inténtelo más tarde.',
     'Подозрительная активность. Попробуйте снова.' => 'Actividad sospechosa. Inténtelo de nuevo.',
+    'Решите капчу' => 'Resuelva la captcha.',
+    'Решите капчу для продолжения.' => 'Resuelva la captcha para continuar.',
+    'Капча не настроена. Укажите YANDEX_SMART_CAPTCHA_CLIENT_KEY в .env' => 'Captcha no configurada. Establezca YANDEX_SMART_CAPTCHA_CLIENT_KEY en .env',
+
 
     // Helpers / common
     'Неизвестно' => 'Desconocido',

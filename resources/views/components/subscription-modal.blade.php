@@ -25,25 +25,25 @@
 
                 <form id="subscription-form" class="space-y-4">
                     @csrf
-                    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                    <input type="hidden" name="smart-token" id="smart-token" value="">
 
                     <div>
-                        <label class="block text-gray-300 mb-1">{{ __('messages.Имя') }}</label>
+                        <label class="block text-gray-300 mb-1">{{ __('messages.Имя') }} <span class="text-red-400">*</span></label>
                         <input type="text" name="name" class="w-full px-3 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:ring focus:ring-blue-500" required>
                     </div>
 
                     <div>
-                        <label class="block text-gray-300 mb-1">{{ __('messages.Телефон') }}</label>
+                        <label class="block text-gray-300 mb-1">{{ __('messages.Телефон') }} <span class="text-red-400">*</span></label>
                         <input type="tel" name="phone" class="w-full px-3 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:ring focus:ring-blue-500" required>
                     </div>
 
                     <div>
-                        <label class="block text-gray-300 mb-1">Email</label>
+                        <label class="block text-gray-300 mb-1">Email <span class="text-red-400">*</span></label>
                         <input type="email" name="email" class="w-full px-3 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:ring focus:ring-blue-500" required>
                     </div>
 
                     <div>
-                        <label class="block text-gray-300 mb-1">{{ __('messages.Выберите подписку') }}</label>
+                        <label class="block text-gray-300 mb-1">{{ __('messages.Выберите подписку') }} <span class="text-red-400">*</span></label>
                         <select name="subscription_type" class="w-full px-3 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:ring focus:ring-blue-500" required>
                             <option value="">-- {{ __('messages.Выбрать') }} --</option>
                             <option value="Минимум">FREE</option>
@@ -53,13 +53,13 @@
                     </div>
 
                     <div>
-                        <label class="block text-gray-300 mb-1">{{ __('messages.Тип клиента') }}</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <label class="block cursor-pointer">
+                        <span class="block text-gray-300 mb-1">{{ __('messages.Тип клиента') }} <span class="text-red-400">*</span></span>
+                        <div class="grid grid-cols-2 gap-3 mt-1">
+                            <label class="block cursor-pointer subscription-radio-label">
                                 <input type="radio" name="customer_type" value="individual" class="hidden peer" checked>
                                 <div class="p-4 bg-gray-700 border border-gray-600 rounded-lg text-center text-gray-300 peer-checked:border-blue-500 peer-checked:bg-blue-700 peer-checked:text-white">{{ __('messages.Физ. лицо') }}</div>
                             </label>
-                            <label class="block cursor-pointer">
+                            <label class="block cursor-pointer subscription-radio-label">
                                 <input type="radio" name="customer_type" value="company" class="hidden peer">
                                 <div class="p-4 bg-gray-700 border border-gray-600 rounded-lg text-center text-gray-300 peer-checked:border-blue-500 peer-checked:bg-blue-700 peer-checked:text-white">{{ __('messages.Юр. лицо') }}</div>
                             </label>
@@ -74,6 +74,12 @@
                             </div>
                         </label>
                     </div>
+
+                    <div id="smart-captcha-container" class="smart-captcha" data-sitekey="{{ config('services.yandex_smart_captcha.client_key') }}" data-callback="onSubscriptionCaptchaSuccess"></div>
+                    <div id="smart-captcha-error" class="hidden text-red-400 text-sm mt-1"></div>
+                    @if(empty(config('services.yandex_smart_captcha.client_key')))
+                    <p class="text-amber-400 text-sm mt-1">{{ __('messages.Капча не настроена. Укажите YANDEX_SMART_CAPTCHA_CLIENT_KEY в .env') }}</p>
+                    @endif
 
                     <button type="submit" id="submit-btn" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg">
                         {{ __('messages.Отправить заявку') }}
@@ -95,8 +101,51 @@
     </div>
 </div>
 
-<script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
+<script>
+    window.onSubscriptionCaptchaSuccess = function(token) {
+        document.getElementById('smart-token').value = token;
+        var errEl = document.getElementById('smart-captcha-error');
+        if (errEl) { errEl.classList.add('hidden'); errEl.textContent = ''; }
+    };
+</script>
+{{-- Yandex Smart Captcha: скрипт ищет все элементы с классом smart-captcha и рендерит виджет. Загружаем при открытии модалки, чтобы контейнер был виден. --}}
+<script>
+    (function() {
+        var clientKey = @json(config('services.yandex_smart_captcha.client_key'));
+        if (!clientKey) return;
 
+        function loadSmartCaptchaScript() {
+            if (window.__subscriptionCaptchaScriptLoaded) return;
+            if (document.querySelector('script[src*="smartcaptcha.yandexcloud.net/captcha.js"]')) {
+                window.__subscriptionCaptchaScriptLoaded = true;
+                return;
+            }
+            window.__subscriptionCaptchaScriptLoaded = true;
+            var script = document.createElement('script');
+            script.src = 'https://smartcaptcha.yandexcloud.net/captcha.js';
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var modal = document.getElementById('subscriptionModal');
+            if (!modal) return;
+
+            var observer = new MutationObserver(function() {
+                if (!modal.classList.contains('hidden')) loadSmartCaptchaScript();
+            });
+            observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+
+            document.body.addEventListener('click', function(e) {
+                if (e.target && (e.target.getAttribute('data-modal-toggle') === 'subscriptionModal' || e.target.closest('[data-modal-toggle="subscriptionModal"]'))) {
+                    setTimeout(loadSmartCaptchaScript, 100);
+                }
+            }, true);
+
+            if (!modal.classList.contains('hidden')) loadSmartCaptchaScript();
+        });
+    })();
+</script>
 <script>
     @php
         $subI18n = [
@@ -122,22 +171,25 @@
 
         let recaptchaReady = false;
 
+        function checkSmartCaptchaToken() {
+            var tokenEl = document.getElementById('smart-token');
+            return tokenEl && tokenEl.value && tokenEl.value.length > 0;
+        }
+
+        function showSmartCaptchaError(msg) {
+            var errEl = document.getElementById('smart-captcha-error');
+            if (errEl) { errEl.textContent = msg || '{{ __("messages.Решите капчу") }}'; errEl.classList.remove('hidden'); }
+        }
+
         function initRecaptcha() {
-            if (typeof grecaptcha === 'undefined') return false;
-            grecaptcha.ready(() => { recaptchaReady = true; });
             return true;
         }
 
         async function generateRecaptchaToken() {
-            if (!recaptchaReady) return null;
-            return await grecaptcha.execute('{{ env('RECAPTCHA_SITE_KEY') }}', {action: 'submit'});
+            return null;
         }
 
         if (!initRecaptcha()) {
-            const script = document.createElement('script');
-            script.src = 'https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}';
-            script.onload = initRecaptcha;
-            document.head.appendChild(script);
         }
 
         form.addEventListener('submit', async (e) => {
@@ -150,8 +202,12 @@
             loader.classList.remove('hidden');
 
             try {
-                const token = await generateRecaptchaToken();
-                if (token) document.getElementById('g-recaptcha-response').value = token;
+                if (!checkSmartCaptchaToken()) {
+                    loader.classList.add('hidden');
+                    formContainer.classList.remove('hidden');
+                    showSmartCaptchaError();
+                    return;
+                }
 
                 const formData = new FormData(form);
                 const response = await fetch('{{ route("subscription-order.store") }}', {
@@ -164,29 +220,45 @@
                     }
                 });
 
-                const result = await response.json();
+                const contentType = response.headers.get('Content-Type') || '';
+                let result;
+                try {
+                    result = await response.json();
+                } catch (parseErr) {
+                    const text = await response.text();
+                    console.error('Subscription order: server returned non-JSON', response.status, text.slice(0, 500));
+                    loader.classList.add('hidden');
+                    formContainer.classList.remove('hidden');
+                    if (response.status === 419) {
+                        alert('❌ Сессия истекла. Обновите страницу и попробуйте снова.');
+                    } else {
+                        alert('❌ ' + window.__subI18n.errorGeneric + ' (код ' + response.status + '). Обновите страницу или попробуйте позже.');
+                    }
+                    return;
+                }
+
                 loader.classList.add('hidden');
 
                 if (result.success) {
                     successMessage.classList.remove('hidden');
                     form.reset();
+                    document.getElementById('smart-token').value = '';
 
-                    // --- ЖЕСТКАЯ ОЧИСТКА ---
                     setTimeout(() => {
-                        // 1. Скрываем само окно
+                        var closeBtn = document.querySelector('[data-modal-hide="subscriptionModal"]');
+                        if (closeBtn) closeBtn.click();
+                        if (flowbiteModal && typeof flowbiteModal.hide === 'function') {
+                            try { flowbiteModal.hide(); } catch (e) {}
+                        }
                         modalElement.classList.add('hidden');
                         modalElement.setAttribute('aria-hidden', 'true');
-
-                        // 2. Удаляем ВСЕ элементы backdrop, которые создал Flowbite
-                        document.querySelectorAll('[modal-backdrop]').forEach(el => el.remove());
-
-                        // 3. Возвращаем кликабельность элементам (удаляем блокировку скролла)
                         document.body.classList.remove('overflow-hidden');
                         document.documentElement.classList.remove('overflow-hidden');
-
-                        // 4. Дополнительный сброс стилей на случай если библиотека их вписала инлайново
                         document.body.style.overflow = '';
                         document.body.style.paddingRight = '';
+                        document.querySelectorAll('.modal-backdrop, [modal-backdrop]').forEach(function(el) { el.remove(); });
+                        successMessage.classList.add('hidden');
+                        formContainer.classList.remove('hidden');
                     }, 2000);
 
                 } else {
@@ -194,10 +266,16 @@
                     formContainer.classList.remove('hidden');
                 }
             } catch (error) {
-                console.error(error);
+                const url = '{{ route("subscription-order.store") }}';
+                console.error('Subscription order request failed', {
+                    url,
+                    name: error.name,
+                    message: error.message,
+                    error
+                });
                 loader.classList.add('hidden');
                 formContainer.classList.remove('hidden');
-                alert('❌ ' + window.__subI18n.errorGeneric);
+                alert('❌ ' + window.__subI18n.errorGeneric + ' Проверьте интернет-соединение и попробуйте снова. (Подробности в консоли: F12 → Console)');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
@@ -207,5 +285,14 @@
 </script>
 
 <style>
-    .grecaptcha-badge { display: none; }
+    /* Yandex Smart Captcha: контейнеру нужна высота для отображения виджета */
+    #smart-captcha-container.smart-captcha {
+        min-height: 100px;
+    }
+    /* Убираем лишние звёздочки: у кнопок выбора типа клиента не должно быть ::after/::before от глобальных стилей */
+    #subscription-form .subscription-radio-label::after,
+    #subscription-form .subscription-radio-label::before {
+        content: none !important;
+        display: none !important;
+    }
 </style>

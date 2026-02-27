@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SubscriptionOrder;
-use App\Services\RecaptchaService;
+use App\Services\SmartCaptchaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
@@ -15,38 +15,45 @@ class SubscriptionOrderController extends Controller {
 
     public function store( Request $request ) {
         try {
+            if ( empty( config( 'services.yandex_smart_captcha.server_key' ) ) ) {
+                \Log::warning( 'Subscription order: YANDEX_SMART_CAPTCHA_SERVER_KEY not set' );
+
+                return response()->json( [
+                    'success' => false,
+                    'message' => __( 'messages.Ошибка проверки безопасности. Обновите страницу.' ),
+                ], 422 );
+            }
+
             // Validate input
             $validator = Validator::make( $request->all(), [
                 'name'                 => 'required|string|max:255',
                 'phone'                => 'required|string|max:50',
                 'email'                => 'required|email',
-                'subscription_type'    => 'required|string',
+                'subscription_type'    => 'required|string|max:100',
                 'customer_type'        => 'required|in:individual,company',
-                'g-recaptcha-response' => 'required|string',
+                'smart-token'          => 'required|string',
                 'policy_accepted'      => 'required|accepted',
             ] );
 
             $validator->validate();
 
-            // Get token and verify
-            $token            = $request->input( 'g-recaptcha-response' );
-            $recaptchaService = new RecaptchaService();
-            $recaptchaResult  = $recaptchaService->verify( $token );
+            $token   = $request->input( 'smart-token' );
+            $service = new SmartCaptchaService();
+            $result  = $service->verify( $token );
 
-            \Log::info( 'reCAPTCHA result', [
-                'success' => $recaptchaResult['success'] ?? false,
-                'score'   => $recaptchaResult['score'] ?? 'unknown',
-                'errors'  => $recaptchaResult['error-codes'] ?? []
+            \Log::info( 'SmartCaptcha result', [
+                'status'  => $result['status'] ?? 'unknown',
+                'success' => $result['success'] ?? false,
             ] );
 
-            if ( empty( $recaptchaResult['success'] ) ) {
+            if ( empty( $result['success'] ) ) {
                 return response()->json( [
                     'success' => false,
                     'message' => __('messages.Ошибка проверки безопасности. Обновите страницу.')
                 ], 422 );
             }
 
-            // Prepare data to save (do not save g-recaptcha-response)
+            // Prepare data to save (do not save smart-token)
             $saveData                    = $request->only( [
                 'name',
                 'phone',

@@ -7,7 +7,7 @@
             </h2>
             <form method="POST" action="{{ route('register') }}">
                 @csrf
-                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                <input type="hidden" name="smart-token" id="smart-token" value="">
                 <input type="hidden" name="ref" value="{{ request('ref') }}">
                 <!-- Name -->
 
@@ -112,6 +112,15 @@
                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2"/>
                 </div>
 
+                <!-- Yandex Smart Captcha -->
+                <div class="mt-4">
+                    <div id="register-smart-captcha" data-sitekey="{{ config('services.yandex_smart_captcha.client_key') }}" data-callback="onRegisterCaptchaSuccess"></div>
+                    @error('smart-token')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                    <div id="register-captcha-error" class="hidden text-red-500 text-sm mt-1"></div>
+                </div>
+
                 <div class="flex items-center justify-end mt-4">
                     <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
                        href="{{ route('login') }}">
@@ -122,37 +131,35 @@
                         {{ __('messages.Регистрация') }}
                     </x-primary-button>
 
-                    <script
-                        src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHA_SITE_KEY') }}"></script>
+                    <script>
+                        window.onRegisterCaptchaSuccess = function(token) {
+                            var el = document.getElementById('smart-token');
+                            if (el) el.value = token;
+                            var err = document.getElementById('register-captcha-error');
+                            if (err) { err.classList.add('hidden'); err.textContent = ''; }
+                        };
+                    </script>
+                    <script src="https://smartcaptcha.yandexcloud.net/captcha.js?render=onload&onload=onRegisterCaptchaLoad" defer></script>
+                    <script>
+                        window.onRegisterCaptchaLoad = function() { /* виджет рендерится автоматически */ };
+                    </script>
                     <script>
                         (function () {
                             const form = document.querySelector('form[action="{{ route('register') }}"]');
                             if (!form) return;
 
                             form.addEventListener('submit', function (e) {
-                                // Prevent default submit to fetch fresh token first
-                                e.preventDefault();
-
-                                grecaptcha.ready(function () {
-                                    grecaptcha.execute('{{ env('RECAPTCHA_SITE_KEY') }}', {action: 'register'}).then(function (token) {
-                                        // set token and submit form
-                                        document.getElementById('g-recaptcha-response').value = token;
-                                        form.submit();
-                                    }).catch(function (err) {
-                                        console.error('reCAPTCHA error', err);
-                                        // If recaptcha fails, allow user to try again
-                                        alert('Не удалось проверить безопасность. Попробуйте ещё раз.');
-                                    });
-                                });
+                                var tokenEl = document.getElementById('smart-token');
+                                if (!tokenEl || !tokenEl.value || tokenEl.value.length === 0) {
+                                    e.preventDefault();
+                                    var err = document.getElementById('register-captcha-error');
+                                    if (err) { err.textContent = '{{ __("messages.Решите капчу для продолжения.") }}'; err.classList.remove('hidden'); }
+                                    return;
+                                }
+                                // токен есть — форма отправится как обычно
                             });
                         })();
                     </script>
-
-                    <style>
-                        .grecaptcha-badge {
-                            display: none;
-                        }
-                    </style>
                 </div>
             </form>
             <div class="w-full mt-6 flex flex-col align-items-center justify-center">

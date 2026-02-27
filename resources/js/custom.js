@@ -286,10 +286,10 @@ $("#update_user_meta").on("click", function () {
     });
 });
 
-let reqInput = $('input[required]');
+let reqInput = $('input[required]').not('#subscription-form input[required]');
 reqInput.each(function (i, item) {
     let inputName = $(this).attr('name');
-    $('label').each(function (i, item) {
+    $('label').not('#subscription-form label').each(function (i, item) {
         let labelFor = $(this).attr('for');
         if (labelFor == inputName) {
             $(this).append('<span class="text-red-700 dark:text-red">*</span>')
@@ -960,6 +960,10 @@ $(document).ready(function () {
 
     $('#filter_button_week').on('click', function () {
         let team_id = $('#team_id').val(); // обязательно получить team_id
+        if (!team_id) {
+            console.warn('team_id element not found or empty, aborting filter-chars.');
+            return;
+        }
         let week = $('#weekSelect').val();
 
         setCookie('week', week, 7);
@@ -1452,6 +1456,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Предполагаем, что это CANVSA-элементы
     let ctx = document.getElementById('myChart');
 
+    const playerSelectEl = document.getElementById('player-select');
+    if (!playerSelectEl) return; // Страница без выбора игрока (например, форма подписки) — не выполняем блок графиков
+
+    let id = playerSelectEl.value;
+
     // Переменные для хранения экземпляров графиков
     let myChart = null;
     let mainCharts = null;
@@ -1460,8 +1469,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let infoPushUpsCharts = null;
     let infoPullUpsCharts = null;
     let infoLongJumpCharts = null;
-
-    let id = document.getElementById('player-select').value;
 
     // Вспомогательная функция для отображения сообщения на canvas
     function displayNoDataOnCanvas(canvasElement, message = 'Нет данных для отображения.') {
