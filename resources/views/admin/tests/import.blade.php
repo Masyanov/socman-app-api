@@ -1,4 +1,4 @@
-<div class="max-w-4xl mx-auto py-8">
+<div class="w-full py-8">
 
     @if (session('success'))
         <div
@@ -11,7 +11,7 @@
             </svg>
             <span class="sr-only">Info</span>
             <div>
-                <span class="font-medium">Успех!</span> {{ session('success') }}
+                <span class="font-medium">{{ __('messages.Успех!') }}</span> {{ session('success') }}
             </div>
         </div>
     @endif
@@ -26,7 +26,7 @@
             </svg>
             <span class="sr-only">Danger</span>
             <div>
-                <span class="font-medium">Ошибка!</span> {{ session('error') }}
+                <span class="font-medium">{{ __('messages.Ошибка!') }}</span> {{ session('error') }}
             </div>
         </div>
     @endif
@@ -43,7 +43,7 @@
             </svg>
             <span class="sr-only">Danger</span>
             <div>
-                <span class="font-medium">Ошибки валидации:</span>
+                <span class="font-medium">{{ __('messages.Ошибки валидации:') }}</span>
                 <ul class="mt-1.5 list-disc list-inside">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -55,15 +55,14 @@
 
     <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-700">
 
-        <form action="{{ route('admin.tests.import.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.tests.import.store') }}" method="POST" enctype="multipart/form-data" class="flex gap-3 items-center">
             @csrf
-            <div class="mb-5"> {{-- Отступ для элемента формы --}}
-                <label for="file" class="block mb-2 text-sm font-medium text-white">Выберите XLSX файл для
-                    импорта</label>
+            <div> {{-- Отступ для элемента формы --}}
+                <label for="file" class="block mb-2 text-sm font-medium text-white">{{ __('messages.Выберите XLSX файл для загрузки') }}</label>
                 <input type="file" name="file" id="file"
                        class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                        required>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">Только XLSX файлы.</p>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">{{ __('messages.Только XLSX файлы.') }}</p>
             </div>
             <div class="flex flex-col gap-3 sm:flex-row">
                 @include('admin.tests.export')

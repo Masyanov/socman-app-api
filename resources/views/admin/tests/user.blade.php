@@ -2,7 +2,7 @@
     <input type="hidden" name="player-select" id="player-select" value="{{ $player->id }}">
     <div class="grid grid-cols-1 sm:grid-cols-2">
         <div class="col-12 col-md-4 py-4">
-            <h2 class="text-2xl font-bold text-white mb-6">Информация о игроке</h2>
+            <h2 class="text-2xl font-bold text-white mb-6">{{ __('messages.Информация о игроке') }}</h2>
             <div id="info_player"></div>
         </div>
         <div class="col-12 col-md-6 py-4">

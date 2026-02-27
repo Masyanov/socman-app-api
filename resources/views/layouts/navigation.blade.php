@@ -63,7 +63,7 @@
                     <x-slot name="content">
 
 
-                        <ul class="px-4 mt-4 mb-4 grid grid-cols-2 ">
+                        <ul class="px-4 mt-4 mb-4 grid grid-cols-3 gap-1">
                             <li>
                                 <a class="flex items-center font-medium text-xs text-gray-400 dark:text-gray-200"
                                    href="{{ route('locale', ['locale' => 'ru']) }}">
@@ -160,6 +160,12 @@
                                     <span class="pl-2">EN</span>
                                 </a>
                             </li>
+                            <li>
+                                <a class="flex items-center font-medium text-xs text-gray-400 dark:text-gray-200"
+                                   href="{{ route('locale', ['locale' => 'es']) }}">
+                                    <span class="rounded border border-gray-500 px-1.5 py-0.5 text-[10px]">ES</span>
+                                </a>
+                            </li>
                         </ul>
 
                         <x-dropdown-link :href="route('profile.edit')">
@@ -232,7 +238,7 @@
 
             <div class="mt-3 space-y-1">
 
-                <ul class="px-4 mt-4 mb-4 grid grid-cols-2 ">
+                <ul class="px-4 mt-4 mb-4 grid grid-cols-3 gap-1">
                     <li>
                         <a class="flex items-center font-medium text-xs text-gray-400 dark:text-gray-200"
                            href="{{ route('locale', ['locale' => 'ru']) }}">
@@ -326,6 +332,12 @@
                                 </g>
                             </svg>
                             <span class="pl-2">EN</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="flex items-center font-medium text-xs text-gray-400 dark:text-gray-200"
+                           href="{{ route('locale', ['locale' => 'es']) }}">
+                            <span class="rounded border border-gray-500 px-1.5 py-0.5 text-[10px]">ES</span>
                         </a>
                     </li>
                 </ul>

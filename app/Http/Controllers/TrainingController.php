@@ -146,7 +146,7 @@ class TrainingController extends Controller
         $training = $this->trainingService->getTrainingByIdAndUser($id, $userId);
 
         if (!$training) {
-            return redirect('/dashboard')->with('error', 'Тренировка не найдена.');
+            return redirect('/dashboard')->with('error', __('messages.Тренировка не найдена'));
         }
 
         return view('trainings.training', compact('training', 'teamActive', 'trainingClass', 'trainingAddresses'));
@@ -162,12 +162,12 @@ class TrainingController extends Controller
         $training = $this->trainingService->updateTraining($data['trainingId'], $data);
 
         if (!$training) {
-            return response()->json(['message' => 'Тренировка не найдена'], 404);
+            return response()->json(['message' => __('messages.Тренировка не найдена')], 404);
         }
 
         return response()->json([
             'code' => 200,
-            'success' => 'Запись успешно обновлена',
+            'success' => __('messages.Запись успешно обновлена'),
             'data' => $training,
         ]);
     }
@@ -180,10 +180,10 @@ class TrainingController extends Controller
         $deleted = $this->trainingService->deleteTraining((int)$id);
 
         if (!$deleted) {
-            return response()->json(['message' => 'Тренировка не найдена'], 404);
+            return response()->json(['message' => __('messages.Тренировка не найдена')], 404);
         }
 
-        return response()->json(['success' => 'Запись успешно удалена']);
+        return response()->json(['success' => __('messages.Запись успешно удалена')]);
     }
 
     /**

@@ -27,20 +27,20 @@
         </div>
 
         <div class="flex justify-between bg-gray-100 dark:bg-gray-800 rounded-xl p-2 mb-6">
-            <button id="btnToday" class="bg-primary-600 px-3 py-1 rounded-full text-white text-sm font-medium">Сегодня
+            <button id="btnToday" class="bg-primary-600 px-3 py-1 rounded-full text-white text-sm font-medium">{{ __('messages.Сегодня') }}
             </button>
         </div>
 
         <table class="w-full text-center text-gray-500 dark:text-gray-400 select-none">
             <thead class="border-b border-gray-200 dark:border-gray-700">
             <tr>
-                <th class="py-2">Пн</th>
-                <th>Вт</th>
-                <th>Ср</th>
-                <th>Чт</th>
-                <th>Пт</th>
-                <th>Сб</th>
-                <th>Вс</th>
+                <th class="py-2">{{ __('messages.Пн') }}</th>
+                <th>{{ __('messages.Вт') }}</th>
+                <th>{{ __('messages.Ср') }}</th>
+                <th>{{ __('messages.Чт') }}</th>
+                <th>{{ __('messages.Пт') }}</th>
+                <th>{{ __('messages.Сб') }}</th>
+                <th>{{ __('messages.Вс') }}</th>
             </tr>
             </thead>
             <tbody id="calendarBody" class="text-gray-900 dark:text-white"></tbody>
@@ -50,7 +50,7 @@
 
     <section class="col-span-2 bg-gray-50 dark:bg-gray-800 rounded-xl sm:p-6">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-semibold dark:text-white">Тренировки</h3>
+            <h3 class="text-xl font-semibold dark:text-white">{{ __('messages.Тренировки') }}</h3>
         </div>
 
         <div id="trainingsList"
@@ -60,7 +60,27 @@
     </section>
 </div>
 
+@php
+    $calendarLocale = match(app()->getLocale()) {
+        'en' => 'en-US',
+        'es' => 'es-ES',
+        default => 'ru-RU',
+    };
+    $calendarI18n = [
+        'days' => [
+            __('messages.Пн'), __('messages.Вт'), __('messages.Ср'), __('messages.Чт'),
+            __('messages.Пт'), __('messages.Сб'), __('messages.Вс'),
+        ],
+        'loading' => __('messages.Загрузка...'),
+        'noTrainings' => __('messages.Нет тренировок'),
+        'loadError' => __('messages.Ошибка загрузки'),
+        'conducted' => __('messages.Проведена'),
+        'locale' => $calendarLocale,
+    ];
+@endphp
 <script>
+    window.__calendarI18n = @json($calendarI18n);
+
     // Формат даты YYYY-MM-DD
     function formatDate(date) {
         const y = date.getFullYear();
@@ -69,9 +89,8 @@
         return `${y}-${m}-${d}`;
     }
 
-    // Массив дней недели с понедельника по воскресенье
-    // Индексы: Пн=0, Вс=6
-    const daysRU = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    // Дни недели (пн=0, вс=6) — из перевода
+    const daysRU = window.__calendarI18n.days;
 
     // Функция, сдвигающая getDay(), чтобы воскресенье было последним днем (6)
     function getRuDayOfWeek(date) {
@@ -96,8 +115,9 @@
     function renderCalendar(year, month) {
         calendarBody.innerHTML = '';
 
-        // Заголовок с месяцем и годом
-        const monthStr = new Date(year, month).toLocaleString('ru-RU', {month: 'long', year: 'numeric'});
+        // Заголовок с месяцем и годом (по текущей локали)
+        const locale = window.__calendarI18n.locale;
+        const monthStr = new Date(year, month).toLocaleString(locale, {month: 'long', year: 'numeric'});
         monthYearLabel.textContent = monthStr.charAt(0).toUpperCase() + monthStr.slice(1);
 
         // Первый день месяца (число 1)
@@ -159,11 +179,11 @@
 
     // Загрузка тренировок через ajax (axios)
     function fetchTrainings(start, end) {
-        trainingsList.innerHTML = 'Загрузка...';
+        trainingsList.innerHTML = window.__calendarI18n.loading;
         axios.get('/calendar', {params: {start, end}})
             .then(res => {
                 if (!res.data.length) {
-                    trainingsList.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Нет тренировок</p>';
+                    trainingsList.innerHTML = '<p class="text-gray-500 dark:text-gray-400">' + window.__calendarI18n.noTrainings + '</p>';
                     return;
                 }
                 let html = '';
@@ -174,7 +194,7 @@
                         confirmedHtml = ` <div
                         class="inline-flex items-center bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300 absolute left-auto top-0 right-2" style="top:3px">
                             <span class="w-2 h-2 me-1 bg-yellow-500 rounded-full"></span>
-                        Проведена
+                        ` + window.__calendarI18n.conducted + `
                         </div>`;
                     }
                     html += `
@@ -195,7 +215,7 @@ ${confirmedHtml}
                 trainingsList.innerHTML = html;
             })
             .catch(() => {
-                trainingsList.innerHTML = '<p class="text-red-500">Ошибка загрузки</p>';
+                trainingsList.innerHTML = '<p class="text-red-500">' + window.__calendarI18n.loadError + '</p>';
             });
     }
 

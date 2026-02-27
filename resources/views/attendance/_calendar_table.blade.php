@@ -1,7 +1,7 @@
 <table class="table-auto border-collapse border border-gray-300 text-sm">
     <thead>
     <tr>
-        <th class="border border-gray-300 px-2 py-1 text-left">Фамилия Имя</th>
+        <th class="border border-gray-300 px-2 py-1 text-left">{{ __('messages.Фамилия Имя') }}</th>
         @foreach($days as $day)
             <th class="border border-gray-300 px-1 py-1 text-center">
                 {{ $day->format('d') }}

@@ -2,49 +2,54 @@
 
 namespace App\Services;
 
-use App\Models\TelegramToken;
-use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TelegramService
 {
-    public function userActiveChanged($userId, $active)
+    /**
+     * Низкоуровневый клиент Telegram Bot API.
+     * Возвращает true/false, исключения наружу не кидает.
+     */
+    public function sendMessage(string $chatId, string $text, ?array $replyMarkup = null): bool
     {
-        $meta = TelegramToken::where('user_id', $userId)->first();
-        if ($meta && $meta->telegram_id) {
-            $botToken = config('services.telegram.bot_token');
-            $tg_id = $meta->telegram_id;
+        $botToken = (string) config('services.telegram.bot_token');
+        if ($botToken === '') {
+            Log::error('TelegramService: TELEGRAM_BOT_TOKEN is not configured');
+            return false;
+        }
 
-            if ($active) {
-                $message = 'Вы активированы!✅';
-                $reply_markup = [
-                    'keyboard'        => [
-                        [ ['text' => 'Показать тренировки'], ['text' => 'Выйти'] ]
-                    ],
-                    'resize_keyboard' => true,
-                ];
-            } else {
-                $message = 'Ваш статус был изменён: вы теперь деактивирован❌.';
-                $reply_markup = [
-                    'keyboard'        => [ [ ['text' => 'Выйти'] ] ],
-                    'resize_keyboard' => true,
-                ];
-            }
+        $payload = [
+            'chat_id' => $chatId,
+            'text' => $text,
+        ];
 
-            $response = Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-                'chat_id' => $tg_id,
-                'text'    => $message,
-                'reply_markup' => json_encode($reply_markup),
-            ]);
+        if ($replyMarkup !== null) {
+            $payload['reply_markup'] = json_encode($replyMarkup);
+        }
+
+        try {
+            $response = Http::timeout(10)
+                ->connectTimeout(3)
+                ->retry(2, 200)
+                ->post("https://api.telegram.org/bot{$botToken}/sendMessage", $payload);
 
             if (!$response->ok()) {
                 Log::error('Telegram send error', [
-                    'user_id' => $userId,
-                    'telegram_id' => $tg_id,
+                    'chat_id' => $chatId,
                     'body' => $response->body(),
+                    'status' => $response->status(),
                 ]);
+                return false;
             }
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Telegram send exception', [
+                'chat_id' => $chatId,
+                'message' => $e->getMessage(),
+            ]);
+            return false;
         }
     }
 }

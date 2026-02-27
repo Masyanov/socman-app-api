@@ -6,6 +6,8 @@ use App\Http\Controllers\AjaxFilterController;
 use App\Http\Controllers\AjaxFilterCharsController;
 use App\Http\Controllers\AjaxPlayerCondition;
 use App\Http\Controllers\AttendanceCalendarController;
+use App\Http\Controllers\AchievementSelectionController;
+use App\Http\Controllers\AchievementSettingsController;
 use App\Http\Controllers\DockerBotController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\LoadControl;
@@ -126,6 +128,17 @@ Route::group( [ 'middleware' => [ 'auth', 'coach' ] ], function () {
          ->where('teamCode', '[a-zA-Z0-9_-]+');
 
     Route::get('/admin/players_info/{id}', [UserController::class, 'getPlayerInfo'])->name('players.getPlayerInfo');
+
+    Route::get('/achievements', [AchievementSelectionController::class, 'index'])->name('achievements.index');
+    Route::post('/achievements', [AchievementSelectionController::class, 'update'])->name('achievements.update');
+
+    // Маршрут для отображения формы выбора типов достижений
+    Route::get('/achievements/settings', [AchievementSettingsController::class, 'edit'])
+         ->name('achievements.settings.edit');
+
+    // Маршрут для сохранения выбранных типов достижений
+    Route::post('/achievements/settings', [AchievementSettingsController::class, 'update'])
+         ->name('achievements.settings.update');
 
 } );
 

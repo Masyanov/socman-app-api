@@ -125,7 +125,7 @@
                                                            class="inline-flex items-center p-1 ms-2 text-sm text-gray-400 bg-transparent rounded-xs hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-gray-300"
                                                            data-dismiss-target="#badge-dismiss-dark"
                                                            aria-label="Remove"
-                                                           title="Удалить классификацию"
+                                                           title="{{ __('messages.Удалить классификацию') }}"
                                                            onclick="deleteClassTraining({{ $class->id }})">
                                                             <svg class="w-2 h-2" aria-hidden="true"
                                                                  xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -674,7 +674,7 @@
                                                     {{ timeFormatHI($training->start) }}
                                                 </div>
                                                 <div class=" text-gray-500 text-sm font-bold">
-                                                    {{ timeTo($training->start,$training->finish) }} <span>мин.</span>
+                                                    {{ timeTo($training->start,$training->finish) }} <span>{{ __('messages.мин.') }}</span>
                                                 </div>
                                                 <div class=" text-gray-500 text-sm font-bold">
                                                     {{ timeFormatHI($training->finish) }}

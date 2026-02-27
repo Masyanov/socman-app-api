@@ -1,8 +1,8 @@
 <div class="max-w-7xl mx-auto py-8">
-    <h2 class="text-xl sm:text-2xl font-bold text-white mb-6">Результаты тестирования игроков</h2>
+    <h2 class="text-xl sm:text-2xl font-bold text-white mb-6">{{ __('messages.Результаты тестирования игроков') }}</h2>
 
     <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-700">
-        <h3 class="text-xl font-semibold mb-4">Все тесты</h3>
+        <h3 class="text-xl font-semibold mb-4">{{ __('messages.Все тесты') }}</h3>
 
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-700">
@@ -134,7 +134,7 @@
                 @empty
                     <tr>
                         <td colspan="22" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-center">
-                            Нет данных о тестах.
+                            {{ __('messages.Нет данных о тестах.') }}
                         </td>
                     </tr>
                 @endforelse

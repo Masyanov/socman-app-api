@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -27,38 +28,64 @@ class User extends Authenticatable {
                     ->withTimestamps();
     }
 
-    public function subscriptions()
+    public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
     }
-    public function teams() {
+    public function teams(): HasMany {
         return $this->hasMany( Team::class );
     }
 
-    public function questions() {
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class, 'team_code', 'team_code');
+    }
+
+    public function questions(): HasMany {
         return $this->hasMany( Question::class, 'user_id' );
     }
 
-    public function settings() {
+    public function settings(): HasMany {
         return $this->hasMany( SettingUser::class );
     }
 
-    public function presence() {
+    public function presence(): HasMany {
         return $this->hasMany( PresenceTraining::class );
     }
 
-    public function meta() {
+    public function meta(): HasOne {
         return $this->hasOne( UserMeta::class );
     }
 
-    public function telegramId() {
+    public function telegramId(): HasOne {
         return $this->hasOne( TelegramToken::class );
     }
 
     /**
+     * Get the achievement types that this user (coach) manages.
+     * Получить типы достижений, которыми управляет этот пользователь (тренер).
+     */
+    public function achievementTypes(): BelongsToMany
+    {
+        // Здесь 'user_id' в pivot-таблице 'achievement_type_user' будет означать ID тренера
+        return $this->belongsToMany(AchievementType::class, 'achievement_type_user', 'user_id', 'achievement_type_id')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get the player achievements for this user (player).
+     * Получить записи достижений для этого пользователя (игрока).
+     */
+    public function playerAchievements(): HasMany
+    {
+        return $this->hasMany(PlayerAchievement::class);
+    }
+
+
+    /**
      * Get all tests associated with the user.
      */
-    public function tests() {
+    public function tests(): HasMany {
         return $this->hasMany( PlayerTest::class );
     }
 

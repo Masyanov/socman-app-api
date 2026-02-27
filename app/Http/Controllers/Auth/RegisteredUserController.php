@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller {
         $token = $request->input('g-recaptcha-response');
 
         if (empty($token)) {
-            return back()->withErrors(['g-recaptcha-response' => 'Ошибка проверки безопасности. Обновите страницу и попробуйте снова.'])->withInput();
+            return back()->withErrors(['g-recaptcha-response' => __('messages.Ошибка проверки безопасности. Обновите страницу и попробуйте снова.')])->withInput();
         }
 
         // Verify token with RecaptchaService
@@ -56,12 +56,12 @@ class RegisteredUserController extends Controller {
 
         // Check verification result (for v3 check score if you want)
         if (empty($result['success'])) {
-            return back()->withErrors(['g-recaptcha-response' => 'Ошибка проверки безопасности. Попробуйте позже.'])->withInput();
+            return back()->withErrors(['g-recaptcha-response' => __('messages.Ошибка проверки безопасности. Попробуйте позже.')])->withInput();
         }
 
         // Optional: enforce minimum score for v3 (e.g. 0.5)
         if (isset($result['score']) && $result['score'] < 0.5) {
-            return back()->withErrors(['g-recaptcha-response' => 'Подозрительная активность. Попробуйте снова.'])->withInput();
+            return back()->withErrors(['g-recaptcha-response' => __('messages.Подозрительная активность. Попробуйте снова.')])->withInput();
         }
 
         // Continue registration flow (your existing code)

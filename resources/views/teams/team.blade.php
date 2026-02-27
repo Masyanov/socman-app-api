@@ -67,9 +67,9 @@
                                 <div id="tooltip-copy-code-team-copy-button-{{ $team->id }}"
                                      role="tooltip"
                                      class="absolute z-10 invisible inline-block px-3 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                                    <span id="default-tooltip-message-{{ $team->id }}">Скопировать</span>
+                                    <span id="default-tooltip-message-{{ $team->id }}">{{ __('messages.Скопировать') }}</span>
                                     <span id="success-tooltip-message-{{ $team->id }}"
-                                          class="hidden">Скопировано!</span>
+                                          class="hidden">{{ __('messages.Скопировано!') }}</span>
                                     <div class="tooltip-arrow" data-popper-arrow></div>
                                 </div>
                             </div>
@@ -869,12 +869,11 @@
                                                                 </div>
                                                                 <div class="ms-2 text-sm">
                                                                     <label for="togglePlanned"
-                                                                           class="font-medium text-gray-900 dark:text-gray-300">Планируемый
+                                                                           class="font-medium text-gray-900 dark:text-gray-300">{{ __('messages.Планируемый') }}
                                                                         Load Control</label>
                                                                     <p id="helper-checkbox-text"
                                                                        class="text-xs font-normal text-gray-500 dark:text-gray-300">
-                                                                        Если в тренировках запланирован уровень нагрузки
-                                                                        и восстановления</p>
+                                                                        {{ __('messages.Если в тренировках запланирован уровень нагрузки и восстановления') }}</p>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -903,7 +902,7 @@
                                     <div class="p-4">
                                         <form id="filterForm" class="flex flex-col mb-4 flex gap-2 items-center">
                                             <input type="hidden" name="team_code" value="{{ $team->team_code }}">
-                                            <label>Выбери месяц:</label>
+                                            <label>{{ __('messages.Выбери месяц:') }}</label>
                                             <input type="month" name="month" value=""
                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-fit ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             >
@@ -1013,7 +1012,19 @@
             pointer-events: none;
         }
     </style>
+    @php
+        $aiResultI18n = [
+            'analysing' => __('messages.Анализируем'),
+            'resultTitle' => __('messages.Результат анализа ИИ'),
+            'hide' => __('messages.Скрыть'),
+            'show' => __('messages.Показать'),
+            'errorMsg' => __('messages.Ошибка анализа ИИ. Попробуйте повторить.'),
+        ];
+    @endphp
     <script>
+        window.__aiResultI18n = @json($aiResultI18n);
+        window.__appLocale = @json(app()->getLocale());
+
         const ai = document.getElementById('ai-analyze-btn');
         if (ai) {
             document.getElementById('ai-analyze-btn').addEventListener('click', function () {
@@ -1025,10 +1036,12 @@
                     team_id: team_id,
                     weekSelectDetail: weekSelectDetail,
                     player_id: player_id,
+                    locale: window.__appLocale,
                 };
 
+                const i = window.__aiResultI18n;
                 // Сбросить/очистить блок
-                document.getElementById('results_AI_data').innerHTML = '<div class="flex align-items-center gap-3 w-full p-5 my-2.5 bg-gray-700 rounded-lg"><h2  class="mb-0 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Анализируем </h2><svg width="50px" fill="#FFFFFFFF" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="12" r="3" opacity="1"><animate id="spinner_qYjJ" begin="0;spinner_t4KZ.end-0.25s" attributeName="opacity" dur="0.75s" values="1;.2" fill="freeze"/></circle><circle cx="12" cy="12" r="3" opacity=".4"><animate begin="spinner_qYjJ.begin+0.15s" attributeName="opacity" dur="0.75s" values="1;.2" fill="freeze"/></circle><circle cx="20" cy="12" r="3" opacity=".3"><animate id="spinner_t4KZ" begin="spinner_qYjJ.begin+0.3s" attributeName="opacity" dur="0.75s" values="1;.2" fill="freeze"/></circle></svg></div>';
+                document.getElementById('results_AI_data').innerHTML = '<div class="flex align-items-center gap-3 w-full p-5 my-2.5 bg-gray-700 rounded-lg"><h2  class="mb-0 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">' + i.analysing + ' </h2><svg width="50px" fill="#FFFFFFFF" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="12" r="3" opacity="1"><animate id="spinner_qYjJ" begin="0;spinner_t4KZ.end-0.25s" attributeName="opacity" dur="0.75s" values="1;.2" fill="freeze"/></circle><circle cx="12" cy="12" r="3" opacity=".4"><animate begin="spinner_qYjJ.begin+0.15s" attributeName="opacity" dur="0.75s" values="1;.2" fill="freeze"/></circle><circle cx="20" cy="12" r="3" opacity=".3"><animate id="spinner_t4KZ" begin="spinner_qYjJ.begin+0.3s" attributeName="opacity" dur="0.75s" values="1;.2" fill="freeze"/></circle></svg></div>';
 
                 fetch('/ai-analyze', {
                     method: 'POST',
@@ -1040,11 +1053,12 @@
                 })
                     .then(r => r.json())
                     .then(data => {
-                        document.getElementById('results_AI_data').innerHTML = '<div class="flex flex-col w-full p-5 my-2.5 bg-gray-700 rounded-lg results_AI_data" id=""><div class="flex w-full mb-3 flex-col gap-3 sm:flex-row sm:justify-between "><h2  class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Результат анализа ИИ</h2><button id="showHideResultContent" type="button" class="py-2.5 px-5 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Скрыть</button></div><div id="resultContent" class="font-normal text-gray-700 dark:text-gray-400">' + data.result + '</div></div>';
+                        const i = window.__aiResultI18n;
+                        document.getElementById('results_AI_data').innerHTML = '<div class="flex flex-col w-full p-5 my-2.5 bg-gray-700 rounded-lg results_AI_data" id=""><div class="flex w-full mb-3 flex-col gap-3 sm:flex-row sm:justify-between "><h2  class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">' + i.resultTitle + '</h2><button id="showHideResultContent" type="button" class="py-2.5 px-5 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">' + i.hide + '</button></div><div id="resultContent" class="font-normal text-gray-700 dark:text-gray-400">' + data.result + '</div></div>';
                     })
                     .catch(err => {
                         console.log('Ошибка:' + err);
-                        document.getElementById('results_AI_data').innerHTML = '<div class="w-full p-5 my-2.5 bg-gray-700 rounded-lg">Ошибка анализа ИИ. Попробуйте повторить. </div>';
+                        document.getElementById('results_AI_data').innerHTML = '<div class="w-full p-5 my-2.5 bg-gray-700 rounded-lg">' + window.__aiResultI18n.errorMsg + '</div>';
                     });
             });
         }
@@ -1060,9 +1074,9 @@
                 content.classList.toggle('hidden');
 
                 if (content.classList.contains('hidden')) {
-                    button.textContent = 'Показать';
+                    button.textContent = (window.__aiResultI18n && window.__aiResultI18n.show) ? window.__aiResultI18n.show : 'Показать';
                 } else {
-                    button.textContent = 'Скрыть';
+                    button.textContent = (window.__aiResultI18n && window.__aiResultI18n.hide) ? window.__aiResultI18n.hide : 'Скрыть';
                 }
             }
         });

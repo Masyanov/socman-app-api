@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Jobs\TelegramNotifyUserActiveChanged;
 use App\Models\User;
 use App\Models\UserMeta;
 use App\Models\SettingLoadcontrol;
 use App\Services\AvatarService;
-use App\Services\TelegramService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,12 +14,10 @@ use Illuminate\Database\Eloquent\Collection;
 class UserService
 {
     private AvatarService $avatarService;
-    private TelegramService $telegramService;
 
-    public function __construct(AvatarService $avatarService, TelegramService $telegramService)
+    public function __construct(AvatarService $avatarService)
     {
         $this->avatarService  = $avatarService;
-        $this->telegramService= $telegramService;
     }
 
     public function listUsers($userId) : Collection
@@ -105,7 +103,7 @@ class UserService
 
         if ($user->isDirty('active')) {
             $user->save();
-            $this->telegramService->userActiveChanged($user->id, $user->active);
+            TelegramNotifyUserActiveChanged::dispatch((int) $user->id, (bool) $user->active);
         }
 
         return $user->active;

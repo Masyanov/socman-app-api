@@ -42,7 +42,7 @@ class SubscriptionOrderController extends Controller {
             if ( empty( $recaptchaResult['success'] ) ) {
                 return response()->json( [
                     'success' => false,
-                    'message' => 'Ошибка проверки безопасности. Обновите страницу.'
+                    'message' => __('messages.Ошибка проверки безопасности. Обновите страницу.')
                 ], 422 );
             }
 
@@ -65,12 +65,12 @@ class SubscriptionOrderController extends Controller {
                 \Log::error( 'Email sending error: ' . $e->getMessage() );
             }
 
-            return response()->json( [ 'success' => true, 'message' => 'Спасибо! Ваша заявка отправлена.' ] );
+            return response()->json( [ 'success' => true, 'message' => __('messages.Спасибо! Ваша заявка отправлена.') ] );
 
         } catch ( ValidationException $e ) {
             return response()->json( [
                 'success' => false,
-                'message' => 'Пожалуйста, заполните все обязательные поля правильно.',
+                'message' => __('messages.Пожалуйста, заполните все обязательные поля правильно.'),
                 'errors'  => $e->errors()
             ], 422 );
         } catch ( \Exception $e ) {
@@ -78,7 +78,7 @@ class SubscriptionOrderController extends Controller {
 
             return response()->json( [
                 'success' => false,
-                'message' => 'Произошла внутренняя ошибка. Попробуйте еще раз.'
+                'message' => __('messages.Произошла внутренняя ошибка. Попробуйте еще раз.')
             ], 500 );
         }
     }

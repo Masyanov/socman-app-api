@@ -32,7 +32,7 @@ class PlayerTestImportController extends Controller
             Excel::import(new PlayerTestImport, $request->file('file'));
 
             // Редирект обратно с сообщением об успехе
-            return back()->with('success', 'Данные успешно импортированы!');
+            return back()->with('success', __('messages.Данные успешно импортированы!'));
 
         } catch (DuplicateEntryException $e) {
             // Если перехвачено наше исключение, значит найден дубликат

@@ -13,6 +13,7 @@ class AIAnalyzeController extends Controller {
         $team_id   = $request->input('team_id');
         $weekSelectDetail = $request->input('weekSelectDetail');
         $player_id = $request->input('player_id');
+        $locale = $request->input('locale', app()->getLocale());
 
         $team = Team::where('id',$team_id)->first();
 
@@ -51,8 +52,15 @@ class AIAnalyzeController extends Controller {
             return $input;
         }
 
+        // Язык ответа по локали пользователя
+        $languageInstruction = match ($locale) {
+            'en' => 'IMPORTANT: Reply entirely in English. Use English for all section titles, headings and body text.',
+            'es' => 'IMPORTANTE: Responde íntegramente en español. Usa español para todos los títulos de sección y el texto.',
+            default => 'Ответь полностью на русском языке. Все заголовки и текст — на русском.',
+        };
+
         // Формируем промпт для ИИ на основе входных данных
-        $content = "Проанализируй оценки субъективно воспринимаемой нагрузки за последние 7 дней. Они должны сначала отражать общую тенденцию по команде с выведением среднего значения по группе игроков которая принимала участие в тренировке по дням, а затем дополнять индивидуальными анализами по каждому игроку. В анализ должны входить разбивка цикла на дни с малой нагрузкой (от 1 до 4 у.е), средней (от 5 до 7 у.е) и большой (от 8 до 10 у.е). Так же они должны учитывать повторяющиеся более двух раз подряд низкие оценки или высокие. Мы должны соблюдать волнообразность нагрузки и тренироваться в эффективном диапазоне. Если игрок ставит всегда среднюю нагрузку это тоже сигнал для тренера и это тоже надо посветить в отчетах. ";
+        $content = $languageInstruction . "\n\nПроанализируй оценки субъективно воспринимаемой нагрузки за последние 7 дней. Они должны сначала отражать общую тенденцию по команде с выведением среднего значения по группе игроков которая принимала участие в тренировке по дням, а затем дополнять индивидуальными анализами по каждому игроку. В анализ должны входить разбивка цикла на дни с малой нагрузкой (от 1 до 4 у.е), средней (от 5 до 7 у.е) и большой (от 8 до 10 у.е). Так же они должны учитывать повторяющиеся более двух раз подряд низкие оценки или высокие. Мы должны соблюдать волнообразность нагрузки и тренироваться в эффективном диапазоне. Если игрок ставит всегда среднюю нагрузку это тоже сигнал для тренера и это тоже надо посветить в отчетах. ";
         $structureContent = 'Структура ответа: <div class="bg-gray-700 text-white rounded-lg">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Общее состояние -->
@@ -117,8 +125,9 @@ class AIAnalyzeController extends Controller {
 
             return response()->json( [ 'result' => $text ] );
         } else {
+            $errorMsg = $locale === 'en' ? 'Hugging Face error: ' : ($locale === 'es' ? 'Error de Hugging Face: ' : 'Ошибка Hugging Face: ');
             return response()->json( [
-                'result' => 'Ошибка Hugging Face: ' . $response->status() . ' — ' . $response->body()
+                'result' => $errorMsg . $response->status() . ' — ' . $response->body()
             ], 500 );
         }
     }

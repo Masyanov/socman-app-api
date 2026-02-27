@@ -23,7 +23,7 @@
                 @elseif($role === 'super-admin')
                     @include('dashboard.super-admin')
                 @else
-                    <p>Нет доступа или дефолтный контент</p>
+                    <p>{{ __('messages.Нет доступа или дефолтный контент') }}</p>
                 @endif
             </div>
         </div>

@@ -2,7 +2,7 @@
 
 <div class="w-full max-w-sm">
     <div class="mb-2 flex justify-between items-center">
-        <label for="website-url" class="text-sm font-medium text-gray-900 dark:text-white">Ваша реферальная ссылка:</label>
+        <label for="website-url" class="text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Ваша реферальная ссылка:') }}</label>
     </div>
     <div class="flex items-center">
         <span
@@ -32,17 +32,17 @@
         </button>
         <div id="tooltip-website-url" role="tooltip"
              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-            <span id="default-tooltip-message">Скопировать</span>
-            <span id="success-tooltip-message" class="hidden">Скопировано!</span>
+            <span id="default-tooltip-message">{{ __('messages.Скопировать') }}</span>
+            <span id="success-tooltip-message" class="hidden">{{ __('messages.Скопировано!') }}</span>
             <div class="tooltip-arrow" data-popper-arrow></div>
         </div>
     </div>
-    <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Ваши тренеры должны регистрироваться по вашей реферальной ссылке.</p>
+    <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('messages.Ваши тренеры должны регистрироваться по вашей реферальной ссылке.') }}</p>
 </div>
 
 <div class="relative overflow-x-auto mb-6 shadow-md sm:rounded-lg">
     <h2 class="flex justify-between items-center font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
-        Тренеры
+        {{ __('messages.Тренеры') }}
     </h2>
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead
@@ -101,7 +101,7 @@
                 </th>
                 <td class="px-6 py-4">
                     <a href="/adminLoginAsUser/{{ $coach->id }}"
-                       class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Войти
+                       class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{ __('messages.Войти') }}
                         под этим пользователем</a>
                 </td>
 

@@ -28,7 +28,7 @@ class TelegramLoginController extends Controller
         // Проверка пароля
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'error' => 'Неверный email или пароль.'
+                'error' => __('messages.Неверный email или пароль.')
             ], 401);
         }
 
@@ -69,21 +69,22 @@ class TelegramLoginController extends Controller
             ], 422);
         }
 
-        // Сохраняем или обновляем токен по telegram_id
+        // Нельзя привязать один telegram_id к разным пользователям
+        $existing = TelegramToken::where('telegram_id', $validated['telegram_id'])->first();
+        if ($existing && (int) $existing->user_id !== (int) $validated['user_id']) {
+            return response()->json([
+                'success' => false,
+                'error' => __('messages.Этот telegram_id уже привязан к другому пользователю'),
+            ], 409);
+        }
+
+        // Сохраняем/обновляем по user_id (в проде будет уникальный индекс на user_id)
         TelegramToken::updateOrCreate(
-            ['telegram_id' => $validated['telegram_id']],
+            ['user_id' => $validated['user_id']],
             $validated
         );
 
         return response()->json(['status' => 'ok']);
-    }
-
-    /**
-     * Получить все Telegram токены (для debug/admin)
-     */
-    public function allTokens()
-    {
-        return response()->json(TelegramToken::all());
     }
 
     /**
@@ -93,14 +94,22 @@ class TelegramLoginController extends Controller
     {
         $record = TelegramToken::where('telegram_id', $telegram_id)->first();
         if (!$record) {
-            return response()->json(['error' => 'Токен не найден'], 404);
+            return response()->json(['error' => __('messages.Токен не найден')], 404);
         }
         $user = User::where('id', $record->user_id)->first();
 
         return response()->json([
             'user_id' => $record->user_id,
             'token'   => $record->token,
-            'user' => $user,
+            // Возвращаем минимум — чтобы не светить лишние поля
+            'user' => $user ? [
+                'id' => $user->id,
+                'name' => $user->name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'active' => $user->active,
+            ] : null,
         ]);
     }
 }

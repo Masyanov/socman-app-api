@@ -7,6 +7,7 @@ use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Player;
 use App\Models\PlayerTest;
+use App\Models\SettingUser;
 use App\Models\Team;
 use App\Models\User;
 use App\Services\UserService;
@@ -44,11 +45,15 @@ class UserController extends Controller
                      ->where( 'user_id', $userId )
                      ->latest( 'created_at' )
                      ->paginate( 10 );
+        $groupedAchievements = $user->playerAchievements
+            ->sortBy('recorded_at')
+            ->groupBy('achievement_type_id');
 
         return view('users.user', [
             'player'     => $user,
             'teamActive' => $allTeams,
             'teamCount'  => $allTeams->count(),
+            'groupedAchievements' => $groupedAchievements,
         ]);
 
     }
@@ -57,14 +62,14 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, $id)
     {
         $user = $this->userService->update($id, $request->validated(), $request->file('avatar'));
-        return redirect()->back()->with('success', 'Сохранено');
+        return redirect()->back()->with('success', __('messages.Сохранено'));
     }
 
     // Удалить пользователя
     public function destroy($id)
     {
         $this->userService->delete($id);
-        return response()->json(['success' => 'Запись успешно удалена']);
+        return response()->json(['success' => __('messages.Запись успешно удалена')]);
     }
 
     // Обновить активность (через AJAX)
@@ -89,7 +94,7 @@ class UserController extends Controller
             'date_of_birth'    => $birthday,
             'positionOfPlayer' => $infoThisPlayer->meta->position,
         ];
-        $datas = PlayerTest::where('player_id', $id)->get();
+        $datas = PlayerTest::where('player_id', $id)->orderBy('date_of_test', 'asc')->get();
         $datasLast = PlayerTest::where('player_id', $id)->first();
 
         $lastDataOfPlayer = [
@@ -140,5 +145,43 @@ class UserController extends Controller
         $arrayAll[] = [ 'infoOfPlayer' => $infoOfPlayer, 'dataOfPlayer' => $dataOfPlayer, 'lastDataOfPlayer' => $lastDataOfPlayer ];
 
         return response()->json( $arrayAll );
+    }
+
+    /**
+     * Включение/выключение ИИ для тренера (super-admin).
+     */
+    public function updateAI(Request $request, $id)
+    {
+        $request->validate(['ai' => 'required|in:0,1']);
+        $user = User::findOrFail($id);
+        $setting = $user->settings()->firstOrNew(['slug' => 'ai'], ['value' => '']);
+        $setting->active = (int) $request->input('ai');
+        $setting->save();
+        return response()->json(['success' => true, 'active' => (bool) $setting->active]);
+    }
+
+    /**
+     * Включение/выключение Load Control для тренера (super-admin).
+     */
+    public function updateLoadControl(Request $request, $id)
+    {
+        $request->validate(['load_control' => 'required|in:0,1']);
+        $user = User::findOrFail($id);
+        $user->load_control = (int) $request->input('load_control');
+        $user->save();
+        return response()->json(['success' => true, 'load_control' => (bool) $user->load_control]);
+    }
+
+    /**
+     * Удаление тренера (admin/super-admin).
+     */
+    public function destroyCoach($id)
+    {
+        $user = User::findOrFail($id);
+        if (!in_array($user->role, ['coach', 'admin'], true)) {
+            return response()->json(['success' => false, 'message' => 'Можно удалять только тренера или админа.'], 422);
+        }
+        $user->delete();
+        return response()->json(['success' => true]);
     }
 }

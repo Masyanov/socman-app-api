@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AchievementType;
 use App\Models\PlayerTest;
 use App\Models\PresenceTraining;
 use App\Models\Question;
@@ -33,15 +34,19 @@ class TeamController extends Controller {
                           ->latest( 'created_at' )
                           ->paginate( 10 );
 
-        $tests = PlayerTest::with( 'user' )->get();
+        $tests = PlayerTest::with( 'user' )->orderBy( 'date_of_test', 'desc' )->get();
 
         if ( $request->ajax() ) {
             return view( 'teams.index',
                 [ 'teamActive' => $teamActive, 'teams' => $teams, 'tests' => $tests ] )->render();
         }
 
+        $allAchievementTypes = AchievementType::all();
+            $coachSelectedAchievementTypeIds = Auth::user()->achievementTypes->pluck('id')->toArray();
 
-        return view( 'teams.index', compact( 'teamActive', 'teams', 'tests' ) );
+
+
+        return view( 'teams.index', compact( 'teamActive', 'allAchievementTypes', 'coachSelectedAchievementTypeIds', 'teams', 'tests' ) );
     }
 
     /**
@@ -362,7 +367,7 @@ class TeamController extends Controller {
             $query->where( 'team_code', $team->team_code );
         } )
                            ->with( 'user' )
-                           ->orderBy( 'created_at', 'desc' )
+                           ->orderBy( 'date_of_test', 'desc' )
                            ->get();
 
         // 1. Получаем все тесты для данной команды
@@ -375,38 +380,28 @@ class TeamController extends Controller {
         } )
                                   ->with( 'user' )
                                   ->orderBy( 'date_of_test',
-                                      'asc' )
+                                      'desc' )
                                   ->get();
 
         // 2. Определяем последние N (например, 3) уникальные даты тестирования по всей команде
         // Сначала собираем все даты, убираем дубликаты, сортируем по убыванию и берем N последние.
         $recentTestDates = $allTeamTests->pluck( 'date_of_test' )
                                         ->unique()
-                                        ->sortDesc()
-                                        ->take( 3 ) // Берем последние 3 даты, как на примере
-                                        ->values(); // Сбрасываем ключи массива для чистоты
+                                        ->sort()
+                                        ->take( 3 )
+                                        ->values();
 
         // Преобразуем даты в формат 'YYYY-MM-DD', который используется в коде импорта и удобен для JS
         $formattedRecentTestDates = $recentTestDates->map( function ( $date ) {
-            return ( new Carbon( $date ) )->format( 'Y-m-d' );
+            return ( new Carbon( $date ) )->format( 'd.m.Y' );
         } );
 
-        // 3. Группируем тесты по игрокам и затем по датам для удобной обработки на фронтенде
-        // Структура playerData будет примерно такой:
-        // [
-        //   'Имя Игрока 1' => [
-        //     '2024-04-01' => ['push_ups' => 30, 'pull_ups' => 10, ...],
-        //     '2024-07-01' => ['push_ups' => 32, 'pull_ups' => 11, ...],
-        //     // ... другие даты и метрики
-        //   ],
-        //   'Имя Игрока 2' => [...]
-        // ]
         $playerData = [];
         foreach ( $allTeamTests as $test ) {
 
             // Убедитесь, что у User есть поле 'name'. Если нет, используйте 'id' или другое поле.
-            $playerName = $test->user->name ?? 'Игрок ID: ' . $test->player_id;
-            $testDate   = ( new Carbon( $test->date_of_test ) )->format( 'Y-m-d' );
+            $playerName = nameLastname($test->player_id) ?? 'Игрок ID: ' . $test->player_id;
+            $testDate   = ( new Carbon( $test->date_of_test ) )->format( 'd.m.Y' );
 
             if ( ! isset( $playerData[ $playerName ] ) ) {
                 $playerData[ $playerName ] = [];
@@ -651,7 +646,7 @@ class TeamController extends Controller {
 
         $team->delete();
 
-        return redirect()->route( 'teams.index' )->with( 'success', 'Команда удалена' );
+        return redirect()->route( 'teams.index' )->with( 'success', __( 'messages.Команда удалена' ) );
 
     }
 }

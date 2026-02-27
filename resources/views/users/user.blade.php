@@ -37,7 +37,7 @@
                         console.log(_url)
                         let _token = $('input[name~="_token"]').val();
 
-                        if (confirm('Удалить игрока?')) {
+                        if (confirm({{ json_encode(__('messages.Удалить игрока?')) }})) {
                             $.ajax({
                                 url: _url,
                                 type: 'DELETE',
@@ -167,7 +167,7 @@
                                             </div>
                                             <div class="col-span-1 sm:col-span-1">
                                                 <label for="birthday"
-                                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Дата рождения</label>
+                                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.Дата рождения') }}</label>
                                                 <input type="date" name="birthday"
                                                        id="birthday"
                                                        class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -286,14 +286,183 @@
                 </div>
             </div>
             @if(checkTestsForPlayer($player->id))
-                <div class="p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 mb-3 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     @include('admin.tests.user')
                 </div>
             @else
-                <div class="p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <p class="text-gray-900 dark:text-gray-100">У этого пользователя пока нет данных по тестам.</p>
+                <div class="p-6 mb-3 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <p class="text-gray-900 dark:text-gray-100">{{ __('messages.У этого пользователя пока нет данных по тестам.') }}</p>
                 </div>
             @endif
+            <div class="p-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <h2 class="text-white text-xl font-bold mb-4">{{ __('messages.Личные достижения игрока') }}</h2>
+                <p class="text-gray-600 mb-8">{{ __('messages.Игрок сам фиксирует достижения в телеграм боте') }}</p>
+                @if($groupedAchievements->isEmpty())
+                    <p class="text-gray-600 mb-8">{{ __('messages.У этого игрока пока нет записанных достижений для отображения на графике.') }}</p>
+                @else
+                    <div class="space-y-8">
+
+                        @foreach($groupedAchievements as $typeId => $achievementsForType)
+                            @php
+                                $achievementType = $achievementsForType->first()->type;
+                                $canvasId = 'chart_type_' . $typeId;
+                            @endphp
+                            <div class="shadow-md rounded-lg">
+                                <h3 class="text-xl font-semibold mb-4 text-gray-400">
+                                    {{ $achievementType->name ?? __('messages.Неизвестное достижение') }}
+                                    @if(isset($achievementType->unit))
+                                        <span class="text-gray-500">({{ $achievementType->unit }}) Всего: {{ $achievementsForType->sum('value') }}</span>
+                                    @endif
+                                </h3>
+                                <div class="w-3xl p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+                                <canvas id="{{ $canvasId }}" style="max-height: 300px;"></canvas>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+                <script>
+                    @php
+                        $userChartI18n = [
+                            'noData' => __('messages.Нет данных для отображения графика.'),
+                            'dateRecord' => __('messages.Дата записи'),
+                            'achievementsLabel' => __('messages.достижения'),
+                        ];
+                    @endphp
+                    window.__userChartI18n = @json($userChartI18n);
+                    // Проверяем, есть ли сгруппированные достижения для отображения графиков
+                    @if(!$groupedAchievements->isEmpty())
+                    // Эта строка очень важна! Здесь PHP-коллекция преобразуется в JSON для JavaScript.
+                    const groupedAchievements = @json($groupedAchievements);
+
+                    // **DEBUG**: Выводим в консоль данные, полученные из PHP.
+                    // Убедитесь, что здесь не пустой объект и что данные имеют ожидаемую структуру.
+                    console.log('Grouped Achievements Data (from PHP):', groupedAchievements);
+
+                    const primaryChartColor = 'rgba(75, 192, 192, 1)';
+                    const fadedChartColor = 'rgba(75, 192, 192, 0.2)';
+
+                    // Итерируем по каждому типу достижения и создаем график
+                    Object.entries(groupedAchievements).forEach(([typeId, achievementsForType]) => {
+                        // Убедимся, что achievementType существует и имеет свойство 'name'
+                        // Если achievementsForType пуст или нет type, это может вызвать ошибку.
+                        const achievementType = achievementsForType[0]?.type; // Используем optional chaining для безопасности
+
+                        if (!achievementType) {
+                            console.warn(`AchievementType not found for typeId: ${typeId}. Skipping chart.`);
+                            return; // Пропускаем этот тип достижения, если нет информации о нем.
+                        }
+
+                        const canvasId = `chart_type_${typeId}`;
+                        const ctx = document.getElementById(canvasId);
+
+                        // **DEBUG**: Проверяем, найден ли элемент canvas.
+                        // Если здесь null, то ID канваса в Blade не совпадает с тем, что ищет JS.
+                        console.log(`Checking canvas for ID: ${canvasId}, found context:`, ctx ? 'Found' : 'Not Found');
+
+
+                        if (ctx) { // Убедимся, что canvas элемент существует
+                            const labels = [];      // Даты записей для оси X
+                            const dataValues = [];  // Значения достижений для оси Y
+
+                            achievementsForType.forEach(achievement => {
+                                // Проверяем, что recorded_at существует
+                                if (achievement.recorded_at) {
+                                    const date = new Date(achievement.recorded_at);
+                                    labels.push(date.toLocaleString('ru-RU', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit'
+                                    }));
+                                    dataValues.push(parseFloat(achievement.value));
+                                } else {
+                                    console.warn(`'recorded_at' is missing for an achievement in typeId: ${typeId}`, achievement);
+                                }
+                            });
+
+                            // **DEBUG**: Выводим в консоль подготовленные данные для конкретного графика.
+                            // Убедитесь, что `labels` и `dataValues` не пусты.
+                            console.log(`Data for ${achievementType.name || 'Unknown Achievement'}: Labels`, labels, 'Values', dataValues);
+
+                            if (dataValues.length === 0) {
+                                console.warn(`No data values to display for ${achievementType.name || 'Unknown Achievement'}. Skipping chart.`);
+                                // Можно добавить сообщение на canvas, что данных нет
+                                ctx.parentNode.innerHTML += '<p style="text-align: center; color: #6b7280;">' + window.__userChartI18n.noData + '</p>';
+                                return; // Пропускаем создание графика, если нет данных
+                            }
+
+
+                            new Chart(ctx, {
+                                type: 'line', // Линейный график для отображения прогресса/регресса
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: `${achievementType.name || window.__userChartI18n.achievementsLabel}`,
+                                        data: dataValues,
+                                        borderColor: primaryChartColor,
+                                        backgroundColor: fadedChartColor,
+                                        tension: 0.3,
+                                        fill: true,
+                                        pointBackgroundColor: primaryChartColor,
+                                        pointBorderColor: '#fff',
+                                        pointHoverBackgroundColor: '#fff',
+                                        pointHoverBorderColor: primaryChartColor,
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            title: {
+                                                display: true,
+                                                text: `${achievementType.unit ? '(' + achievementType.unit + ')' : ''}`
+                                            }
+                                        },
+                                        x: {
+                                            title: {
+                                                display: true,
+                                                text: window.__userChartI18n.dateRecord
+                                            }
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            display: false
+                                        },
+                                        tooltip: {
+                                            mode: 'index',
+                                            intersect: false,
+                                            callbacks: {
+                                                title: function(context) {
+                                                    return context[0].label;
+                                                },
+                                                label: function(context) {
+                                                    let label = context.dataset.label || '';
+                                                    if (label) {
+                                                        label += ': ';
+                                                    }
+                                                    if (context.parsed.y !== null) {
+                                                        label += context.parsed.y + ' ' + (achievementType.unit || '');
+                                                    }
+                                                    return label;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            console.error(`Canvas element with ID '${canvasId}' was not found in the DOM.`);
+                        }
+                    });
+                    @else
+                    console.log('No grouped achievements found to render charts.');
+                    @endif
+                </script>
+
         </div>
     </div>
 </x-app-layout>

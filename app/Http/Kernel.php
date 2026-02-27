@@ -72,5 +72,6 @@ class Kernel extends HttpKernel
         'player' => \App\Http\Middleware\IsPlayer::class,
         'checkTrainingOwner' => \App\Http\Middleware\CheckTrainingOwner::class,
         'loadcontrol' => \App\Http\Middleware\CheckLoadControl::class,
+        'bot.secret' => \App\Http\Middleware\VerifyBotSecret::class,
     ];
 }

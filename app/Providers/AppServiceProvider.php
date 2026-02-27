@@ -20,9 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-if (env('APP_ENV') !== 'local') {
-        URL::forceScheme('https');
-    }
+        // В проде принудительно генерируем HTTPS ссылки (важно за reverse-proxy).
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
         view()->composer( 'components.language_switcher', function ( $view ) {
             $view->with( 'current_locale', app()->getLocale() );
             $view->with( 'available_locales', config( 'app.available_locales' ) );

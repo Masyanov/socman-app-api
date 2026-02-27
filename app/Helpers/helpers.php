@@ -86,7 +86,7 @@ function countPlayers( $team_code ) {
     if ( isset( $usersOfTeamCount ) ) {
         return $usersOfTeamCount;
     } else {
-        return 'Неизвестно';
+        return __( 'messages.Неизвестно' );
     }
 }
 
@@ -99,7 +99,7 @@ function countNoActivePlayers( $team_code ) {
     if ( isset( $usersOfTeamCount ) ) {
         return $usersOfTeamCount;
     } else {
-        return 'Неизвестно';
+        return __( 'messages.Неизвестно' );
     }
 }
 
@@ -119,7 +119,7 @@ function CountPlayerOfCoach() {
     if ( isset( $count ) ) {
         return array_sum( $count );
     } else {
-        return 'НЕТ';
+        return __( 'messages.НЕТ' );
     }
 }
 
@@ -137,7 +137,7 @@ function yourTeam() {
                                 </svg>
                                 <span class="sr-only">Error icon</span>
                             </div>
-                            <div class="ms-3 text-sm font-normal">Ваша команда с кодом <strong>' . $teamCode . '</strong> неизвестна. Видимо у вас не верный код команды. Напишите своему тренеру чтобы исправить ошибку</div>
+                            <div class="ms-3 text-sm font-normal">' . __( 'messages.Ваша команда с кодом :code неизвестна. Видимо у вас не верный код команды. Напишите своему тренеру чтобы исправить ошибку', [ 'code' => '<strong>' . e( $teamCode ) . '</strong>' ] ) . '</div>
                             <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-danger" aria-label="Close">
                                 <span class="sr-only">Close</span>
                                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -154,7 +154,7 @@ function playerTeam( $team_code ) {
     if ( isset( $yourTeam ) ) {
         return $yourTeam->name;
     } else {
-        return 'Неизвестна. Видимо у вас не верный код команды. Напишите своему тренеру чтобы исправить ошибку';
+        return __( 'messages.Неизвестна. Видимо у вас не верный код команды. Напишите своему тренеру чтобы исправить ошибку' );
     }
 }
 
@@ -167,7 +167,7 @@ function CountPlaerOfTeam( $team_code ) {
     if ( isset( $usersOfTeam ) ) {
         return $usersOfTeam;
     } else {
-        return 'НЕТ';
+        return __( 'messages.НЕТ' );
     }
 }
 
@@ -181,7 +181,7 @@ function PlayerOfTeam( $team_code ) {
     if ( isset( $usersOfTeam ) ) {
         return $usersOfTeam;
     } else {
-        return 'НЕТ';
+        return __( 'messages.НЕТ' );
     }
 }
 

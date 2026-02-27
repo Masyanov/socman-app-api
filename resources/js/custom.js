@@ -894,25 +894,27 @@ $(document).ready(function () {
         clearCondition();
 
         // Store the trigger element
-        // Сохраняем элемент, который вызвал окно
         modalTriggerElement = this;
 
-        // Use the Flowbite instance to show the modal
-        // Используем экземпляр Flowbite для показа модального окна
-        if (flowbiteModal) {
-            flowbiteModal.show();
+        // Всегда берём актуальный элемент модалки из DOM (после смены фильтра контент обновляется через AJAX и появляется новый modal_condition)
+        const currentModalEl = document.getElementById('modal_condition');
+        if (!currentModalEl) return;
+
+        let modalToShow = null;
+        if (typeof Flowbite !== 'undefined' && Flowbite.Modal) {
+            modalToShow = Flowbite.Modal.getInstance(currentModalEl);
+            if (!modalToShow) {
+                modalToShow = new Flowbite.Modal(currentModalEl, { placement: 'center', backdrop: 'dynamic' });
+            }
+        }
+
+        if (modalToShow) {
+            modalToShow.show();
         } else {
-            // Fallback for manual class/attribute manipulation if Flowbite instance is not found
-            // Запасной вариант для ручной манипуляции классами/атрибутами, если экземпляр Flowbite не найден
-            // This might happen if Flowbite JS is not loaded or not initialized yet
-            // Это может произойти, если JS Flowbite не загружен или еще не инициализирован
-            const modalEl = document.getElementById('modal_condition'); // Re-get in case of timing issues
+            const modalEl = document.getElementById('modal_condition');
             if (modalEl) {
                 modalEl.setAttribute('aria-hidden', 'false');
                 modalEl.classList.remove('hidden');
-                // The problematic modalEl.focus() is removed here.
-                // It was causing issues when combined with aria-hidden.
-                // Correct focus management for accessibility is now primarily handled by Flowbite's hide.flowbite event.
             }
         }
 
@@ -1256,6 +1258,7 @@ if (repeat) {
 
 document.addEventListener('DOMContentLoaded', function () {
     const togglePlannedCheckbox = document.getElementById('togglePlanned');
+    if (!togglePlannedCheckbox) return;
 
     // Function: update planned elements visibility
     function updatePlannedVisibility(isVisible) {

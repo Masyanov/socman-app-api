@@ -29,8 +29,8 @@
                     <div class="mt-10 flex items-center gap-x-6">
                         <button data-modal-target="subscriptionModal" data-modal-toggle="subscriptionModal"
                                 class="me-3 bg-indigo-500 hover:bg-rose-500 text-white px-4 py-2 rounded"
-                                title="Заказать подписку">
-                            Заказать подписку
+                                title="{{ __('messages.Заказать подписку') }}">
+                            {{ __('messages.Заказать подписку') }}
                         </button>
                     </div>
                 </div>
@@ -50,13 +50,8 @@
                         <div class="w-24 h-full bg-indigo-500"></div>
                     </div>
                     <div class="flex flex-wrap sm:flex-row flex-col py-6 mb-12">
-                        <h1 class="sm:w-2/5 text-white font-medium title-font text-2xl mb-2 sm:mb-0">Организация
-                            тренировок, контроль состояния спортсменов. SportControl — сервис для онлайн управления
-                            спортсменами и спортивными командами.</h1>
-                        <p class="sm:w-3/5 leading-relaxed text-base sm:pl-10 pl-0">Удобное приложение для тренеров по
-                            футболу, волейболу, баскетболу, хоккею и другим командным видам спорта. Лучшее решение для
-                            оптимизации рутинных задач тренера. Для руководителя, директора команды, тренера по
-                            физической подготовке это отличный инструмент контроля состояния спортсменов в команде.</p>
+                        <h1 class="sm:w-2/5 text-white font-medium title-font text-2xl mb-2 sm:mb-0">{{ __('messages.welcome_about_title') }}</h1>
+                        <p class="sm:w-3/5 leading-relaxed text-base sm:pl-10 pl-0">{{ __('messages.welcome_about_text') }}</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 gap-6 sm:-m-4 -mx-4 -mb-3 -mt-4 lg:grid-cols-3">
@@ -65,26 +60,24 @@
                             <a data-fancybox class="w-full h-full"
                                href="/images/1755245941380.jpg">
                                 <img src="/images/1755245941380.jpg"
-                                     alt="Учет спортсменов"
+                                     alt="{{ __('messages.welcome_feature_athletes') }}"
                                      class="object-cover object-left-top h-full w-full">
                             </a>
                         </div>
-                        <h2 class="text-xl font-medium title-font text-white mt-5">Учет спортсменов</h2>
-                        <p class="text-base leading-relaxed mt-2">Профили с ФИО, датой рождения, фото, ростом, весом,
-                            позицией и контактами. Посещение тренировок, результаты тестов и состояние.</p>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_athletes') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_athletes_desc') }}</p>
                     </div>
                     <div class="p-4 md:w-full sm:mb-0">
                         <div class="rounded-lg h-64 overflow-hidden">
                             <a data-fancybox class="w-full h-full"
                                href="/images/1755246042668.jpg">
                                 <img src="/images/1755246042668.jpg"
-                                     alt="Планирование тренировок"
+                                     alt="{{ __('messages.welcome_feature_planning') }}"
                                      class="object-cover object-left-top h-full w-full">
                             </a>
                         </div>
-                        <h2 class="text-xl font-medium title-font text-white mt-5">Планирование тренировок</h2>
-                        <p class="text-base leading-relaxed mt-2">Календарь тренировок, матчей. Прикрепление планов с
-                            упражнениями. Назначение целей тренировки. Уведомления в Telegram.</p>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_planning') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_planning_desc') }}</p>
 
                     </div>
                     <div class="p-4 md:w-full sm:mb-0">
@@ -92,80 +85,85 @@
                             <a data-fancybox class="w-full h-full"
                                href="/images/1755245037150.jpg">
                                 <img src="/images/1755245037150.jpg"
-                                     alt="Учет посещений"
+                                     alt="{{ __('messages.welcome_feature_attendance') }}"
                                      class="object-cover object-left-top h-full w-full">
                             </a>
                         </div>
-                        <h2 class="text-xl font-medium title-font text-white mt-5">Учет посещений</h2>
-                        <p class="text-base leading-relaxed mt-2">Отметка присутствия через Telegram-бот. Автоматический
-                            подсчет посещаемости игроков и аналитика по пропускам.</p>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_attendance') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_attendance_desc') }}</p>
                     </div>
                     <div class="p-4 md:w-full sm:mb-0">
                         <div class="rounded-lg h-64 overflow-hidden">
                             <a data-fancybox class="w-full h-full"
                                href="/images/1755250713442.jpg">
                                 <img src="/images/1755250713442.jpg"
-                                     alt="Telegram-бот"
+                                     alt="{{ __('messages.welcome_feature_telegram') }}"
                                      class="object-cover object-left-top h-full w-full">
                             </a>
                         </div>
-                        <h2 class="text-xl font-medium title-font text-white mt-5">Сбор данных от спортсменов через
-                            Telegram-бот</h2>
-                        <p class="text-base leading-relaxed mt-2">Ежедневные опросы о усталости, травмах, сне и
-                            настроении. Данные автоматически передаются тренеру и формирую наглядный отчет.</p>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_telegram') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_telegram_desc') }}</p>
                     </div>
                     <div class="p-4 md:w-full sm:mb-0">
                         <div class="rounded-lg h-64 overflow-hidden">
                             <a data-fancybox class="w-full h-full"
                                href="/images/1755246868428.jpg">
                                 <img src="/images/1755246868428.jpg"
-                                     alt="Анализ ИИ"
+                                     alt="{{ __('messages.welcome_feature_ai') }}"
                                      class="object-cover object-left-top h-full w-full">
                             </a>
                         </div>
-                        <h2 class="text-xl font-medium title-font text-white mt-5">Анализ данных с помощью ИИ</h2>
-                        <p class="text-base leading-relaxed mt-2">Мониторинг состояния спортсменов и риск травм,
-                            рекомендации по нагрузкам и построению тренировок, прогноз формы к соревнованиям.</p>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_ai') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_ai_desc') }}</p>
                     </div>
                     <div class="p-4 md:w-full sm:mb-0">
                         <div class="rounded-lg h-64 overflow-hidden">
                             <a data-fancybox class="w-full h-full"
                                href="/images/1755244907855.jpg">
                                 <img src="/images/1755244907855.jpg"
-                                     alt="Модуль LOAD CONTROL"
+                                     alt="{{ __('messages.welcome_feature_load') }}"
                                      class="object-cover object-left-top h-full w-full">
                             </a>
                         </div>
-                        <h2 class="text-xl font-medium title-font text-white mt-5">Модуль LOAD CONTROL</h2>
-                        <p class="text-base leading-relaxed mt-2">Бережное наблюдение за состояние спортсменов
-                            относительно
-                            собранных
-                            данных о их субъективной оценке своего самочувствия.</p>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_load') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_load_desc') }}</p>
                     </div>
                     <div class="p-4 md:w-full sm:mb-0">
                         <div class="rounded-lg h-64 overflow-hidden">
                             <a data-fancybox class="w-full h-full"
                                href="/images/1755244781043.jpg">
                                 <img src="/images/1755244781043.jpg"
-                                     alt="Информативный дашборд"
+                                     alt="{{ __('messages.welcome_feature_dashboard') }}"
                                      class="object-cover object-left-top h-full w-full">
                             </a>
                         </div>
-                        <h2 class="text-xl font-medium title-font text-white mt-5">Информативный дашборд</h2>
-                        <p class="text-base leading-relaxed mt-2">Позволяет быстро сформировать состояние дел в команде,
-                            и понять что предпринять в первую очередь.</p>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_dashboard') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_dashboard_desc') }}</p>
                     </div>
                     <div class="p-4 md:w-full sm:mb-0">
                         <div class="rounded-lg h-64 overflow-hidden">
                             <a data-fancybox class="w-full h-full"
                                href="/images/1762273118126.jpg">
                                 <img src="/images/1762273118126.jpg"
-                                     alt="Система тестирования игроков"
+
+                                     alt="{{ __('messages.welcome_feature_tests') }}"
                                      class="object-cover object-left-top h-full w-full">
                             </a>
                         </div>
-                        <h2 class="text-xl font-medium title-font text-white mt-5">Система тестирования игроков</h2>
-                        <p class="text-base leading-relaxed mt-2">Управляйте тестовыми данными игроков и контролируйте прогресс физической подготовки.</p>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_tests') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_tests_desc') }}</p>
+                    </div>
+                    <div class="p-4 md:w-full sm:mb-0">
+                        <div class="rounded-lg h-64 overflow-hidden">
+                            <a data-fancybox class="w-full h-full"
+                               href="/images/socman – welcome.blade.php.jpg">
+                                <img src="/images/socman – welcome.blade.php.jpg"
+                                     alt="{{ __('messages.welcome_feature_achievements') }}"
+                                     class="object-cover object-left-top h-full w-full">
+                            </a>
+                        </div>
+                        <h2 class="text-xl font-medium title-font text-white mt-5">{{ __('messages.welcome_feature_achievements') }}</h2>
+                        <p class="text-base leading-relaxed mt-2">{{ __('messages.welcome_feature_achievements_desc') }}</p>
                     </div>
                 </div>
             </div>
@@ -173,20 +171,15 @@
         <section id="price" class="scroll-mt-20">
             <div class="container px-5 py-12 mx-auto">
                 <div class="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
-                    <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Вы
-                        приобретаете
-                        лучшее решение на Российском рынке</h2>
-                    <p class="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">Данное решение сократит
-                        затраченное время тренера на рутинные задачи и даст руководителю картину происходящего в его
-                        школе
-                        или академии.</p>
+                    <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{{ __('messages.welcome_price_heading') }}</h2>
+                    <p class="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">{{ __('messages.welcome_price_sub') }}</p>
                 </div>
                 <div class="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
                     <!-- Pricing Card -->
                     <div
                         class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
                         <h3 class="mb-4 text-2xl font-semibold">FREE</h3>
-                        <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">Веди учет своей команды без потери данных.</p>
+                        <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">{{ __('messages.welcome_free_desc') }}</p>
                         <div class="flex justify-center my-8">
                             <span class="mr-2 text-5xl font-extrabold">0</span>
                             <span class="text-gray-500 dark:text-gray-400">₽/месяц</span>
@@ -229,21 +222,29 @@
                                     description="Отдельный модуль для анализа данных о состоянии спортсменов в один клик"
                                     icon-type="cross"
                                 />
+                                <x-item-list-tarif
+                                    text="Тестирование спортменов"
+                                    description="Система фиксации данных тестирования спортсменов для дальнейшего ослеживания динамики развития и своевременного внесения корректировок в тренировочный процесс"
+                                    icon-type="cross"
+                                />
+                                <x-item-list-tarif
+                                    text="Система достижений"
+                                    description="Тренер в настройках выбирает какие достижения будут доступны для игроков (голы, передачи, сейвы, чеканка и т.д.). Игрок сам фиксирует свои достижения в телеграм боте."
+                                    icon-type="cross"
+                                />
                             </ul>
                             <button data-modal-target="subscriptionModal" data-modal-toggle="subscriptionModal"
                                     class="bg-indigo-500 hover:bg-rose-500 text-white px-4 py-2 rounded"
-                                    title="Заказать подписку">
-                                Заказать подписку
+                                    title="{{ __('messages.Заказать подписку') }}">
+                                {{ __('messages.Заказать подписку') }}
                             </button>
                         </div>
                     </div>
                     <!-- Pricing Card -->
                     <div
                         class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border-4 border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
-                        <h3 class="mb-4 text-2xl font-semibold">Стандарт</h3>
-                        <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">Подписка для тренерского штаба
-                            и
-                            руководителя</p>
+                        <h3 class="mb-4 text-2xl font-semibold">{{ __('messages.welcome_standard') }}</h3>
+                        <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">{{ __('messages.welcome_standard_desc') }}</p>
                         <div class="flex flex-col gap-3 justify-center my-8">
                             <div class="flex justify-center mb-3">
                                 <span class="relative mr-2 text-5xl font-extrabold" id="totalSum">14900</span>
@@ -252,7 +253,7 @@
 
                             <div class="flex w-full">
                                 <form class="max-w-xs mx-auto flex flex-col items-center justify-center">
-                                    <label for="numberInput" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Количество тренеров:</label>
+                                    <label for="numberInput" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('messages.welcome_coaches_label') }}</label>
                                     <div class="relative flex items-center justify-center max-w-[8rem]">
                                         <button type="button" id="decrement-button" data-input-counter-decrement="numberInput" class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                                             <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
@@ -266,7 +267,7 @@
                                             </svg>
                                         </button>
                                     </div>
-                                    <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">Выберите количество тренеров</p>
+                                    <p id="helper-text-explanation" class="mt-2 text-sm text-gray-500 dark:text-gray-400">{{ __('messages.welcome_coaches_help') }}</p>
                                 </form>
 
                             </div>
@@ -400,6 +401,12 @@
                                     icon-type="check"
                                 />
                                 <x-item-list-tarif
+                                    text="Система достижений"
+                                    description="Тренер в настройках выбирает какие достижения будут доступны для игроков (голы, передачи, сейвы, чеканка и т.д.). Игрок сам фиксирует свои достижения в телеграм боте."
+                                    icon-type="check"
+                                />
+
+                                <x-item-list-tarif
                                     text="Личный кабинет родителя"
                                     description="В разработке! Место где родитель сможет ознакомиться с динамикой развития своего ребенка как спортсмена"
                                     icon-type="new"
@@ -435,8 +442,7 @@
                     <div
                         class="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
                         <h3 class="mb-4 text-2xl font-semibold">Enterprise</h3>
-                        <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">Приложение размещается на
-                            выделеном сервере.</p>
+                        <p class="font-light text-gray-500 sm:text-lg dark:text-gray-400">{{ __('messages.welcome_enterprise_desc') }}</p>
                         <div class="flex justify-center my-8">
                             <span class="mr-2 text-5xl font-extrabold">149 000</span>
                             <span class="text-gray-500 dark:text-gray-400">₽/месяц</span>
@@ -501,6 +507,11 @@
                                         icon-type="check"
                                     />
                                     <x-item-list-tarif
+                                        text="Система достижений"
+                                        description="Тренер в настройках выбирает какие достижения будут доступны для игроков (голы, передачи, сейвы, чеканка и т.д.). Игрок сам фиксирует свои достижения в телеграм боте."
+                                        icon-type="check"
+                                    />
+                                    <x-item-list-tarif
                                         text="Личный кабинет родителя"
                                         description="В разработке! Место где родитель сможет ознакомиться с динамикой развития своего ребенка как спортсмена"
                                         icon-type="new"
@@ -510,8 +521,8 @@
                             </ul>
                             <button data-modal-target="subscriptionModal" data-modal-toggle="subscriptionModal"
                                     class="bg-indigo-500 hover:bg-rose-500 text-white px-4 py-2 rounded"
-                                    title="Заказать подписку">
-                                Заказать подписку
+                                    title="{{ __('messages.Заказать подписку') }}">
+                                {{ __('messages.Заказать подписку') }}
                             </button>
                         </div>
                     </div>
@@ -521,10 +532,8 @@
         <section class="text-gray-400 body-font scroll-mt-20" id="steps">
             <div class="container px-5 py-12 mx-auto">
                 <div class="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
-                    <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Схема
-                        работы</h2>
-                    <p class="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">Безопасная оплата в рамках
-                        законодательства РФ. Вы получаете реактивную поддержку.</p>
+                    <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{{ __('messages.welcome_steps_heading') }}</h2>
+                    <p class="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">{{ __('messages.welcome_steps_sub') }}</p>
                 </div>
                 <ol class="grid grid-cols-1 gap-6 md:grid-cols-3">
                     <li class="flex gap-6 items-center text-gray-500 dark:text-gray-400 space-x-2.5 rtl:space-x-reverse">
@@ -533,9 +542,8 @@
                             1
                         </div>
                         <div class="flex gap-3 flex-col">
-                            <h3 class="font-medium leading-tight text-2xl">Оставьте заявку</h3>
-                            <p class="text-sm">Заполните простую форму на сайте или напишите нам в Telegram. С вами
-                                сразу свяжется менеджер</p>
+                            <h3 class="font-medium leading-tight text-2xl">{{ __('messages.welcome_step1_title') }}</h3>
+                            <p class="text-sm">{{ __('messages.welcome_step1_text') }}</p>
                         </div>
                     </li>
                     <li class="flex gap-6 items-center text-gray-500 dark:text-gray-400 space-x-2.5 rtl:space-x-reverse">
@@ -544,8 +552,8 @@
                             2
                         </div>
                         <div class="flex gap-3 flex-col">
-                            <h3 class="font-medium leading-tight text-2xl">Консультация и демонстрация</h3>
-                            <p class="text-sm">Получите бесплатную онлайн-презентацию и разъяснения по функционалу.</p>
+                            <h3 class="font-medium leading-tight text-2xl">{{ __('messages.welcome_step2_title') }}</h3>
+                            <p class="text-sm">{{ __('messages.welcome_step2_text') }}</p>
                         </div>
                     </li>
                     <li class="flex gap-6 items-center text-gray-500 dark:text-gray-400 space-x-2.5 rtl:space-x-reverse">
@@ -554,9 +562,8 @@
                             3
                         </div>
                         <div class="flex gap-3 flex-col">
-                            <h3 class="font-medium leading-tight text-2xl">Заключение договора-оферты</h3>
-                            <p class="text-sm">Ознакомьтесь с лицензионным соглашением и политикой
-                                конфиденциальности.</p>
+                            <h3 class="font-medium leading-tight text-2xl">{{ __('messages.welcome_step3_title') }}</h3>
+                            <p class="text-sm">{{ __('messages.welcome_step3_text') }}</p>
                         </div>
                     </li>
                     <li class="flex gap-6 items-center text-gray-500 dark:text-gray-400 space-x-2.5 rtl:space-x-reverse">
@@ -565,9 +572,8 @@
                             4
                         </div>
                         <div class="flex gap-3 flex-col">
-                            <h3 class="font-medium leading-tight text-2xl">Оплата</h3>
-                            <p class="text-sm">Выберите оптимальный тариф (месячная/годовая подписка). Оплатите с
-                                помощью банковской карты или по счету для юрлиц.</p>
+                            <h3 class="font-medium leading-tight text-2xl">{{ __('messages.welcome_step4_title') }}</h3>
+                            <p class="text-sm">{{ __('messages.welcome_step4_text') }}</p>
                         </div>
                     </li>
                     <li class="flex gap-6 items-center text-gray-500 dark:text-gray-400 space-x-2.5 rtl:space-x-reverse">
@@ -576,9 +582,8 @@
                             5
                         </div>
                         <div class="flex gap-3 flex-col">
-                            <h3 class="font-medium leading-tight text-2xl">Доступ</h3>
-                            <p class="text-sm">Получите доступ к личному кабинету и подробную инструкцию по
-                                использованию.</p>
+                            <h3 class="font-medium leading-tight text-2xl">{{ __('messages.welcome_step5_title') }}</h3>
+                            <p class="text-sm">{{ __('messages.welcome_step5_text') }}</p>
                         </div>
                     </li>
                     <li class="flex gap-6 items-center text-gray-500 dark:text-gray-400 space-x-2.5 rtl:space-x-reverse">
@@ -587,9 +592,8 @@
                             6
                         </div>
                         <div class="flex gap-3 flex-col">
-                            <h3 class="font-medium leading-tight text-2xl">Поддержка</h3>
-                            <p class="text-sm">В любое время можете обратиться в техподдержку. Мы учитываем любую
-                                обратную связь.</p>
+                            <h3 class="font-medium leading-tight text-2xl">{{ __('messages.welcome_step6_title') }}</h3>
+                            <p class="text-sm">{{ __('messages.welcome_step6_text') }}</p>
                         </div>
                     </li>
                 </ol>
@@ -597,8 +601,7 @@
         </section>
         <section class="bg-white dark:bg-gray-900 scroll-mt-20" id="faq">
             <div class="container px-5 py-12 mx-auto">
-                <h2 class="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Часто задаваемые
-                    вопросы</h2>
+                <h2 class="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">{{ __('messages.welcome_faq_heading') }}</h2>
                 <div
                     class="grid pt-8 gap-4 text-left border-t border-gray-200 md:gap-16 dark:border-gray-700 md:grid-cols-2">
 
@@ -610,11 +613,9 @@
                                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
                                       clip-rule="evenodd"></path>
                             </svg>
-                            Что такое SportControl?
+                            {{ __('messages.welcome_faq_what') }}
                         </h3>
-                        <p class="text-gray-500 dark:text-gray-400">SportControl — это веб‑приложение для футбольных
-                            тренеров, которое помогает планировать тренировки, вести статистику игроков, анализировать
-                            спортивные показатели и хранить фото/видео материалов команд.</p>
+                        <p class="text-gray-500 dark:text-gray-400">{{ __('messages.welcome_faq_what_text') }}</p>
                     </div>
                     <div class="mb-3">
                         <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">
@@ -624,10 +625,9 @@
                                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
                                       clip-rule="evenodd"></path>
                             </svg>
-                            Для кого подходит приложение?
+                            {{ __('messages.welcome_faq_who') }}
                         </h3>
-                        <p class="text-gray-500 dark:text-gray-400">Тренеры командных видов спорта, Ассистенты тренеров,
-                            Школы и академии, Спортивные организаторы, Лиги и клубы</p>
+                        <p class="text-gray-500 dark:text-gray-400">{{ __('messages.welcome_faq_who_text') }}</p>
                     </div>
                     <div class="mb-3">
                         <h3 class="flex items-center mb-4 text-lg font-medium text-gray-900 dark:text-white">

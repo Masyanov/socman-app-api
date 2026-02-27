@@ -4,77 +4,184 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('messages.Мои команды') }}
             </h2>
-            @if (Auth::user()->active == 1)
-                <!-- Modal toggle -->
-                <button data-modal-target="add_team" data-modal-toggle="add_team"
-                        class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                        type="button">
-                    {{ __('messages.Добавить команду') }}
+            <div class="flex gap-3">
+                <!-- Кнопка для открытия модального окна -->
+                <button type="button" data-modal-target="settings_achievements"
+                        data-modal-toggle="settings_achievements"
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    {{ __('messages.Настройка достижений') }}
                 </button>
 
-                <!-- Main modal -->
-                <div id="add_team" tabindex="-1" aria-hidden="true"
+                <!-- Основное модальное окно для Настройки отслеживаемых достижений -->
+                <div id="settings_achievements" tabindex="-1" aria-hidden="true"
                      class="hidden bg-gray-900/80 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                     <div class="relative p-4 w-full max-w-md max-h-full">
-                        <!-- Modal content -->
+                        <!-- Содержимое модального окна -->
                         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                            <!-- Modal header -->
+                            <!-- Заголовок модального окна -->
                             <div
                                 class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                    {{ __('messages.Добавить новую команду') }}
+                                    {{ __('messages.Настройка достижений') }}
                                 </h3>
                                 <button type="button"
                                         class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                                        data-modal-hide="add_team">
+                                        data-modal-hide="settings_achievements">
                                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                          fill="none"
                                          viewBox="0 0 14 14">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        <path stroke="currentColor" stroke-linecap="round"
+                                              stroke-linejoin="round"
                                               stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                                     </svg>
                                     <span class="sr-only">{{ __('messages.Закрыть окно') }}</span>
                                 </button>
                             </div>
-                            <!-- Modal body -->
+                            <!-- Тело модального окна -->
                             <div class="p-4 md:p-5">
-                                <form class="space-y-4" method="POST" action="{{ route('teams.store') }}">
+                                {{-- Сообщение об успешном обновлении --}}
+                                @if (session('success_achievements_settings'))
+                                    <div
+                                        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-3"
+                                        role="alert">
+                                        <span
+                                            class="block sm:inline">{{ session('success_achievements_settings') }}</span>
+                                    </div>
+                                @endif
 
+                                <form method="POST" action="{{ route('achievements.settings.update') }}">
                                     @csrf
-                                    <input type="hidden" id="user_id" name="user_id" value="{{ Auth::user()->id }}"/>
-                                    <!-- Name -->
-                                    <div>
-                                        <x-input-label for="team_name" :value="__('messages.Название')"/>
-                                        <x-text-input id="team_name" class="block mt-1 w-full" type="text"
-                                                      name="team_name"
-                                                      :value="old('name')" required autofocus/>
-                                        <x-input-error :messages="$errors->get('name')" class="mt-2"/>
+
+                                    <div class="mb-4"> {{-- Замена form-group на mb-4 --}}
+                                        <label for="achievements"
+                                               class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                                            Выберите типы достижений, которые вы хотите отслеживать:
+                                        </label>
+
+                                        {{-- Сообщение об ошибке валидации --}}
+                                        @error('achievements')
+                                        <div
+                                            class="text-red-500 text-sm mb-3"> {{-- Замена invalid-feedback d-block на Tailwind --}}
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                        @enderror
+
+                                        <div
+                                            class="mt-2 space-y-2"> {{-- Добавлено space-y-2 для отступов между чекбоксами --}}
+                                            @forelse ($allAchievementTypes as $type)
+                                                <div
+                                                    class="flex items-center"> {{-- Замена form-check на flex items-center --}}
+                                                    <input
+                                                        class="form-checkbox h-5 w-5 text-blue-600 rounded dark:bg-gray-600 dark:border-gray-500 dark:checked:bg-blue-500"
+                                                        {{-- Стилизация чекбокса Tailwind --}}
+                                                        type="checkbox"
+                                                        name="achievements[]"
+                                                        value="{{ $type->id }}"
+                                                        id="achievement-{{ $type->id }}"
+                                                        {{ in_array($type->id, $coachSelectedAchievementTypeIds ?? []) ? 'checked' : '' }}> {{-- Добавлено ?? [] для безопасности --}}
+                                                    <label class="ml-2 text-gray-700 dark:text-gray-300 text-sm"
+                                                           for="achievement-{{ $type->id }}"> {{-- Стилизация лейбла Tailwind --}}
+                                                        {{ $type->name }} ({{ $type->unit }})
+                                                    </label>
+                                                </div>
+                                            @empty
+                                                <p class="text-gray-500 dark:text-gray-400 text-sm">{{ __('messages.В системе пока нет доступных типов достижений. Обратитесь к администратору.') }}</p>
+                                            @endforelse
+                                        </div>
                                     </div>
-                                    <!-- Team Code -->
-                                    <div class="mt-4" id="code_field">
-                                        <x-input-label for="team_code" :value="__('messages.Код команды')"/>
-                                        <x-text-input id="team_code" class="block mt-1 w-full team_code" type="text"
-                                                      name="team_code" :value="old('team_code')" required
-                                                      autocomplete="team_code" placeholder="999-999"/>
-                                        <x-input-error :messages="$errors->get('team_code')" class="mt-2"/>
+
+                                    <div class="mt-4"> {{-- Замена form-group mt-4 на mt-4 --}}
+                                        <button type="submit"
+                                                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"> {{-- Замена btn btn-primary на Tailwind --}}
+                                            {{ __('messages.Сохранить') }}
+                                        </button>
                                     </div>
-                                    <!-- Desc -->
-                                    <div>
-                                        <x-input-label for="desc" :value="__('messages.Описание')"/>
-                                        <x-text-input id="desc" class="block mt-1 w-full" type="text" name="desc"
-                                                      :value="old('desc')" autocomplete="desc"/>
-                                        <x-input-error :messages="$errors->get('desc')" class="mt-2"/>
-                                    </div>
-                                    <button type="button" id="button_save_team"
-                                            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        {{ __('messages.Добавить команду') }}</button>
-                                    <div id="response"></div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            @endif
+
+                @if (Auth::user()->active == 1)
+                    <!-- Modal toggle -->
+                    <button data-modal-target="add_team" data-modal-toggle="add_team"
+                            class="block text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                            type="button">
+                        {{ __('messages.Добавить команду') }}
+                    </button>
+
+                    <!-- Main modal -->
+                    <div id="add_team" tabindex="-1" aria-hidden="true"
+                         class="hidden bg-gray-900/80 overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div class="relative p-4 w-full max-w-md max-h-full">
+                            <!-- Modal content -->
+                            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                <!-- Modal header -->
+                                <div
+                                    class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                        {{ __('messages.Добавить новую команду') }}
+                                    </h3>
+                                    <button type="button"
+                                            class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                            data-modal-hide="add_team">
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                  stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span class="sr-only">{{ __('messages.Закрыть окно') }}</span>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-4 md:p-5">
+                                    <form class="space-y-4" method="POST" action="{{ route('teams.store') }}">
+
+                                        @csrf
+                                        <input type="hidden" id="user_id" name="user_id"
+                                               value="{{ Auth::user()->id }}"/>
+                                        <!-- Name -->
+                                        <div>
+                                            <x-input-label for="team_name" :value="__('messages.Название')"/>
+                                            <x-text-input id="team_name" class="block mt-1 w-full" type="text"
+                                                          name="team_name"
+                                                          :value="old('name')" required autofocus/>
+                                            <x-input-error :messages="$errors->get('name')" class="mt-2"/>
+                                        </div>
+                                        <!-- Team Code -->
+                                        <div class="mt-4" id="code_field">
+                                            <x-input-label for="team_code" :value="__('messages.Код команды')"/>
+                                            <x-text-input id="team_code" class="block mt-1 w-full team_code" type="text"
+                                                          name="team_code" :value="old('team_code')" required
+                                                          autocomplete="team_code" placeholder="999-999"/>
+                                            <x-input-error :messages="$errors->get('team_code')" class="mt-2"/>
+                                        </div>
+                                        <!-- Desc -->
+                                        <div>
+                                            <x-input-label for="desc" :value="__('messages.Описание')"/>
+                                            <x-text-input id="desc" class="block mt-1 w-full" type="text" name="desc"
+                                                          :value="old('desc')" autocomplete="desc"/>
+                                            <x-input-error :messages="$errors->get('desc')" class="mt-2"/>
+                                        </div>
+                                        <button type="button" id="button_save_team"
+                                                class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            {{ __('messages.Добавить команду') }}</button>
+                                        <div id="response"></div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
     </x-slot>
 
@@ -138,9 +245,9 @@
                                                         <div id="tooltip-copy-code-team-copy-button-{{ $team->id }}"
                                                              role="tooltip"
                                                              class="absolute z-10 invisible inline-block px-3 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                                                            <span id="default-tooltip-message-{{ $team->id }}">Скопировать</span>
+                                                            <span id="default-tooltip-message-{{ $team->id }}">{{ __('messages.Скопировать') }}</span>
                                                             <span id="success-tooltip-message-{{ $team->id }}"
-                                                                  class="hidden">Скопировано!</span>
+                                                                  class="hidden">{{ __('messages.Скопировано!') }}</span>
                                                             <div class="tooltip-arrow" data-popper-arrow></div>
                                                         </div>
                                                     </div>
@@ -171,7 +278,8 @@
                                                 <div
                                                     class="absolute inline-flex items-center justify-center w-8 h-8 text-xs font-bold text-white bg-green-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">{{ countPlayers($team->team_code) }}</div>
                                                 @if(countNoActivePlayers($team->team_code) != 0)
-                                                    <div class="absolute inline-flex items-center justify-center w-8 h-8 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 end-6 dark:border-gray-900">{{ countNoActivePlayers($team->team_code) }}</div>
+                                                    <div
+                                                        class="absolute inline-flex items-center justify-center w-8 h-8 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 end-6 dark:border-gray-900">{{ countNoActivePlayers($team->team_code) }}</div>
                                                 @endif
                                             @endif
                                         </div>
@@ -192,11 +300,11 @@
              class="absolute top-3 right-2 flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow-sm dark:text-gray-400 dark:bg-gray-700"
              role="alert">
             <div
-                class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+                class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
                 <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                      viewBox="0 0 20 20">
                     <path
-                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
                 </svg>
             </div>
             <div class="ms-3 text-sm font-normal">{{ session('success') }}</div>

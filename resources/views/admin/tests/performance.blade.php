@@ -1,5 +1,5 @@
 <div class="max-w-screen-xl mx-auto">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-6">Общие показатели
+    <h1 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-6">{{ __('messages.Общие показатели') }}
         команды {{ $team->name ?? $team->team_code }}</h1>
 
     @php
@@ -51,7 +51,7 @@
                         @foreach($categoryData['metrics'] as $metricKey => $metric)
                             @if(!empty($metric['datasets']))
                                 <h5 class="text-xl font-semibold text-blue-600 dark:text-blue-500 mb-2">{{ $metric['title'] }}</h5>
-                                <p class="text-gray-500 dark:text-gray-400 mb-4">Сравнение
+                                <p class="text-gray-500 dark:text-gray-400 mb-4">{{ __('messages.Сравнение') }}
                                     по {{ strtolower($metric['title']) }}.</p>
                                 <div class="w-full h-60 lg:h-96 mb-6"> {{-- Адаптивная высота для графиков --}}
                                     <canvas id="{{ $metricKey }}Chart"></canvas>
@@ -75,10 +75,9 @@
                 <path
                     d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
             </svg>
-            <span class="sr-only">Информация</span>
+            <span class="sr-only">{{ __('messages.Информация') }}</span>
             <div>
-                <span class="font-medium">Внимание!</span> Для этой команды пока нет данных по тестам, или проверьте
-                правильность `team_code`.
+                <span class="font-medium">{{ __('messages.Внимание!') }}</span> {{ __('messages.Для этой команды пока нет данных по тестам, или проверьте настройки.') }}
             </div>
         </div>
     @endif

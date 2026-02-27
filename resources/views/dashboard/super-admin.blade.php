@@ -1,7 +1,7 @@
 <div class="relative overflow-x-auto mb-6 shadow-md sm:rounded-lg">
 
     <h2 class="flex justify-between items-center font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
-        Управление Telegram-ботом
+        {{ __('messages.Управление Telegram-ботом') }}
     </h2>
     <div id="bot-status-block" class="mb-6 flex items-center gap-2 text-sm">
         <div id="bot-status-spinner" class="hidden">
@@ -15,24 +15,34 @@
     <div class="flex gap-4 flex-wrap mb-6">
         <button onclick="sendBotAction('stop', this)"
                 class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded transition">
-            Остановить
+            {{ __('messages.Остановить') }}
         </button>
         <button onclick="sendBotAction('remove', this)"
                 class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded transition">
-            Удалить
+            {{ __('messages.Удалить') }}
         </button>
         <button onclick="sendBotAction('restart', this)"
                 class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded transition">
-            Пересобрать
+            {{ __('messages.Пересобрать') }}
         </button>
         <button onclick="sendBotAction('run', this)"
                 class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded transition">
-            Запустить
+            {{ __('messages.Запустить') }}
         </button>
     </div>
 
 </div>
 <script>
+    @php
+        $botI18n = [
+            'executing' => __('messages.Выполняется...'),
+            'unauthorized' => __('messages.Вы не авторизованы'),
+            'error' => __('messages.Ошибка'),
+            'statusUnknown' => __('messages.Статус неизвестен'),
+            'statusError' => __('messages.Ошибка получения статуса'),
+        ];
+    @endphp
+    window.__botI18n = @json($botI18n);
     window.showBotStatus = function (html, color = "gray") {
         const statusDiv = document.getElementById('bot-status');
         statusDiv.innerHTML = html;
@@ -43,7 +53,7 @@
     }
 
     window.sendBotAction = function (action, btn) {
-        showBotStatus("Выполняется...", "blue");
+        showBotStatus(window.__botI18n.executing, "blue");
         showBotSpinner(true);
         btn.disabled = true;
         fetch(`/docker-bot/${action}`, {
@@ -55,18 +65,19 @@
         })
             .then(res => {
                 if (res.status === 419) throw new Error("CSRF token mismatch");
-                if (res.status === 401) throw new Error("Вы не авторизованы");
+                if (res.status === 401) throw new Error(window.__botI18n.unauthorized);
                 return res.json();
             })
             .then(data => {
+                const err = window.__botI18n.error;
                 if (data.status === true || data.status === "true") {
                     showBotStatus(`<span class="inline-block align-middle mr-1">&#9989;</span>  <b>OK</b><br>${(data.output || '').replace(/\n/g, '<br>')}`, "green");
                 } else {
-                    showBotStatus(`<span class="inline-block align-middle mr-1">&#10060;</span> <b>Ошибка</b><br>${(data.output || '').replace(/\n/g, '<br>')}`, "red");
+                    showBotStatus(`<span class="inline-block align-middle mr-1">&#10060;</span> <b>${err}</b><br>${(data.output || '').replace(/\n/g, '<br>')}`, "red");
                 }
             })
             .catch(e => {
-                showBotStatus(`<span class="inline-block align-middle mr-1">&#9888;&#65039;</span> <b>Ошибка</b>: ${e.message}`, "red");
+                showBotStatus(`<span class="inline-block align-middle mr-1">&#9888;&#65039;</span> <b>${window.__botI18n.error}</b>: ${e.message}`, "red");
             })
             .finally(() => {
                 btn.disabled = false;
@@ -75,7 +86,6 @@
             });
     }
 
-    // Получить статус бота при загрузке страницы
     window.getBotStatus = function () {
         showBotSpinner(true);
         fetch('/docker-bot/status', {
@@ -84,17 +94,19 @@
             .then(res => res.json())
             .then(data => {
                 let color = "gray", icon = "";
-                if (data.status && (data.output || "").includes("Up")) {
+                if (data.state === "running") {
                     color = "green";
                     icon = "&#9989;";
-                }
-                if ((data.output || "").includes("Exited")) {
+                } else if (data.state === "exited") {
                     color = "red";
                     icon = "&#10060;";
+                } else if (data.status === false) {
+                    color = "red";
+                    icon = "&#9888;&#65039;";
                 }
-                showBotStatus((icon ? `<span class="inline-block align-middle mr-1">${icon}</span>` : "") + (data.output || "Статус неизвестен"), color);
+                showBotStatus((icon ? `<span class="inline-block align-middle mr-1">${icon}</span>` : "") + (data.output || window.__botI18n.statusUnknown), color);
             })
-            .catch(() => showBotStatus("Ошибка получения статуса", "red"))
+            .catch(() => showBotStatus(window.__botI18n.statusError, "red"))
             .finally(() => showBotSpinner(false));
     }
 
@@ -104,26 +116,26 @@
 </script>
 <div class="relative overflow-x-auto mb-6 shadow-md sm:rounded-lg">
     <h2 class="flex justify-between items-center font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight py-4">
-        Тренеры
+        {{ __('messages.Тренеры') }}
     </h2>
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead
             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
             <th scope="col" class="px-6 py-3">
-                Имя
+                {{ __('messages.Имя') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Реф-ссылка
+                {{ __('messages.Реф-ссылка') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Роль
+                {{ __('messages.Роль') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Команды тренера
+                {{ __('messages.Команды тренера') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Ссылка для входа
+                {{ __('messages.Ссылка для входа') }}
             </th>
             <th scope="col" class="px-6 py-3">
                 AI
@@ -132,10 +144,10 @@
                 LC
             </th>
             <th scope="col" class="px-6 py-3">
-                Активность
+                {{ __('messages.Активность') }}
             </th>
             <th scope="col" class="px-6 py-3">
-                Удалить
+                {{ __('messages.Удалить') }}
             </th>
         </tr>
         </thead>
@@ -195,8 +207,8 @@
                                 </button>
                                 <div id="tooltip-copy-npm-install-copy-button" role="tooltip"
                                      class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-xs opacity-0 tooltip dark:bg-gray-700">
-                                    <span id="default-tooltip-message">Скопировать</span>
-                                    <span id="success-tooltip-message" class="hidden">Скопировано!</span>
+                                    <span id="default-tooltip-message">{{ __('messages.Скопировать') }}</span>
+                                    <span id="success-tooltip-message" class="hidden">{{ __('messages.Скопировано!') }}</span>
                                     <div class="tooltip-arrow" data-popper-arrow></div>
                                 </div>
                             </div>
@@ -221,8 +233,7 @@
                 </th>
                 <td class="px-6 py-4">
                     <a href="/loginAsUser/{{ $coach->id }}"
-                       class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Войти
-                        под этим пользователем</a>
+                       class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{ __('messages.Войти под этим пользователем') }}</a>
                 </td>
                 <th scope="row"
                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -288,12 +299,12 @@
             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
             <th scope="col" class="px-6 py-3">ID</th>
-            <th scope="col" class="px-6 py-3">Пользователь</th>
-            <th scope="col" class="px-6 py-3">Подписка</th>
-            <th scope="col" class="px-6 py-3">Начало</th>
-            <th scope="col" class="px-6 py-3">Окончание</th>
-            <th scope="col" class="px-6 py-3">Оплачено</th>
-            <th scope="col" class="px-6 py-3">Действия</th>
+            <th scope="col" class="px-6 py-3">{{ __('messages.Пользователь') }}</th>
+            <th scope="col" class="px-6 py-3">{{ __('messages.Подписка') }}</th>
+            <th scope="col" class="px-6 py-3">{{ __('messages.Начало') }}</th>
+            <th scope="col" class="px-6 py-3">{{ __('messages.Окончание') }}</th>
+            <th scope="col" class="px-6 py-3">{{ __('messages.Оплачено') }}</th>
+            <th scope="col" class="px-6 py-3">{{ __('messages.Действия') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -306,14 +317,14 @@
                 <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $s->end_date }}</td>
                 <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     @if($s->is_paid)
-                        <span class="badge bg-success">Да</span>
+                        <span class="badge bg-success">{{ __('messages.Да') }}</span>
                     @else
-                        <span class="badge bg-secondary">Нет</span>
+                        <span class="badge bg-secondary">{{ __('messages.Нет') }}</span>
                     @endif
                 </td>
                 <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     <a href=""
-                       class="btn btn-sm btn-primary">Изменить</a>
+                       class="btn btn-sm btn-primary">{{ __('messages.Изменить') }}</a>
                 </td>
             </tr>
         @endforeach

@@ -122,6 +122,7 @@ return [
     'available_locales' => [
         'English' => 'en',
         'Russian' => 'ru',
+        'Español' => 'es',
     ],
 
     /*

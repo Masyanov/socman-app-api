@@ -2,13 +2,13 @@
     <table class="w-full text-sm text-left text-gray-400">
         <thead class="text-xs uppercase bg-gray-700 text-gray-400">
         <tr>
-            <th scope="col" class="px-4 py-3">Имя</th>
+            <th scope="col" class="px-4 py-3">{{ __('messages.Имя') }}</th>
             @foreach($days as $day)
                 <th scope="col" class="px-4 py-3 text-center">
                     {{ $day->format('d.m') }}
                 </th>
             @endforeach
-            <th scope="col" class="px-4 py-3 text-center">Посещаемость</th>
+            <th scope="col" class="px-4 py-3 text-center">{{ __('messages.Посещаемость') }}</th>
         </tr>
         </thead>
         <tbody>

@@ -159,8 +159,7 @@
                 <h2 class="text-2xl mb-6 font-medium text-gray-900 dark:text-gray-100" style="width: 300px">
                     Вы можете использовать телеграм бот для регистрации
                 </h2>
-                <a href="https://t.me/load_control_bot" target="_blank" class="mb-6 text-gray-900 dark:text-gray-100">Перейти
-                    в бот</a>
+                <a href="https://t.me/load_control_bot" target="_blank" class="mb-6 text-gray-900 dark:text-gray-100">{{ __('messages.Перейти в бот') }}</a>
                 <img width="300" src="/images/img.png" alt="Телеграм бот - Load Control">
             </div>
 

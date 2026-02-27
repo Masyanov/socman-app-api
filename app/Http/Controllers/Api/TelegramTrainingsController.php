@@ -63,13 +63,14 @@ class TelegramTrainingsController extends Controller {
     public function trainingsNotify() {
         $now       = Carbon::now();
         $today     = Carbon::today();
+        // 1–24 в настройке интерпретируем как часы (в БД хранится как число)
         $trainings = Training::query()
                              ->join( 'setting_loadcontrols as sl', 'trainings.user_id', '=', 'sl.user_id' )
                              ->where( 'trainings.start', '>=', $now )
                              ->where( 'active', true )
                              ->where( 'date', $today )
                              ->where( 'trainings.notified', false )
-                             ->whereRaw( '? >= DATE_SUB(trainings.start, INTERVAL sl.question_recovery_min MINUTE)',
+                             ->whereRaw( "? >= DATE_SUB(trainings.start, INTERVAL (CASE WHEN sl.question_recovery_min BETWEEN 1 AND 24 THEN sl.question_recovery_min * 60 ELSE sl.question_recovery_min END) MINUTE)",
                                  [ $now ] )
                              ->select( 'trainings.*', 'sl.question_recovery_min' )
                              ->get();
@@ -209,25 +210,54 @@ class TelegramTrainingsController extends Controller {
         ] );
     }
 
+    /**
+     * То же, что questionReady, но team_code берётся из пользователя (когда у пользователя team_code пустой в профиле).
+     */
+    public function questionReadyByUser( $userId ) {
+        $user = User::find( $userId );
+        if ( ! $user || ! $user->team_code ) {
+            return response()->json( [
+                'question_ready' => false,
+                'message'        => __( 'messages.Тренировка не найдена' )
+            ] );
+        }
+        return $this->questionReady( $user->team_code );
+    }
+
     public function questionReady( $teamCode ) {
         $now = Carbon::now();
+        // team_code может прийти как строка "None" из бота, если в профиле пользователя team_code пустой
+        if ( $teamCode === 'None' || $teamCode === '' || $teamCode === null ) {
+            return response()->json( [
+                'question_ready' => false,
+                'message'        => __( 'messages.Тренировка не найдена' )
+            ] );
+        }
         \Log::info( "questionReady called for teamCode: {$teamCode}, now: " . $now->toDateTimeString() );
 
-        // Find today's training for the team
-        $training = Training::where( 'team_code', $teamCode )
-                            ->whereDate( 'date', $now->toDateString() )
-                            ->first();
+        // Ближайшая предстоящая тренировка сегодня (не уже начавшаяся)
+        $trainingsToday = Training::where( 'team_code', $teamCode )
+                                 ->whereDate( 'date', $now->toDateString() )
+                                 ->orderBy( 'start', 'asc' )
+                                 ->get();
+
+        $training = $trainingsToday->first( function ( $t ) use ( $now ) {
+            $start = Carbon::parse( $t->date . ' ' . $t->start );
+            return $start->greaterThan( $now );
+        } );
 
         if ( ! $training ) {
             return response()->json( [
                 'question_ready' => false,
-                'message'        => 'Тренировка не найдена'
+                'message'        => __( 'messages.Тренировка не найдена' )
             ] );
         }
 
-        // Get user's settings for how many minutes before training questionnaire is allowed
-        $settings                   = SettingLoadcontrol::where( 'user_id', $training->user_id )->first();
-        $settingsTimeBeforeTraining = $settings?->question_recovery_min ?? 0;
+        // Get user's settings for how many minutes (or hours) before training questionnaire is allowed
+        $settings  = SettingLoadcontrol::where( 'user_id', $training->user_id )->first();
+        $rawValue  = $settings?->question_recovery_min ?? 0;
+        // Значения 1–24 часто вводят как «часы»; интерпретируем их как часы (×60 минут)
+        $settingsTimeBeforeTraining = ( $rawValue >= 1 && $rawValue <= 24 ) ? (int) $rawValue * 60 : (int) $rawValue;
 
         // Combine training date and start time
         $trainingStart = Carbon::parse( $training->date . ' ' . $training->start );
@@ -246,7 +276,7 @@ class TelegramTrainingsController extends Controller {
                 'training_start' => $trainingStart->toDateTimeString(),
                 'allowed_from'   => $allowedStartTime->toDateTimeString(),
                 'limit_minutes'  => $settingsTimeBeforeTraining,
-                'message'        => 'Тренировка уже началась'
+                'message'        => __( 'messages.Тренировка уже началась' )
             ] );
         }
 
@@ -254,12 +284,35 @@ class TelegramTrainingsController extends Controller {
         $ready = $now->greaterThanOrEqualTo( $allowedStartTime ) && $now->lessThan( $trainingStart );
 
         return response()->json( [
-            'question_ready' => $ready,
-            'training_start' => $trainingStart->toDateTimeString(),
-            'allowed_from'   => $allowedStartTime->toDateTimeString(),
-            'limit_minutes'  => $settingsTimeBeforeTraining,
-            'message'        => $ready ? '' : 'Окно опроса недоступно'
+            'question_ready'   => $ready,
+            'training_start'   => $trainingStart->toDateTimeString(),
+            'date'             => $training->date,
+            'start'            => $training->start,
+            'allowed_from'     => $allowedStartTime->toDateTimeString(),
+            'limit_minutes'    => $settingsTimeBeforeTraining,
+            'raw_setting_min'  => $rawValue,
+            'message'          => $ready ? '' : __( 'messages.Окно опроса недоступно' )
         ] );
+    }
+
+    /**
+     * Для бота: время на опрос (в минутах). team_code в query.
+     * Значения 1–24 интерпретируются как часы (×60).
+     */
+    public function timeForQuestions( Request $request ) {
+        $teamCode = $request->query( 'team_code' );
+        if ( ! $teamCode ) {
+            return response()->json( [ 'minutes' => 0, 'hours' => 0 ] );
+        }
+        $training = Training::where( 'team_code', $teamCode )->first();
+        if ( ! $training ) {
+            return response()->json( [ 'minutes' => 0, 'hours' => 0 ] );
+        }
+        $settings = SettingLoadcontrol::where( 'user_id', $training->user_id )->first();
+        $rawValue = $settings?->question_recovery_min ?? 0;
+        $minutes  = ( $rawValue >= 1 && $rawValue <= 24 ) ? (int) $rawValue * 60 : (int) $rawValue;
+        $hours    = round( $minutes / 60, 1 );
+        return response()->json( [ 'minutes' => $minutes, 'hours' => $hours ] );
     }
 
 }

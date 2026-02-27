@@ -2,50 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
+use App\Services\DockerBotService;
 
 class DockerBotController extends Controller {
-    protected $mgrUrl = 'http://docker-manager:8085';
-
-    protected function sendToManager( $endpoint ) {
-        $token = env( 'DOCKER_MANAGER_TOKEN' );
-        try {
-            $res = Http::withHeaders( [
-                'Authorization' => 'Bearer ' . $token
-            ] )->post( $this->mgrUrl . $endpoint );
-
-            return $res->json();
-        } catch ( \Throwable $e ) {
-            return [ 'status' => false, 'output' => $e->getMessage() ];
-        }
-    }
+    public function __construct(private DockerBotService $dockerBotService) {}
 
     public function stop() {
-        return response()->json( $this->sendToManager( '/stop-bot' ) );
+        return response()->json($this->dockerBotService->stop());
     }
 
     public function remove() {
-        return response()->json( $this->sendToManager( '/remove-bot' ) );
+        return response()->json($this->dockerBotService->remove());
     }
 
     public function run() {
-        return response()->json( $this->sendToManager( '/run-bot' ) );
+        return response()->json($this->dockerBotService->run());
     }
 
     public function restart() {
-        return response()->json( $this->sendToManager( '/restart-bot' ) );
+        return response()->json($this->dockerBotService->restart());
     }
 
     public function status() {
-        $token = env( 'DOCKER_MANAGER_TOKEN' );
-        try {
-            $res = Http::withHeaders( [
-                'Authorization' => 'Bearer ' . $token
-            ] )->get( $this->mgrUrl . '/status-bot' );
-
-            return $res->json();
-        } catch ( \Throwable $e ) {
-            return [ 'output' => $e->getMessage() ];
-        }
+        return response()->json($this->dockerBotService->status());
     }
 }

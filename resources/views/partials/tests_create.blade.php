@@ -1,5 +1,5 @@
 <div class="container">
-    <h2 class="mb-3">Добавить результаты тестирования</h2>
+    <h2 class="mb-3">{{ __('messages.Добавить результаты тестирования') }}</h2>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -40,7 +40,7 @@
             <div class="flex w-full h-full align-content-end">
                 <select id="playerSelect" name="player_id" style="width: inherit"
                         class="flex w-full h-fit align-items-end md:w-fit bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    <option disabled selected>Выберите команду</option>
+                    <option disabled selected>{{ __('messages.Выберите команду') }}</option>
                 </select>
             </div>
             <div class="w-full">

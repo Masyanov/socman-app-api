@@ -44,9 +44,9 @@
                         href="https://load-control.ru/" class="hover:underline">SportControl™</a>. Все права защищены.
                 </div>
                 <div class="grid grid-cols-1 gap-3 py-6 sm:space-x-8 sm:space-y-0 rtl:space-x-reverse md:gap-6 md:grid-cols-3">
-                    <a href="/oferta" target="_blank" class="text-xs text-white hover:text-indigo-500" title="Оферта">Оферта</a>
-                    <a href="/policy" target="_blank" class="text-xs text-white hover:text-indigo-500" title="Политика конфиденциальности">Политика конфиденциальности</a>
-                    <a href="/rules" target="_blank" class="text-xs text-white hover:text-indigo-500" title="Пользовательское соглашение">Пользовательское соглашение</a>
+                    <a href="/oferta" target="_blank" class="text-xs text-white hover:text-indigo-500" title="{{ __('messages.Оферта') }}">{{ __('messages.Оферта') }}</a>
+                    <a href="/policy" target="_blank" class="text-xs text-white hover:text-indigo-500" title="{{ __('messages.Политика конфиденциальности') }}">{{ __('messages.Политика конфиденциальности') }}</a>
+                    <a href="/rules" target="_blank" class="text-xs text-white hover:text-indigo-500" title="{{ __('messages.Пользовательское соглашение') }}">{{ __('messages.Пользовательское соглашение') }}</a>
                 </div>
                 <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
                     <li>

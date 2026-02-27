@@ -22,6 +22,16 @@ return [
 
     'telegram' => [
         'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        // Secret для внутренних запросов от бота/интеграции к API
+        // Передавать в заголовке: X-Bot-Secret: <secret>
+        'bot_secret' => env('TELEGRAM_BOT_SECRET'),
+    ],
+
+    'docker_manager' => [
+        'url' => env('DOCKER_MANAGER_URL', 'http://docker-manager:8085'),
+        'token' => env('DOCKER_MANAGER_TOKEN'),
+        'timeout_seconds' => (int) env('DOCKER_MANAGER_TIMEOUT', 10),
+        'connect_timeout_seconds' => (int) env('DOCKER_MANAGER_CONNECT_TIMEOUT', 3),
     ],
 
     'mailgun' => [
